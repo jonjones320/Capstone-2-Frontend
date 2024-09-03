@@ -7,8 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "init-db": "node initialize-db.js"
+    "preview": "vite preview"
   },
   "dependencies": {
     "amadeus": "^10.1.0",
