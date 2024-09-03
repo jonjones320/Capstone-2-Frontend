@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import RannerApi from '../../api';
 
 function TripForm({ initialData, tripId }) {
   const [formData, setFormData] = useState(initialData);
-  const history = useHistory();
+  const history = useNavigate();
 
   useEffect(() => {
     if (tripId) {
@@ -35,10 +35,10 @@ function TripForm({ initialData, tripId }) {
     try {
       if (tripId) {
         await RannerApi.updateTrip(tripId, formData);
-        history.push(`/trips/${tripId}`);
+        navigate(`/trips/${tripId}`);
       } else {
         const newTripId = await RannerApi.postTrip(formData);
-        history.push(`/trips/${newTripId}`);
+        navigate(`/trips/${newTripId}`);
       }
     } catch (err) {
       console.error("Error saving trip:", err);
