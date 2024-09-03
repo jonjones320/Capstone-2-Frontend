@@ -1,11 +1,11 @@
 import React from 'react';
-import CompanyList from './CompanyList';
+import TripForm from './TripForm';
 
 function Home() {
   return (
   <div>
     <h1>Welcome to Ranner!</h1>
-    <CompanyList />
+    <TripForm />
   </div>
 )
 }
