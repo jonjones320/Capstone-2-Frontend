@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'
 import AuthContext from '../context/AuthContext';
 
@@ -7,6 +7,14 @@ function Login() {
   const { login, currentUser } = useContext(AuthContext);
   const navigate = useNavigate();
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (currentUser) {
+      navigate("/");
+      console.log("Log in successful. Welcome!");
+    }
+  }, [currentUser, navigate]);
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -17,12 +25,6 @@ function Login() {
     e.preventDefault();
     try {
       await login(formData);
-      if (currentUser) {
-        navigate("/");
-        console.log("Log in successful. Welcome!");
-      } else {
-        setError("Invalid login details. Please try again.");
-      };
     } catch (err) {
       setError(err.message || "An unexpected error occured. Please try again.");
     }
