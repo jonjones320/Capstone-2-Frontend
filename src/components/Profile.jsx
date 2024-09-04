@@ -13,14 +13,22 @@ function Profile() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (currentUser) {
-      setFormData({
-        firstName: currentUser.firstName || '',
-        lastName: currentUser.lastName || '',
-        email: currentUser.email || ''
-      });
+    async function fetchUserDetails() {
+      try {
+        const userDetails = await RannerApi.getUser(currentUser.username);
+        setFormData({
+          firstName: userDetails.firstName || '',
+          lastName: userDetails.lastName || '',
+          email: userDetails.email || ''
+        });
+      } catch (err) {
+        setError("There was an error fetching your profile information.");
+      }
     }
-  }, [currentUser]);
+    if (currentUser) {
+      fetchUserDetails();
+    }
+  }, [currentUser, setCurrentUser]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
