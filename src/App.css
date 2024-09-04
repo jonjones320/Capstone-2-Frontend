@@ -60,3 +60,9 @@
 .UserCard p {
   margin: 0.5em 0;
 }
+
+/* ERROR */
+
+.error-message {
+  color: red;
+}
