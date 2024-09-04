@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { jwtDecode } from 'jwt-decode';
-import JoblyApi from '../../api';
+import RannerApi from '../../api';
 
 
 const AuthContext = createContext();
@@ -11,7 +11,7 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         if (token) {
-            JoblyApi.token = token;
+            RannerApi.token = token;
         }
     }, [token]);
 
@@ -27,7 +27,7 @@ export const AuthProvider = ({ children }) => {
 
     const login = async ({ username, password }) => {
         try {
-            const token = await JoblyApi.login({ username, password });
+            const token = await RannerApi.login({ username, password });
             setToken(token);
             localStorage.setItem('token', token);
             const user = getUserFromToken(token);
