@@ -10,25 +10,27 @@ function Profile() {
     lastName: '',
     email: ''
   });
+  const [userTrips, setUserTrips] = useState([]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    async function fetchUserDetails() {
+    async function fetchUser() {
       try {
-        const userDetails = await RannerApi.getUser(currentUser.username);
+        const user = await RannerApi.getUser(currentUser.username);
         setFormData({
-          firstName: userDetails.firstName || '',
-          lastName: userDetails.lastName || '',
-          email: userDetails.email || ''
+          firstName: user.firstName || '',
+          lastName: user.lastName || '',
+          email: user.email || ''
         });
+        setUserTrips(user.trips || []);
       } catch (err) {
         setError("There was an error fetching your profile information.");
       }
     }
     if (currentUser) {
-      fetchUserDetails();
+      fetchUser();
     }
-  }, [currentUser, setCurrentUser]);
+  }, [currentUser]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -38,8 +40,7 @@ function Profile() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const updatedUser = await RannerApi.patchUser(currentUser.username, formData);
-      setCurrentUser(updatedUser);
+      await RannerApi.patchUser(currentUser.username, formData);
     } catch (err) {
       setError('There was an error updating your profile. Please try again.');
     }
@@ -86,7 +87,7 @@ function Profile() {
       <div>
         <h2 className='Profile-trips-title'>Trips</h2>
         <ul className='Profile-trips-list'>
-          {(currentUser.trips || []).map(trip => (
+          {userTrips.map(trip => (
             <TripCard
               key={trip.id}
               id={trip.id}
