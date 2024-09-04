@@ -49,6 +49,21 @@ function Profile() {
   return (
     <div>
       <h1>{currentUser.username}</h1>
+      <div>
+        <h2 className='Profile-trips-title'>My Trips</h2>
+        <ul className='Profile-trips-list'>
+          {userTrips.map(trip => (
+            <TripCard
+              key={trip.id}
+              id={trip.id}
+              name={trip.name || "Name unavailable"}
+              destination={trip.destination || "Destination unavailable"}
+              startDate={trip.startDate}
+              endDate={trip.endDate}
+            />
+          ))}
+        </ul>
+      </div>
       <h3>Edit profile</h3>
       {error && <p>{error}</p>}
       <form onSubmit={handleSubmit}>
@@ -84,21 +99,6 @@ function Profile() {
         </div>
         <button type='submit'>Save Changes</button>
       </form>
-      <div>
-        <h2 className='Profile-trips-title'>Trips</h2>
-        <ul className='Profile-trips-list'>
-          {userTrips.map(trip => (
-            <TripCard
-              key={trip.id}
-              id={trip.id}
-              name={trip.name || "Name unavailable"}
-              destination={trip.destination || "Destination unavailable"}
-              startDate={trip.startDate}
-              endDate={trip.endDate}
-            />
-          ))}
-        </ul>
-      </div>
     </div>
     )
   }
