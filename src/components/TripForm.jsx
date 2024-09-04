@@ -2,9 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import RannerApi from '../../api';
 
-function TripForm({ initialData, tripId }) {
-  const [formData, setFormData] = useState(initialData);
-  const history = useNavigate();
+function TripForm({ initialData = {}, tripId }) {
+  const [formData, setFormData] = useState({
+    name: '',
+    destination: '',
+    startDate: '',
+    endDate: '',
+    budget: '',
+    ...initialData
+  });
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (tripId) {
