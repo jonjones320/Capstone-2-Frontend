@@ -1,16 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import RannerApi from '../../api';
+import AuthContext from '../context/AuthContext';
 
 function TripForm({ initialData = {}, tripId }) {
   const [formData, setFormData] = useState({
     name: '',
+    username: '',
     destination: '',
     startDate: '',
     endDate: '',
     budget: '',
     ...initialData
   });
+  const { currentUser } = useContext(AuthContext);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -19,6 +22,7 @@ function TripForm({ initialData = {}, tripId }) {
         const trip = await RannerApi.getTrip(tripId);
         setFormData({
           name: trip.name,
+          username: currentUser.username,
           destination: trip.destination,
           startDate: trip.startDate,
           endDate: trip.endDate,
