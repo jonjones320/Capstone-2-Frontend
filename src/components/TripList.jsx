@@ -22,7 +22,7 @@ function TripList() {
             key={trip.id}
             id={trip.id}
             name={trip.name}
-            destination={trip.destination}
+            location={trip.location}
             startDate={trip.startDate}
             endDate={trip.endDate}
           />

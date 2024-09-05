@@ -57,7 +57,7 @@ function Profile() {
               key={trip.id}
               id={trip.id}
               name={trip.name || "Name unavailable"}
-              destination={trip.destination || "Destination unavailable"}
+              location={trip.location || "Location unavailable"}
               startDate={trip.startDate}
               endDate={trip.endDate}
             />
