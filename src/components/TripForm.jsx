@@ -10,7 +10,7 @@ function TripForm({ initialData = {}, tripId }) {
   const [formData, setFormData] = useState({
     name: '',
     username: '',
-    destination: '',
+    location: '',
     startDate: '',
     endDate: '',
     budget: '',
@@ -24,7 +24,7 @@ function TripForm({ initialData = {}, tripId }) {
         setFormData({
           name: trip.name,
           username: currentUser.username,
-          destination: trip.destination,
+          location: trip.location,
           startDate: trip.startDate,
           endDate: trip.endDate,
           budget: trip.budget
@@ -71,12 +71,12 @@ function TripForm({ initialData = {}, tripId }) {
           />
         </div>
         <div>
-          <label htmlFor="destination">Destination:</label>
+          <label htmlFor="location">location:</label>
           <input
             type="text"
-            id="destination"
-            name="destination"
-            value={formData.destination}
+            id="location"
+            name="location"
+            value={formData.location}
             onChange={handleChange}
             required
           />

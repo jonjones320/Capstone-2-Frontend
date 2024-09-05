@@ -19,7 +19,7 @@ function TripDetail() {
   return (
     <div className="TripDetail">
       <h2>{trip.name}</h2>
-      <p>Destination: {trip.destination}</p>
+      <p>Location: {trip.location}</p>
       <p>Start Date: {new Date(trip.startDate).toLocaleDateString()}</p>
       <p>End Date: {new Date(trip.endDate).toLocaleDateString()}</p>
       <p>Budget: ${trip.budget}</p>
