@@ -41,13 +41,26 @@ function TripForm({ initialData = {}, tripId }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (formData.location.length > 100 || formData.name.length > 50) {
+      setError('Location must be 100 characters or less.');
+      return;
+    };
+
     try {
-      const dataToSubmit = { ...formData, username: currentUser.username };
+      const dataToSubmit = { 
+        ...formData, 
+        username: currentUser.username,
+        budget: parseFloat(formData.budget)
+      };
+      console.log("TripForm, handleSubmit, dataToSubmit", dataToSubmit);
       if (tripId) {
+        // console.log("TripForm.jsx - handleSubmit - if(tripId): ", tripId);
         await RannerApi.updateTrip(tripId, dataToSubmit);
         navigate(`/trips/${tripId}`);
       } else {
-        const newTripId = await RannerApi.postTrip(formData);
+        // console.log("TripForm.jsx - handleSubmit - else() dataToSubmit: ", dataToSubmit);
+        const newTripId = await RannerApi.postTrip(dataToSubmit);
         navigate(`/trips/${newTripId}`);
       }
     } catch (err) {
@@ -71,7 +84,7 @@ function TripForm({ initialData = {}, tripId }) {
           />
         </div>
         <div>
-          <label htmlFor="location">location:</label>
+          <label htmlFor="location">Location:</label>
           <input
             type="text"
             id="location"
