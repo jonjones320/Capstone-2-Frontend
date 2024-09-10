@@ -66,7 +66,6 @@ class RannerApi {
   /** Post a new trip */
   static async postTrip(data) {
     let res = await this.request(`trips`, data, 'post');
-    console.log("RannerApi - postTrip - res: ", res);
     return res;
   }
   /** Update a trip */
@@ -81,7 +80,9 @@ class RannerApi {
   }
   /** Get trip by ID */ 
   static async getTrip(id) {
+    console.log("RannerApi - getTrip - id: ", id);
     let res = await this.request(`trips/${id}`);
+    console.log("RannerApi - postTrip - res: ", res);
     return res;
   }
 
