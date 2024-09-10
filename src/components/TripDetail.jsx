@@ -9,7 +9,6 @@ function TripDetail() {
   useEffect(() => {
     async function fetchTrip() {
       const trip = await RannerApi.getTrip(id);
-      console.log("TripDetail.jsx - fetchTrip - TRIP: ", trip)
       setTrip(trip);
     }
     fetchTrip();
