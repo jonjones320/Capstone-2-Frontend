@@ -76,14 +76,12 @@ class RannerApi {
   /** Get all trips */ 
   static async getTrips() {
     let res = await this.request(`trips`);
-    return res;
+    return res.trips;
   }
   /** Get trip by ID */ 
   static async getTrip(id) {
-    console.log("RannerApi - getTrip - id: ", id);
     let res = await this.request(`trips/${id}`);
-    console.log("RannerApi - postTrip - res: ", res);
-    return res;
+    return res.trip;
   }
 
   /////// SIGN-UP & LOGIN ///////
