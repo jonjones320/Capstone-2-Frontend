@@ -66,22 +66,23 @@ class RannerApi {
   /** Post a new trip */
   static async postTrip(data) {
     let res = await this.request(`trips`, data, 'post');
-    return res.data.trip;
+    console.log("RannerApi - postTrip - res: ", res);
+    return res;
   }
   /** Update a trip */
   static async updateTrip(id, data) {
     let res = await this.request(`trips/${id}`, data, 'patch');
-    return res.data.trip;
+    return res;
   }
   /** Get all trips */ 
   static async getTrips() {
     let res = await this.request(`trips`);
-    return res.data.trips;
+    return res;
   }
   /** Get trip by ID */ 
   static async getTrip(id) {
     let res = await this.request(`trips/${id}`);
-    return res.data.trip;
+    return res;
   }
 
   /////// SIGN-UP & LOGIN ///////

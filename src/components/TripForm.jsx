@@ -53,15 +53,15 @@ function TripForm({ initialData = {}, tripId }) {
         username: currentUser.username,
         budget: parseFloat(formData.budget)
       };
-      console.log("TripForm, handleSubmit, dataToSubmit", dataToSubmit);
+      // console.log("TripForm.jsx, handleSubmit, dataToSubmit", dataToSubmit);
       if (tripId) {
         // console.log("TripForm.jsx - handleSubmit - if(tripId): ", tripId);
         await RannerApi.updateTrip(tripId, dataToSubmit);
         navigate(`/trips/${tripId}`);
       } else {
-        // console.log("TripForm.jsx - handleSubmit - else() dataToSubmit: ", dataToSubmit);
-        const newTripId = await RannerApi.postTrip(dataToSubmit);
-        navigate(`/trips/${newTripId}`);
+        const newTrip = await RannerApi.postTrip(dataToSubmit);
+        // console.log("TripForm.jsx - handleSubmit - else() newTrip: ", newTrip);
+        navigate(`/trips/${results.tripId}`);
       }
     } catch (err) {
       setError(err || 'Something went wrong');
