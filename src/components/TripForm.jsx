@@ -61,7 +61,7 @@ function TripForm({ initialData = {}, tripId }) {
       } else {
         const newTrip = await RannerApi.postTrip(dataToSubmit);
         // console.log("TripForm.jsx - handleSubmit - else() newTrip: ", newTrip);
-        navigate(`/trips/${newTrip.tripId}`);
+        navigate(`/trips/${newTrip.trip.tripId}`);
       }
     } catch (err) {
       setError(err || 'Something went wrong');
