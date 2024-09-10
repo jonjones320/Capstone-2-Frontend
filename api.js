@@ -15,16 +15,16 @@ class RannerApi {
   static token;
 
   static async request(endpoint, data = {}, method = "get") {
-    console.debug("API Call:", endpoint, data, method);
-
+    // console.debug("API Call:", endpoint, data, method);
     const url = `${BASE_URL}/${endpoint}`;
     const headers = { Authorization: `Bearer ${RannerApi.token}` };
     const params = (method === "get") ? data : {};
 
     try {
+      // console.debug("RannerApi - Request - TRY:", endpoint, data, method);
       return (await axios({ url, method, data, params, headers })).data;
     } catch (err) {
-      console.error("API Error:", err.response);
+      console.error("RannerAPI Error:", err.response);
       let message = err?.response?.data?.error?.message;
       throw Array.isArray(message) ? message : [message];
     }
@@ -65,22 +65,22 @@ class RannerApi {
 
   /** Post a new trip */
   static async postTrip(data) {
-    const res = await axios.post(`${BASE_URL}/trips`, data);
+    let res = await this.request(`trips`, data, 'post');
     return res.data.trip;
   }
   /** Update a trip */
   static async updateTrip(id, data) {
-    const res = await axios.patch(`${BASE_URL}/trips/${id}`, data);
+    let res = await this.request(`trips/${id}`, data, 'patch');
     return res.data.trip;
   }
   /** Get all trips */ 
   static async getTrips() {
-    const res = await axios.get(`${BASE_URL}/trips`);
+    let res = await this.request(`trips`);
     return res.data.trips;
   }
   /** Get trip by ID */ 
   static async getTrip(id) {
-    const res = await axios.get(`${BASE_URL}/trips/${id}`);
+    let res = await this.request(`trips/${id}`);
     return res.data.trip;
   }
 
