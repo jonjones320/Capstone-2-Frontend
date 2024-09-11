@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { format } from 'date-fns';
 import RannerApi from '../../api';
 import AuthContext from '../context/AuthContext';
 
-function TripForm({ initialData = {}, tripId }) {
+function TripForm() {
   const navigate = useNavigate();
-  const [error, setError] = useState(null);
+  const { id : tripId} = useParams();
   const { currentUser } = useContext(AuthContext);
   const [formData, setFormData] = useState({
     name: '',
@@ -13,29 +14,36 @@ function TripForm({ initialData = {}, tripId }) {
     location: '',
     startDate: '',
     endDate: '',
-    budget: '',
-    ...initialData
+    budget: ''
   });
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (tripId) {
       async function fetchTrip() {
+      setIsLoading(true);
+      try {
         const trip = await RannerApi.getTrip(tripId);
         setFormData({
           name: trip.name,
           username: currentUser.username,
           location: trip.location,
-          startDate: trip.startDate,
-          endDate: trip.endDate,
+          startDate: format(new Date(trip.startDate), 'yyyy-MM-dd'),
+          endDate: format(new Date(trip.endDate), 'yyyy-MM-dd'),
           budget: trip.budget
         });
+      } catch (err) {
+        setError(err || 'Something went wrong');
+      } finally {
+        setIsLoading(false);
       }
+    }
       fetchTrip();
     }
-  }, [tripId]);
+  }, [tripId, currentUser]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  const handleChange = ({ target: { name, value } }) => {
     setFormData(data => ({ ...data, [name]: value }));
   };
 
@@ -43,7 +51,7 @@ function TripForm({ initialData = {}, tripId }) {
     e.preventDefault();
 
     if (formData.location.length > 100 || formData.name.length > 50) {
-      setError('Location must be 100 characters or less.');
+      setError('Location must be less than 101 characters and Name must be less than 51 characters.');
       return;
     };
 
@@ -51,16 +59,16 @@ function TripForm({ initialData = {}, tripId }) {
       const dataToSubmit = { 
         ...formData, 
         username: currentUser.username,
-        budget: parseFloat(formData.budget)
+        budget: parseFloat(formData.budget),
+        startDate: format(new Date(formData.startDate), 'yyyy-MM-dd'),
+        endDate: format(new Date(formData.endDate), 'yyyy-MM-dd'),
       };
-      // console.log("TripForm.jsx, handleSubmit, dataToSubmit", dataToSubmit);
+
       if (tripId) {
-        // console.log("TripForm.jsx - handleSubmit - if(tripId): ", tripId);
         await RannerApi.updateTrip(tripId, dataToSubmit);
         navigate(`/trips/${tripId}`);
       } else {
         const newTrip = await RannerApi.postTrip(dataToSubmit);
-        // console.log("TripForm.jsx - handleSubmit - else() newTrip: ", newTrip);
         navigate(`/trips/${newTrip.trip.tripId}`);
       }
     } catch (err) {
@@ -68,9 +76,12 @@ function TripForm({ initialData = {}, tripId }) {
     }
   };
 
+  if (isLoading) return <div>Loading...</div>;
+
   return (
     <div>
       <h1>{tripId ? 'Edit Trip' : 'New Trip'}</h1>
+      {error && <div className="error">{error}</div>}
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="name">Name:</label>
