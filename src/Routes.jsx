@@ -25,6 +25,7 @@ function AppRoutes() {
       <Route path="/logout" element={<Logout />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/trip" element={<ProtectedRoute element={<TripForm />} />} />
+      <Route path="/trip/:id" element={<ProtectedRoute element={<TripForm />} />} />
       <Route path="/trips" element={<ProtectedRoute element={<TripList />} />} />
       <Route path="/trips/:id" element={<ProtectedRoute element={<TripDetail />} />} />
       <Route path="/profile" element={<ProtectedRoute element={<Profile />} />} />
