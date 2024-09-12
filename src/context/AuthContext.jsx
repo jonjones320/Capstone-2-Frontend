@@ -9,12 +9,6 @@ export const AuthProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(null);
     const [token, setToken] = useState(localStorage.getItem('token'));
 
-    useEffect(() => {
-        if (token) {
-            RannerApi.token = token;
-        }
-    }, [token]);
-
     function getUserFromToken(token) {
         try {
             const decoded = jwtDecode(token);
@@ -22,8 +16,17 @@ export const AuthProvider = ({ children }) => {
         } catch (error) {
             console.error('Token failed to decode', error);
             return null;
-        };
+        }
     }
+
+    // Use token from local storage to set the current user upon app load. 
+    useEffect(() => {
+        if (token) {
+            RannerApi.token = token; // Set token for API requests
+            const user = getUserFromToken(token);
+            setCurrentUser(user); // Set current user in context
+        }
+    }, [token]);
 
     const login = async ({ username, password }) => {
         try {
