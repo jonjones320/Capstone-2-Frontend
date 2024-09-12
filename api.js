@@ -83,11 +83,11 @@ class RannerApi {
     let res = await this.request(`trips/${id}`);
     return res.trip;
   }
-    /** Delete a trip by ID */
-    static async deleteTrip(id) {
-      let res = await this.request(`trips/${id}`, {}, 'delete');
-      return res.message;
-    }
+  /** Delete a trip by ID */
+  static async deleteTrip(id) {
+    let res = await this.request(`trips/${id}`, {}, 'delete');
+    return res.message;
+  }
 
   /////// SIGN-UP & LOGIN ///////
 
