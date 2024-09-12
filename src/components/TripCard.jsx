@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 function TripCard({ id, name, location, startDate, endDate }) {
   return (
-    <div className="TripCard">
+    <div className="TripCard" key={id}>
       <h3>{name}</h3>
       <p>Location: {location}</p>
       <p>Start Date: {new Date(startDate).toLocaleDateString()}</p>
