@@ -12,15 +12,15 @@ function TripList() {
     }
     fetchTrips();
   }, []);
-
+  
   return (
     <div className="TripList">
       <h2>Trips</h2>
       <div>
         {trips.map(trip => (
           <TripCard
-            key={trip.id}
-            id={trip.id}
+            key={trip.tripId}
+            id={trip.tripId}
             name={trip.name}
             location={trip.location}
             startDate={trip.startDate}
