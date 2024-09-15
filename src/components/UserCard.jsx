@@ -7,7 +7,7 @@ function UserCard({ username, firstName, lastName, email }) {
       <h3>{username}</h3>
       <p>{firstName} {lastName}</p>
       <p>{email}</p>
-      <Link to={`/users/${username}`}>View Profile</Link>
+      {/* <Link to={`/users/${username}`}>View Profile</Link> */}
     </div>
   );
 }
