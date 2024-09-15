@@ -23,8 +23,8 @@ function ProfileView({ user, trips }) {
         <ul className='Profile-trips-list'>
           {trips.map(trip => (
             <TripCard
-              key={trip.id}
-              id={trip.id}
+              key={trip.tripId}
+              id={trip.tripId}
               name={trip.name || 'Name unavailable'}
               location={trip.location || 'Location unavailable'}
               startDate={trip.startDate}
