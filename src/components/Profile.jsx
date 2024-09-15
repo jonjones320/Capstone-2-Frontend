@@ -16,9 +16,10 @@ function Profile() {
     async function fetchUser() {
       try {
         const userData = await RannerApi.getUser(currentUser.username);
+        const userTrips = await RannerApi.getTripsByUsername(currentUser.username);
 
         setUser(userData);
-        setTrips(userData.trips || []);
+        setTrips(userTrips || []);
 
       } catch (err) {
         setError('There was an error fetching your profile information.');
