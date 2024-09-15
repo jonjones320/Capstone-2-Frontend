@@ -3,7 +3,6 @@ import TripCard from './TripCard';
 import UserCard from './UserCard';
 
 function ProfileView({ user, trips }) {
-  console.log('ProfileView.jsx - user:', user);
   if (!user) {
     return <p>Loading user details...</p>; // Fallback in case `user` prop is not passed.
   }
