@@ -78,7 +78,7 @@ class RannerApi {
     return res.trips;
   }
   /** Get trip by ID */ 
-  static async getTrip(id) {
+  static async getTripById(id) {
     let res = await this.request(`trips/${id}`);
     return res.trip;
   }

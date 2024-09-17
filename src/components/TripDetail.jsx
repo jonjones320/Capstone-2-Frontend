@@ -12,12 +12,12 @@ function TripDetail() {
   useEffect(() => {
     async function fetchTrip() {
       try {
-      const trip = await RannerApi.getTrip(id);
-      setTrip(trip);
-    } catch (err) {
-      console.error('Failed to fetch trip:', err);
-      setTrip(null);
-    }
+        const trip = await RannerApi.getTripById(id);
+        setTrip(trip);
+      } catch (err) {
+        console.error('Failed to fetch trip:', err);
+        setTrip(null);
+      }
   }
     fetchTrip();
   }, [id]);
