@@ -102,85 +102,86 @@ class RannerApi {
 
   /** Search for flight offers */
   static async searchFlightOffers(query = {}) {
-    let res = await this.request(`flight/offers`, query);
+    console.log("RannerApi - searchFlightOffers - query:", query);
+    let res = await this.request(`flights/offers`, query);
     return res;
   }
 
   /** Post a flight search offer */
   static async postFlightOffers(data = {}) {
-    let res = await this.request(`flight/offers`, data, "post");
+    let res = await this.request(`flights/offers`, data, "post");
     return res;
   }
 
   /** Get flight destinations based on origin */
   static async getFlightDestinations(query = {}) {
-    let res = await this.request(`flight/destinations`, query);
+    let res = await this.request(`flights/destinations`, query);
     return res;
   }
 
   /** Get flight dates based on origin and destination */
   static async getFlightDates(query = {}) {
-    let res = await this.request(`flight/dates`, query);
+    let res = await this.request(`flights/dates`, query);
     return res;
   }
 
   /** Get flight offer price */
   static async getFlightOfferPrice(query = {}) {
-    let res = await this.request(`flight/offers/price`, query);
+    let res = await this.request(`flights/offers/price`, query);
     return res;
   }
 
   /** Post flight offer price with additional data (e.g. bags) */
   static async postFlightOfferPrice(data = {}) {
-    let res = await this.request(`flight/offers/price`, data, "post");
+    let res = await this.request(`flights/offers/price`, data, "post");
     return res;
   }
 
   /** Create a flight order */
   static async createFlightOrder(data = {}) {
-    let res = await this.request(`flight/orders`, data, "post");
+    let res = await this.request(`flights/orders`, data, "post");
     return res;
   }
 
   /** Retrieve a flight order by ID */
   static async getFlightOrder(id) {
-    let res = await this.request(`flight/orders/${id}`);
+    let res = await this.request(`flights/orders/${id}`);
     return res;
   }
 
   /** Cancel a flight order by ID */
   static async deleteFlightOrder(id) {
-    let res = await this.request(`flight/orders/${id}`, {}, "delete");
+    let res = await this.request(`flights/orders/${id}`, {}, "delete");
     return res;
   }
 
   /** Get seat map for a flight */
   static async getFlightSeatMap(query = {}) {
-    let res = await this.request(`flight/seatmaps`, query);
+    let res = await this.request(`flights/seatmaps`, query);
     return res;
   }
 
   /** Get seat map for a flight order by ID */
   static async getFlightOrderSeatMap(id) {
-    let res = await this.request(`flight/orders/${id}/seatmap`);
+    let res = await this.request(`flights/orders/${id}/seatmap`);
     return res;
   }
 
   /** Get flight availabilities */
   static async postFlightAvailabilities(data = {}) {
-    let res = await this.request(`flight/availabilities`, data, "post");
+    let res = await this.request(`flights/availabilities`, data, "post");
     return res;
   }
 
   /** Post branded fares upsell */
   static async postFlightUpselling(data = {}) {
-    let res = await this.request(`flight/offers/upselling`, data, "post");
+    let res = await this.request(`flights/offers/upselling`, data, "post");
     return res;
   }
 
   /** Get flight choice prediction */
   static async getFlightPrediction(query = {}) {
-    let res = await this.request(`flight/offers/prediction`, query);
+    let res = await this.request(`flights/offers/prediction`, query);
     return res;
   }
 
@@ -192,13 +193,13 @@ class RannerApi {
 
   /** Get on-demand flight status */
   static async getFlightStatus(query = {}) {
-    let res = await this.request(`flight/status`, query);
+    let res = await this.request(`flights/status`, query);
     return res;
   }
 
   /** Get busiest traveling period */
   static async getBusiestTravelPeriod(query = {}) {
-    let res = await this.request(`flight/busiestPeriod`, query);
+    let res = await this.request(`flights/busiestPeriod`, query);
     return res;
   }
   
