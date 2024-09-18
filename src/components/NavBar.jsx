@@ -10,6 +10,7 @@ function NavBar() {
     return (
       <nav className='NavBar-user'>
         <Link to="/">Home</Link>
+        <Link to="/flights">Flights</Link>
         <Link to="/trips">Trips</Link>
         <Link to="/trip">Add New Trip</Link>
         <Link to="/profile">Profile</Link>

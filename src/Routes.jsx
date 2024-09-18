@@ -6,10 +6,12 @@ import Home from './components/Home';
 import Login from './components/Login';
 import Logout from './components/Logout';
 import Signup from './components/Signup';
+import Profile from './components/Profile';
 import TripForm from './components/TripForm';
 import TripList from './components/TripList';
 import TripDetail from './components/TripDetail';
-import Profile from './components/Profile';
+import FlightSearch from './components/FlightSearch';
+import FlightDetail from './components/FlightDetail';
 import NotFound from './components/NotFound';
 
 function ProtectedRoute({ element }) {
@@ -24,11 +26,13 @@ function AppRoutes() {
       <Route path="/login" element={<Login />} />
       <Route path="/logout" element={<Logout />} />
       <Route path="/signup" element={<Signup />} />
+      <Route path="/profile" element={<ProtectedRoute element={<Profile />} />} />
       <Route path="/trip" element={<ProtectedRoute element={<TripForm />} />} />
       <Route path="/trip/:id" element={<ProtectedRoute element={<TripForm />} />} />
       <Route path="/trips" element={<ProtectedRoute element={<TripList />} />} />
       <Route path="/trips/:id" element={<ProtectedRoute element={<TripDetail />} />} />
-      <Route path="/profile" element={<ProtectedRoute element={<Profile />} />} />
+      <Route path="/flights" element={<ProtectedRoute element={<FlightSearch />} />} />
+      <Route path="/flights/:id" element={<ProtectedRoute element={<FlightDetail />} />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
