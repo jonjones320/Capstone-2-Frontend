@@ -77,8 +77,9 @@ class RannerApi {
     return res;
   }
   /** Get all trips */ 
-  static async getTrips() {
-    let res = await this.request(`trips`);
+  static async getTrips(filters = {}) {
+    const params = new URLSearchParams(filters).toString();
+    let res = await this.request(`trips?${params}`);
     return res.trips;
   }
   /** Get trip by username */
