@@ -24,6 +24,19 @@ class RannerApi {
     }
   }
 
+  /////// SIGN-UP & LOGIN ///////
+
+  /** Sign up a new user */
+  static async signUp(data) {
+    let res = await this.request('auth/register', data, 'post');
+    return res.token;
+  }
+  /** Login a user */
+  static async login(data) {
+    let res = await this.request('auth/token', data, 'post');
+    return res.token;
+  }
+
   ///// User API routes /////
 
   /** Get or search all users. */
@@ -31,25 +44,21 @@ class RannerApi {
     let res = await this.request(`users`, query);
     return res.users;
   }
-
   /** Get details on a user by username. */
   static async getUser(username) {
     let res = await this.request(`users/${username}`);
     return res.user;
   }
-
   /** Post a new user. */
   static async postUser(properties) {
     let res = await this.request(`users/`, properties, "post");
     return res.user;
   }
-
   /** Patch a user by username. */
   static async patchUser(username, properties) {
     let res = await this.request(`users/${username}`, properties, "patch");
     return res.user;
   }
-
   /** Delete a user by username. */
   static async deleteUser(username) {
     await this.request(`users/${username}`, {}, "delete");
@@ -74,7 +83,7 @@ class RannerApi {
   }
   /** Get trip by username */
   static async getTripsByUsername(username) {
-    let res = await this.request(`trips/${username}`);
+    let res = await this.request(`trips/user/${username}`);
     return res.trips;
   }
   /** Get trip by ID */ 
@@ -88,47 +97,133 @@ class RannerApi {
     return res.message;
   }
 
-  /////// SIGN-UP & LOGIN ///////
+  ///// Amadeus Flight API routes /////
 
-  /** Sign up a new user */
-  static async signUp(data) {
-    let res = await this.request('auth/register', data, 'post');
-    return res.token;
+  /** Search for flight offers */
+  static async searchFlightOffers(query = {}) {
+    let res = await this.request(`flight/offers`, query);
+    return res;
   }
 
-  /** Login a user */
-  static async login(data) {
-    let res = await this.request('auth/token', data, 'post');
-    return res.token;
+  /** Post a flight search offer */
+  static async postFlightOffers(data = {}) {
+    let res = await this.request(`flight/offers`, data, "post");
+    return res;
   }
 
-  ///// Flight API routes /////
+  /** Get flight destinations based on origin */
+  static async getFlightDestinations(query = {}) {
+    let res = await this.request(`flight/destinations`, query);
+    return res;
+  }
 
+  /** Get flight dates based on origin and destination */
+  static async getFlightDates(query = {}) {
+    let res = await this.request(`flight/dates`, query);
+    return res;
+  }
+
+  /** Get flight offer price */
+  static async getFlightOfferPrice(query = {}) {
+    let res = await this.request(`flight/offers/price`, query);
+    return res;
+  }
+
+  /** Post flight offer price with additional data (e.g. bags) */
+  static async postFlightOfferPrice(data = {}) {
+    let res = await this.request(`flight/offers/price`, data, "post");
+    return res;
+  }
+
+  /** Create a flight order */
+  static async createFlightOrder(data = {}) {
+    let res = await this.request(`flight/orders`, data, "post");
+    return res;
+  }
+
+  /** Retrieve a flight order by ID */
+  static async getFlightOrder(id) {
+    let res = await this.request(`flight/orders/${id}`);
+    return res;
+  }
+
+  /** Cancel a flight order by ID */
+  static async deleteFlightOrder(id) {
+    let res = await this.request(`flight/orders/${id}`, {}, "delete");
+    return res;
+  }
+
+  /** Get seat map for a flight */
+  static async getFlightSeatMap(query = {}) {
+    let res = await this.request(`flight/seatmaps`, query);
+    return res;
+  }
+
+  /** Get seat map for a flight order by ID */
+  static async getFlightOrderSeatMap(id) {
+    let res = await this.request(`flight/orders/${id}/seatmap`);
+    return res;
+  }
+
+  /** Get flight availabilities */
+  static async postFlightAvailabilities(data = {}) {
+    let res = await this.request(`flight/availabilities`, data, "post");
+    return res;
+  }
+
+  /** Post branded fares upsell */
+  static async postFlightUpselling(data = {}) {
+    let res = await this.request(`flight/offers/upselling`, data, "post");
+    return res;
+  }
+
+  /** Get flight choice prediction */
+  static async getFlightPrediction(query = {}) {
+    let res = await this.request(`flight/offers/prediction`, query);
+    return res;
+  }
+
+  /** Get airline check-in links */
+  static async getCheckinLinks(query = {}) {
+    let res = await this.request(`airline/checkinLinks`, query);
+    return res;
+  }
+
+  /** Get on-demand flight status */
+  static async getFlightStatus(query = {}) {
+    let res = await this.request(`flight/status`, query);
+    return res;
+  }
+
+  /** Get busiest traveling period */
+  static async getBusiestTravelPeriod(query = {}) {
+    let res = await this.request(`flight/busiestPeriod`, query);
+    return res;
+  }
+  
+  ///// Saved Flight API routes /////
+  
   /** Get or search all flights. */
   static async getFlightAll(query = {}) {
     let res = await this.request(`flights`, query);
     return res.flights;
   }
-
-  /** Get details on a flight by id. */
+  /** Get details on a saved flight by id. */
   static async getFlight(id) {
     let res = await this.request(`flights/${id}`);
     return res.flight;
   }
-
-  /** Post a new flight. */
+  /** Post a new saved flight. */
   static async postFlight(properties) {
     let res = await this.request(`flights`, properties, "post");
     return res.flight;
   }
-
-  /** Patch a flight by id. */
+  /** Patch a saved flight by id. */
   static async patchFlight(id, properties) {
     let res = await this.request(`flights/${id}`, properties, "patch");
     return res.flight;
   }
-
-  /** Delete a flight by id. */
+  /** Delete a saved flight by id. */
   static async deleteFlight(id) {
     await this.request(`flights/${id}`, {}, "delete");
   }
@@ -162,6 +257,14 @@ class RannerApi {
   /** Delete an accommodation by id. */
   static async deleteAccommodation(id) {
     await this.request(`accommodations/${id}`, {}, "delete");
+  }
+
+  ///// Parsing /////
+
+    // Trip Parser request from the frontend
+  static async parseTrip(data) {
+    let res = await this.request(`tripParser`, data, "post");
+    return res;
   }
 }
 
