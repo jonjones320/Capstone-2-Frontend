@@ -24,47 +24,67 @@ function FlightSearchForm({ onSearch }) {
 
   return (
     <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        name="origin"
-        placeholder="Origin (Airport Code)"
-        value={formData.origin}
-        onChange={handleChange}
-        required
-      />
-      <input
-        type="text"
-        name="destination"
-        placeholder="Destination (Airport Code)"
-        value={formData.destination}
-        onChange={handleChange}
-        required
-      />
-      <input
-        type="date"
-        name="departureDate"
-        placeholder="Departure Date"
-        value={formData.departureDate}
-        onChange={handleChange}
-        required
-      />
-      <input
-        type="date"
-        name="returnDate"
-        placeholder="Return Date"
-        value={formData.returnDate}
-        onChange={handleChange}
-      />
-      <input
-        type="number"
-        name="adults"
-        min="1"
-        max="9"
-        placeholder="Number of Adults"
-        value={formData.adults}
-        onChange={handleChange}
-        required
-      />
+      <div>
+        <label htmlFor="origin">Origin (Airport Code)</label>
+        <input
+          type="text"
+          id="origin"
+          name="origin"
+          value={formData.origin}
+          onChange={handleChange}
+          required
+        />
+      </div>
+
+      <div>
+        <label htmlFor="destination">Destination (Airport Code)</label>
+        <input
+          type="text"
+          id="destination"
+          name="destination"
+          value={formData.destination}
+          onChange={handleChange}
+          required
+        />
+      </div>
+
+      <div>
+        <label htmlFor="departureDate">Departure Date</label>
+        <input
+          type="date"
+          id="departureDate"
+          name="departureDate"
+          value={formData.departureDate}
+          onChange={handleChange}
+          required
+        />
+      </div>
+
+      <div>
+        <label htmlFor="returnDate">Return Date</label>
+        <input
+          type="date"
+          id="returnDate"
+          name="returnDate"
+          value={formData.returnDate}
+          onChange={handleChange}
+        />
+      </div>
+
+      <div>
+        <label htmlFor="adults">Number of Adults</label>
+        <input
+          type="number"
+          id="adults"
+          name="adults"
+          min="1"
+          max="9"
+          value={formData.adults}
+          onChange={handleChange}
+          required
+        />
+      </div>
+
       <button type="submit">Search Flights</button>
     </form>
   );
