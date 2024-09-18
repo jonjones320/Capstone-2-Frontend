@@ -24,7 +24,7 @@ function TripForm() {
       async function fetchTrip() {
       setIsLoading(true);
       try {
-        const trip = await RannerApi.getTrip(tripId);
+        const trip = await RannerApi.getTripById(tripId);
         setFormData({
           name: trip.name,
           username: currentUser.username,
