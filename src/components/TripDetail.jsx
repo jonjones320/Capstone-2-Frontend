@@ -31,8 +31,8 @@ function TripDetail() {
     }
   };
 
-  if (!trip) return <div>Error loading trip details.</div>;
   if (trip === null) return <div>Loading...</div>;
+  if (!trip) return <div>Error loading trip details.</div>;
 
 
   return (
