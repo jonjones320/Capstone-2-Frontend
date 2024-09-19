@@ -10,7 +10,7 @@ function FlightSearchForm({ onSearch }) {
     adults: 1,
   });
 
-  const [suggestiong, setSuggestions] = useState([]);
+  const [suggestions, setSuggestions] = useState([]);
   const [activeInput, setActiveInput] = useState(null); // Tracks which input is active.
 
   // Fetch airport suggestions from Amadeus API.
