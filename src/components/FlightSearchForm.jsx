@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import RannerApi from '../api/RannerApi';
+import RannerApi from '../../api';
 
 function FlightSearchForm({ onSearch }) {
   const [formData, setFormData] = useState({
@@ -30,7 +30,7 @@ function FlightSearchForm({ onSearch }) {
       ...data,
       [name]: value,
     }));
-    
+
     // Only runs suggestions with origin or destination fields.
     if (name === 'originLocationCode' || name === 'destinationLocationCode') {
       setActiveInput(name);  // Track which input is active
