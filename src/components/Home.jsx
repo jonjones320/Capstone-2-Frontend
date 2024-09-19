@@ -6,7 +6,7 @@ function Home() {
   <div>
     <h1>Welcome to Ranner!</h1>
     <p>Start planning your next big adventure, one step at a time!</p>
-    <Link to="">Start</Link>
+    <Link to="/origin">Start</Link>
   </div>
 )
 }
