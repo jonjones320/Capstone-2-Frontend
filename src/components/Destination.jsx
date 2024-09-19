@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import RannerApi from '../../api';
 
-function Destination({ origin, onSetDestination }) {
+function Destination({ origin }) {
   const [destination, setDestination] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [inspirations, setInspirations] = useState([]);
@@ -17,7 +17,7 @@ function Destination({ origin, onSetDestination }) {
   };
 
   const handleSuggestionClick = (iataCode) => {
-    onSetDestination(iataCode);
+    setDestination(iataCode);
     setSuggestions([]);
   };
 

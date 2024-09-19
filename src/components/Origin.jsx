@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import RannerApi from '../../api';
 
-function StartingLocation({ onSetOrigin }) {
+function Origin() {
   const [origin, setOrigin] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const navigate = useNavigate();
@@ -16,7 +16,7 @@ function StartingLocation({ onSetOrigin }) {
   };
 
   const handleSuggestionClick = (iataCode) => {
-    onSetOrigin(iataCode); // Pass the selected origin back to the parent component
+    setOrigin(iataCode);
     setSuggestions([]);
   };
 
@@ -45,4 +45,4 @@ function StartingLocation({ onSetOrigin }) {
   );
 }
 
-export default StartingLocation;
+export default Origin;
