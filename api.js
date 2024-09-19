@@ -98,7 +98,14 @@ class RannerApi {
     return res.message;
   }
 
+
   ///// Amadeus Flight API routes /////
+
+  /** Get airport suggestions based on user input */
+  static async getAirportSuggestions(query) {
+    let res = await this.request(`flights/airport-suggestions`, { keyword: query }, 'get');
+    return res;
+  }
 
   /** Search for flight offers */
   static async searchFlightOffers(query = {}) {
