@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import RannerApi from '../api/RannerApi';
 
 function FlightSearchForm({ onSearch }) {
   const [formData, setFormData] = useState({
@@ -8,6 +9,20 @@ function FlightSearchForm({ onSearch }) {
     returnDate: '',
     adults: 1,
   });
+
+  const [suggestiong, setSuggestions] = useState([]);
+  const [activeInput, setActiveInput] = useState(null); // Tracks which input is active.
+
+  // Fetch airport suggestions from Amadeus API.
+  const fetchSuggestions = async (query) => {
+    if (query.length < 3) return; // Don't make API until input is longer than IATA code.
+    try {
+      const response = await RannerApi.getAirportSuggestions(query);
+      setSuggestions(response);
+    } catch (error) {
+      console.error('Error fetching airport suggestions:', error);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
