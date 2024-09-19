@@ -45,10 +45,10 @@ function FlightSearchForm({ onSearch }) {
     onSearch(formData); // Pass form data to parent for search
   };
 
-  const handleSuggestionClick = (iataCode) => {
+  const handleSuggestionClick = (code) => {
     setFormData((data) => ({
       ...data,
-      [activeInput]: iataCode,
+      [activeInput]: code,
     }));
     setSuggestions([]); // Clear suggestions
   }
@@ -65,6 +65,15 @@ function FlightSearchForm({ onSearch }) {
           onChange={handleChange}
           required
         />
+        {activeInput === 'originLocationCode' && suggestions.length > 0 && (
+          <ul className="suggestions-list">
+            {suggestions.map((s, index) => (
+              <li key={index} onClick={() => handleSuggestionClick(s.iataCode)}>
+                {s.name} ({s.iataCode})
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
       <div>
@@ -77,6 +86,15 @@ function FlightSearchForm({ onSearch }) {
           onChange={handleChange}
           required
         />
+        {activeInput === 'destinationLocationCode' && suggestions.length > 0 && (
+          <ul className="suggestions-list">
+            {suggestions.map((s, index) => (
+              <li key={index} onClick={() => handleSuggestionClick(s.iataCode)}>
+                {s.name} ({s.iataCode})
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
       <div>
