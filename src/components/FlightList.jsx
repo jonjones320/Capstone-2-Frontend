@@ -1,7 +1,25 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import RannerApi from '../../api';
 import { Link } from 'react-router-dom';
 
-function FlightList({ flights }) {
+function FlightList({ origin, destination, dates, passengers }) {
+  const [flights, setFlights] = useState([]);
+
+  useEffect(() => {
+    const fetchFlights = async () => {
+      const res = await RannerApi.searchFlightOffers({
+        originLocationCode: origin,
+        destinationLocationCode: destination,
+        departureDate: dates.departureDate,
+        returnDate: dates.returnDate,
+        adults: passengers,
+      });
+      setFlights(res.data);
+    };
+    fetchFlights();
+  }, [origin, destination, dates, passengers]);
+
+
   return (
     <div>
       <h2>Flight Offers</h2>
@@ -22,5 +40,6 @@ function FlightList({ flights }) {
     </div>
   );
 }
+
 
 export default FlightList;
