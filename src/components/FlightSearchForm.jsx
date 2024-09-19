@@ -32,10 +32,26 @@ function FlightSearchForm({ onSearch }) {
     }));
   };
 
+  // Only runs suggestions with origin or destination fields.
+  if (name === 'originLocationCode' || name === 'destinationLocationCode') {
+    setActiveInput(name);  // Track which input is active
+    fetchSuggestions(value);
+  }
+};
+
+
   const handleSubmit = (e) => {
     e.preventDefault();
     onSearch(formData); // Pass form data to parent for search
   };
+
+  const handleSuggestionClick = (iataCode) => {
+    setFormData((data) => ({
+      ...data,
+      [activeInput]: iataCode,
+    }));
+    setSuggestions([]); // Clear suggestions
+  }
 
   return (
     <form onSubmit={handleSubmit}>
