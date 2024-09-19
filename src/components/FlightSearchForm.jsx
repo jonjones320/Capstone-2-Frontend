@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 
 function FlightSearchForm({ onSearch }) {
   const [formData, setFormData] = useState({
-    origin: '',
-    destination: '',
+    originLocationCode: '',
+    destinationLocationCode: '',
     departureDate: '',
     returnDate: '',
     adults: 1,
@@ -25,24 +25,24 @@ function FlightSearchForm({ onSearch }) {
   return (
     <form onSubmit={handleSubmit}>
       <div>
-        <label htmlFor="origin">Origin</label>
+        <label htmlFor="originLocationCode">Origin (Airport Code)</label>
         <input
           type="text"
-          id="origin"
-          name="origin"
-          value={formData.origin}
+          id="originLocationCode"
+          name="originLocationCode"
+          value={formData.originLocationCode}
           onChange={handleChange}
           required
         />
       </div>
 
       <div>
-        <label htmlFor="destination">Destination</label>
+        <label htmlFor="destinationLocationCode">Destination (Airport Code)</label>
         <input
           type="text"
-          id="destination"
-          name="destination"
-          value={formData.destination}
+          id="destinationLocationCode"
+          name="destinationLocationCode"
+          value={formData.destinationLocationCode}
           onChange={handleChange}
           required
         />
