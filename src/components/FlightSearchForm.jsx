@@ -56,7 +56,7 @@ function FlightSearchForm({ onSearch }) {
   return (
     <form onSubmit={handleSubmit}>
       <div>
-        <label htmlFor="originLocationCode">Origin (Airport Code)</label>
+        <label htmlFor="originLocationCode">Origin</label>
         <input
           type="text"
           id="originLocationCode"
@@ -68,7 +68,7 @@ function FlightSearchForm({ onSearch }) {
       </div>
 
       <div>
-        <label htmlFor="destinationLocationCode">Destination (Airport Code)</label>
+        <label htmlFor="destinationLocationCode">Destination</label>
         <input
           type="text"
           id="destinationLocationCode"
