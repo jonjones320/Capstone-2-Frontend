@@ -30,14 +30,13 @@ function FlightSearchForm({ onSearch }) {
       ...data,
       [name]: value,
     }));
+    
+    // Only runs suggestions with origin or destination fields.
+    if (name === 'originLocationCode' || name === 'destinationLocationCode') {
+      setActiveInput(name);  // Track which input is active
+      fetchSuggestions(value);
+    }
   };
-
-  // Only runs suggestions with origin or destination fields.
-  if (name === 'originLocationCode' || name === 'destinationLocationCode') {
-    setActiveInput(name);  // Track which input is active
-    fetchSuggestions(value);
-  }
-};
 
 
   const handleSubmit = (e) => {
@@ -138,5 +137,6 @@ function FlightSearchForm({ onSearch }) {
     </form>
   );
 }
+
 
 export default FlightSearchForm;
