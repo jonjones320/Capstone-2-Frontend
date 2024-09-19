@@ -1,5 +1,4 @@
 import React from 'react';
-import TripForm from './TripForm';
 
 function Home() {
   return (
