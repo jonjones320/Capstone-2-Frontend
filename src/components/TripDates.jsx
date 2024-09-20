@@ -24,15 +24,20 @@ function TripDates() {
         endDate: format(new Date(returnDate), 'yyyy-MM-dd'),
         passengers: passengers
     };
-    console.log("TripDates - createTrip - newTrip:", newTrip);
 
     RannerApi.postTrip(newTrip);
     return newTrip;
   }
   
   const handleNext = () => {
-    const trip = createTrip(name, origin, destination, departureDate, returnDate, passengers);
-    console.log("TripDates - handleSave - trip:", trip);
+    const trip = createTrip(
+        name, 
+        origin, 
+        destination, 
+        departureDate, 
+        returnDate, 
+        passengers
+      );
     navigate("/flights", { state: { trip } });
   };
 
