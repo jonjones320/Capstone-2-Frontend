@@ -1,18 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import RannerApi from '../../api';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 function FlightList({ origin, destination, dates, passengers }) {
+  const { state } = useLocation();
+  const { trip } = state || {}; // Destructure new Trip from state
   const [flights, setFlights] = useState([]);
+  console.log("FlightList - TRIP:", trip);
 
   useEffect(() => {
     const fetchFlights = async () => {
       const res = await RannerApi.searchFlightOffers({
-        originLocationCode: origin,
-        destinationLocationCode: destination,
-        departureDate: dates.departureDate,
-        returnDate: dates.returnDate,
-        adults: passengers,
+        originLocationCode: trip.origin,
+        destinationLocationCode: trip.destination,
+        departureDate: trip.startDate,
+        returnDate: trip.endDate,
+        adults: trip.passengers,
       });
       setFlights(res.data);
     };

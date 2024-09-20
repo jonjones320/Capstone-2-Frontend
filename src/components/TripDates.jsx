@@ -29,11 +29,11 @@ function TripDates() {
     RannerApi.postTrip(newTrip);
     return newTrip;
   }
-
-  const handleSave = () => {
+  
+  const handleNext = () => {
     const trip = createTrip(name, origin, destination, departureDate, returnDate, passengers);
     console.log("TripDates - handleSave - trip:", trip);
-    navigate("/flights");
+    navigate("/flights", { state: { trip } });
   };
 
   return (
@@ -51,7 +51,7 @@ function TripDates() {
       <label>Passengers</label>
       <input type="number" value={passengers} onChange={(e) => setpassengers(e.target.value)} min="1" />
       
-      <button onClick={handleSave}>Save Trip</button>
+      <button onClick={handleNext}>Save Trip</button>
     </div>
   );
 }
