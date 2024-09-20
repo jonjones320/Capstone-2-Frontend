@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import RannerApi from '../../api';
 
-function Destination({ origin }) {
+function Destination() {
+  const { state } = useLocation();
+  const { origin } = state || {}; // Destructure origin from state
   const [destination, setDestination] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [inspirations, setInspirations] = useState([]);
@@ -27,7 +29,7 @@ function Destination({ origin }) {
   };
 
   const handleNext = () => {
-    navigate("/dates");
+    navigate("/dates", { state: { origin, destination } });
   };
 
   return (

@@ -1,20 +1,47 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useContext } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import AuthContext from '../context/AuthContext';
+import { format } from 'date-fns';
+import RannerApi from '../../api';
 
-function TripDates({ onSetDatesAndPassengers }) {
+function TripDates() {
+  const { currentUser } = useContext(AuthContext);
+  const { state } = useLocation();
+  const { origin, destination } = state || {}; // Destructure origin and destination from state.
+  const [name, setName] = useState('');
   const [departureDate, setDepartureDate] = useState('');
   const [returnDate, setReturnDate] = useState('');
   const [adults, setAdults] = useState(1);
   const navigate = useNavigate();
 
+  const createTrip = (name, origin, destination, departureDate, returnDate, adults) => {
+    const newTrip = {
+        name: name,
+        username: currentUser.username,
+        origin: origin,
+        destination: destination,
+        startDate: format(new Date(departureDate), 'yyyy-MM-dd'),
+        endDate: format(new Date(returnDate), 'yyyy-MM-dd'),
+        adults: adults
+    };
+    console.log("TripDates - createTrip - newTrip:", newTrip);
+
+    RannerApi.postTrip(newTrip);
+    return newTrip;
+  }
+
   const handleSave = () => {
-    onSetDatesAndPassengers({ departureDate, returnDate, adults });
+    const trip = createTrip(name, origin, destination, departureDate, returnDate, adults);
+    console.log("TripDates - handleSave - trip:", trip);
     navigate("/flights");
   };
 
   return (
     <div>
       <h2>Select Dates and Passengers</h2>
+      <label>Trip Name</label>
+      <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Our Vacation" />
+
       <label>Departure Date</label>
       <input type="date" value={departureDate} onChange={(e) => setDepartureDate(e.target.value)} />
       

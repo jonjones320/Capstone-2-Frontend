@@ -21,7 +21,7 @@ function Origin() {
   };
 
   const handleNext = () => {
-    navigate("/destination");
+    navigate("/destination", { state: { origin } });
   };
 
   return (
