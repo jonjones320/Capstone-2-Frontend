@@ -11,10 +11,10 @@ function TripDates() {
   const [name, setName] = useState('');
   const [departureDate, setDepartureDate] = useState('');
   const [returnDate, setReturnDate] = useState('');
-  const [adults, setAdults] = useState(1);
+  const [passengers, setpassengers] = useState(1);
   const navigate = useNavigate();
 
-  const createTrip = (name, origin, destination, departureDate, returnDate, adults) => {
+  const createTrip = (name, origin, destination, departureDate, returnDate, passengers) => {
     const newTrip = {
         name: name,
         username: currentUser.username,
@@ -22,7 +22,7 @@ function TripDates() {
         destination: destination,
         startDate: format(new Date(departureDate), 'yyyy-MM-dd'),
         endDate: format(new Date(returnDate), 'yyyy-MM-dd'),
-        adults: adults
+        passengers: passengers
     };
     console.log("TripDates - createTrip - newTrip:", newTrip);
 
@@ -31,7 +31,7 @@ function TripDates() {
   }
 
   const handleSave = () => {
-    const trip = createTrip(name, origin, destination, departureDate, returnDate, adults);
+    const trip = createTrip(name, origin, destination, departureDate, returnDate, passengers);
     console.log("TripDates - handleSave - trip:", trip);
     navigate("/flights");
   };
@@ -48,8 +48,8 @@ function TripDates() {
       <label>Return Date</label>
       <input type="date" value={returnDate} onChange={(e) => setReturnDate(e.target.value)} />
       
-      <label>Adults</label>
-      <input type="number" value={adults} onChange={(e) => setAdults(e.target.value)} min="1" />
+      <label>Passengers</label>
+      <input type="number" value={passengers} onChange={(e) => setpassengers(e.target.value)} min="1" />
       
       <button onClick={handleSave}>Save Trip</button>
     </div>
