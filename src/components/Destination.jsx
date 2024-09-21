@@ -43,7 +43,7 @@ function Destination() {
       />
       <ul>
         {suggestions.map((suggestion) => (
-          <li key={suggestion.iataCode} onClick={() => handleSuggestionClick(suggestion.iataCode)}>
+          <li key={suggestion.id} onClick={() => handleSuggestionClick(suggestion.iataCode)}>
             {suggestion.name} ({suggestion.iataCode})
           </li>
         ))}
