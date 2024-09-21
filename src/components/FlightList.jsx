@@ -1,44 +1,59 @@
 import React, { useState, useEffect } from 'react';
 import RannerApi from '../../api';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import FlightCard from './FlightCard';
 
-function FlightList({ origin, destination, dates, passengers }) {
+function FlightList() {
   const { state } = useLocation();
   const { trip } = state || {}; // Destructure new Trip from state
   const [flights, setFlights] = useState([]);
-  console.log("FlightList - TRIP:", trip);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchFlights = async () => {
-      const res = await RannerApi.searchFlightOffers({
-        originLocationCode: trip.origin,
-        destinationLocationCode: trip.destination,
-        departureDate: trip.startDate,
-        returnDate: trip.endDate,
-        adults: trip.passengers,
-      });
-      setFlights(res.data);
+      try {
+        setIsLoading(true);
+        setError(null);
+        const res = await RannerApi.searchFlightOffers({
+          originLocationCode: trip.origin,
+          destinationLocationCode: trip.destination,
+          departureDate: trip.startDate,
+          returnDate: trip.endDate,
+          adults: trip.passengers,
+        });
+        setFlights(res.data);
+      } catch (err) {
+        console.error("Error fetching flights:", err);
+        setError("Unable to fetch flights. Please try again later.");
+      } finally {
+        setIsLoading(false);
+      }
     };
-    fetchFlights();
-  }, [origin, destination, dates, passengers]);
+    
+    if (trip) {
+      fetchFlights();
+    }
+  }, [trip]);
 
+
+  if (isLoading) { 
+    return ( <div><p>Loading flights...</p></div> ); 
+  };
+
+  if (error) { 
+    return ( <div><p>{error}</p></div> ); 
+  };
+
+  if (flights.length === 0) {
+    return ( <div><p>No flights found for your search criteria. Please try different dates or locations.</p></div> );
+  }
 
   return (
     <div>
       <h2>Flight Offers</h2>
       {flights.map((flight) => (
-        <div key={flight.id} className="FlightCard">
-          <h3>
-            {flight.itineraries[0].segments[0].departure.iataCode} 
-            to 
-            {flight.itineraries[0].segments[0].arrival.iataCode}
-          </h3>
-          <p>
-            Price: 
-            {flight.price.total} {flight.price.currency}
-          </p>
-          <Link to={`/flights/${flight.id}`}>View Details</Link>
-        </div>
+        <FlightCard key={flight.id} flight={flight} />
       ))}
     </div>
   );
