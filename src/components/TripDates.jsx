@@ -22,7 +22,7 @@ function TripDates() {
       ...tripData,
       username: currentUser.username,
       origin: origin,
-      destination: tripData.location,
+      destination: destination,
     };
 
     try {
@@ -44,7 +44,7 @@ function TripDates() {
         <p>Saving trip...</p>
       ) : (
         <TripForm 
-          initialData={{ destination }}
+          initialData={{ origin, destination }}
           onSubmit={handleSaveTrip}
         />
       )}
