@@ -32,9 +32,9 @@ function AppRoutes() {
       <Route path="/signup" element={<Signup />} />
       <Route path="/profile" element={<ProtectedRoute element={<Profile />} />} />
       <Route path="/trip" element={<ProtectedRoute element={<TripForm />} />} />
-      <Route path="/trip/:id" element={<ProtectedRoute element={<TripForm />} />} />
+      <Route path="/trip/form/:id" element={<ProtectedRoute element={<TripForm />} />} />
       <Route path="/trips" element={<ProtectedRoute element={<TripList />} />} />
-      <Route path="/trips/:id" element={<ProtectedRoute element={<TripDetail />} />} />
+      <Route path="/trip/:id" element={<ProtectedRoute element={<TripDetail />} />} />
       <Route path="/origin" element={<ProtectedRoute element={<Origin />} />} />
       <Route path="/destination" element={<ProtectedRoute element={<Destination />} />} />
       <Route path="/dates" element={<ProtectedRoute element={<TripDates />} />} />
