@@ -39,7 +39,7 @@ function TripDates() {
   return (
     <div>
       <h2>Create Your Trip</h2>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {error && <p>{error}</p>}
       {isLoading ? (
         <p>Saving trip...</p>
       ) : (
