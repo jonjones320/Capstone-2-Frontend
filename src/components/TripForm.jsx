@@ -1,47 +1,30 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 import { format } from 'date-fns';
-import RannerApi from '../../api';
-import AuthContext from '../context/AuthContext';
 
-function TripForm() {
-  const navigate = useNavigate();
-  const { id : tripId} = useParams();
-  const { currentUser } = useContext(AuthContext);
+
+function TripForm({ initialData, onSubmit, isEdit = false }) {
   const [formData, setFormData] = useState({
     name: '',
-    username: '',
-    location: '',
+    origin: '',
+    destination: '',
     startDate: '',
     endDate: '',
-    budget: ''
+    passengers: 1,
   });
   const [error, setError] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (tripId) {
-      async function fetchTrip() {
-      setIsLoading(true);
-      try {
-        const trip = await RannerApi.getTripById(tripId);
-        setFormData({
-          name: trip.name,
-          username: currentUser.username,
-          location: trip.location,
-          startDate: format(new Date(trip.startDate), 'yyyy-MM-dd'),
-          endDate: format(new Date(trip.endDate), 'yyyy-MM-dd'),
-          budget: trip.budget
-        });
-      } catch (err) {
-        setError(err || 'Something went wrong');
-      } finally {
-        setIsLoading(false);
-      }
+    if (initialData) {
+      setFormData({
+        name: initialData.name || '',
+        origin: initialData.origin || '',
+        destination: initialData.destination || '',
+        startDate: initialData.startDate ? format(new Date(initialData.startDate), 'yyyy-MM-dd') : '',
+        endDate: initialData.endDate ? format(new Date(initialData.endDate), 'yyyy-MM-dd') : '',
+        passengers: initialData.passengers || 1,
+      });
     }
-      fetchTrip();
-    }
-  }, [tripId, currentUser]);
+  }, [initialData]);
 
   const handleChange = ({ target: { name, value } }) => {
     setFormData(data => ({ ...data, [name]: value }));
@@ -50,41 +33,27 @@ function TripForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (formData.location.length > 100 || formData.name.length > 50) {
+    if (formData.origin.length > 100 || formData.destination.length > 100 || formData.name.length > 50) {
       setError('Location must be less than 101 characters and Name must be less than 51 characters.');
       return;
     };
 
-    try {
-      const dataToSubmit = { 
-        ...formData, 
-        username: currentUser.username,
-        budget: parseFloat(formData.budget),
-        startDate: format(new Date(formData.startDate), 'yyyy-MM-dd'),
-        endDate: format(new Date(formData.endDate), 'yyyy-MM-dd'),
-      };
+    const dataToSubmit = { 
+      ...formData, 
+      startDate: format(new Date(formData.startDate), 'yyyy-MM-dd'),
+      endDate: format(new Date(formData.endDate), 'yyyy-MM-dd'),
+      passengers: parseInt(formData.passengers, 10),
+    };
 
-      if (tripId) {
-        await RannerApi.updateTrip(tripId, dataToSubmit);
-        navigate(`/trips/${tripId}`);
-      } else {
-        const newTrip = await RannerApi.postTrip(dataToSubmit);
-        navigate(`/trips/${newTrip.trip.tripId}`);
-      }
-    } catch (err) {
-      setError(err || 'Something went wrong');
-    }
+    onSubmit(dataToSubmit);
   };
 
-  if (isLoading) return <div>Loading...</div>;
 
   return (
-    <div>
-      <h1>{tripId ? 'Edit Trip' : 'New Trip'}</h1>
-      {error && <div className="error">{error}</div>}
       <form onSubmit={handleSubmit}>
+        {error && <div className="error">{error}</div>}
         <div>
-          <label htmlFor="name">Name:</label>
+          <label htmlFor="name">Trip Name:</label>
           <input
             type="text"
             id="name"
@@ -95,18 +64,29 @@ function TripForm() {
           />
         </div>
         <div>
-          <label htmlFor="location">Location:</label>
+          <label htmlFor="origin">Origin:</label>
           <input
             type="text"
-            id="location"
-            name="location"
-            value={formData.location}
+            id="origin"
+            name="origin"
+            value={formData.origin}
             onChange={handleChange}
             required
           />
         </div>
         <div>
-          <label htmlFor="startDate">Start Date:</label>
+          <label htmlFor="destination">Destination:</label>
+          <input
+            type="text"
+            id="destination"
+            name="desination"
+            value={formData.destination}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div>
+          <label htmlFor="startDate">Departure Date:</label>
           <input
             type="date"
             id="startDate"
@@ -117,7 +97,7 @@ function TripForm() {
           />
         </div>
         <div>
-          <label htmlFor="endDate">End Date:</label>
+          <label htmlFor="endDate">Return Date:</label>
           <input
             type="date"
             id="endDate"
@@ -128,19 +108,19 @@ function TripForm() {
           />
         </div>
         <div>
-          <label htmlFor="budget">Budget:</label>
+          <label htmlFor="passengers">Passengers:</label>
           <input
             type="number"
-            id="budget"
-            name="budget"
-            value={formData.budget}
+            id="passengers"
+            name="passengers"
+            value={formData.passengers}
             onChange={handleChange}
+            min="1"
             required
           />
         </div>
-        <button type="submit">{tripId ? 'Update Trip' : 'Create Trip'}</button>
+        <button type="submit">{isEdit ? 'Update Trip' : 'Create Trip'}</button>
       </form>
-    </div>
   );
 }
 
