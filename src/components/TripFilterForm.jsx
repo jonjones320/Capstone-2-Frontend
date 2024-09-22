@@ -3,7 +3,8 @@ import React, { useState } from 'react';
 function TripFilterForm({ onFilter }) {
   const initialFilters = {
     name: '',
-    location: '',
+    origin: '',
+    destination: '',
     startDate: '',
     endDate: ''
   };
@@ -32,6 +33,7 @@ function TripFilterForm({ onFilter }) {
 
   return (
     <form onSubmit={handleSubmit}>
+      <label htmlFor="name">Name</label>
       <input
         type="text"
         name="name"
@@ -39,19 +41,30 @@ function TripFilterForm({ onFilter }) {
         value={filters.name}
         onChange={handleChange}
       />
+      <label htmlFor="origin">Origin</label>
       <input
         type="text"
-        name="location"
-        placeholder="Location"
-        value={filters.location}
+        name="origin"
+        placeholder="Origin"
+        value={filters.origin}
         onChange={handleChange}
       />
+      <label htmlFor="destination">Destination</label>
+      <input
+        type="text"
+        name="destination"
+        placeholder="Destination"
+        value={filters.destination}
+        onChange={handleChange}
+      />
+      <label htmlFor="startDate">Start Date</label>
       <input
         type="date"
         name="startDate"
         value={filters.startDate}
         onChange={handleChange}
       />
+      <label htmlFor="endDate">End Date</label>
       <input
         type="date"
         name="endDate"
