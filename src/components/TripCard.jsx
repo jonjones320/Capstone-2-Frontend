@@ -9,7 +9,7 @@ function TripCard({ id, name, origin, destination, startDate, endDate }) {
       <p>Destination: {destination}</p>
       <p>Start Date: {new Date(startDate).toLocaleDateString()}</p>
       <p>End Date: {new Date(endDate).toLocaleDateString()}</p>
-      <Link to={`/trips/${id}`}>View Details</Link>
+      <Link to={`/trip/${id}`}>View Details</Link>
     </div>
   );
 }
