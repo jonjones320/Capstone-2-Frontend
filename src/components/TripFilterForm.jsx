@@ -71,6 +71,13 @@ function TripFilterForm({ onFilter }) {
         value={filters.endDate}
         onChange={handleChange}
       />
+      <label htmlFor="passengers">Passengers</label>
+      <input
+        type="number"
+        name="passengers"
+        value={filters.passengers}
+        onChange={handleChange}
+      />
       <button type="submit">Filter</button>
       <button type="button" onClick={handleReset}>Reset</button>
     </form>
