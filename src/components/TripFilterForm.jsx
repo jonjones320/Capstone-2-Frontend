@@ -6,7 +6,8 @@ function TripFilterForm({ onFilter }) {
     origin: '',
     destination: '',
     startDate: '',
-    endDate: ''
+    endDate: '',
+    passengers: ''
   };
   const [filters, setFilters] = useState(initialFilters);
 
