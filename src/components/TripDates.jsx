@@ -35,6 +35,10 @@ function TripDates() {
     }
   };
 
+  const handleBack = () => {
+    navigate("/destination", { state: { origin, destination } });
+  };
+
 
   return (
     <div>
@@ -48,6 +52,7 @@ function TripDates() {
           onSubmit={handleSaveTrip}
         />
       )}
+      <button onClick={handleBack}>Back</button>
     </div>
   );
 }

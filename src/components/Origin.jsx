@@ -20,9 +20,14 @@ function Origin() {
     setSuggestions([]);
   };
 
+  const handleBack = () => {
+    navigate(-1);
+  }
+
   const handleNext = () => {
     navigate("/destination", { state: { origin } });
   };
+
 
   return (
     <div>
@@ -40,6 +45,7 @@ function Origin() {
           </li>
         ))}
       </ul>
+      <button onClick={handleBack}>Back</button>
       <button onClick={handleNext}>Next</button>
     </div>
   );

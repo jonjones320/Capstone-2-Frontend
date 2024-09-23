@@ -3,11 +3,11 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import RannerApi from '../../api';
 
 function Destination() {
-  const { state } = useLocation();
-  const { origin } = state || {}; // Destructure origin from state
   const [destination, setDestination] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const navigate = useNavigate();
+  const location = useLocation();
+  const { origin } = location.state || {}; // Destructure origin from state
 
   const handleChange = async (e) => {
     setDestination(e.target.value);
@@ -20,6 +20,10 @@ function Destination() {
   const handleSuggestionClick = (iataCode) => {
     setDestination(iataCode);
     setSuggestions([]);
+  };
+
+  const handleBack = () => {
+    navigate("/origin", { state: { origin } });
   };
 
   const handleNext = () => {
@@ -42,6 +46,7 @@ function Destination() {
           </li>
         ))}
       </ul>
+      <button onClick={handleBack}>Back</button>
       <button onClick={handleNext}>Next</button>
     </div>
   );
