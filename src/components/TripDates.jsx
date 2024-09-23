@@ -27,7 +27,7 @@ function TripDates() {
 
     try {
       const savedTrip = await RannerApi.postTrip(fullTripData);
-      navigate("/flights", { state: { trip: savedTrip } });
+      navigate("/flights", { state: { trip: savedTrip.trip } });
     } catch (err) {
       setError(err.message || 'Failed to save trip. Please try again.');
     } finally {
