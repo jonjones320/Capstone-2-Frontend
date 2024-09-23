@@ -7,7 +7,6 @@ function Destination() {
   const { origin } = state || {}; // Destructure origin from state
   const [destination, setDestination] = useState('');
   const [suggestions, setSuggestions] = useState([]);
-  const [inspirations, setInspirations] = useState([]);
   const navigate = useNavigate();
 
   const handleChange = async (e) => {
@@ -21,11 +20,6 @@ function Destination() {
   const handleSuggestionClick = (iataCode) => {
     setDestination(iataCode);
     setSuggestions([]);
-  };
-
-  const fetchInspiration = async () => {
-    const res = await RannerApi.getDestinationInspiration(origin);
-    setInspirations(res);
   };
 
   const handleNext = () => {
@@ -45,14 +39,6 @@ function Destination() {
         {suggestions.map((suggestion) => (
           <li key={suggestion.id} onClick={() => handleSuggestionClick(suggestion.iataCode)}>
             {suggestion.name} ({suggestion.iataCode})
-          </li>
-        ))}
-      </ul>
-      <button onClick={fetchInspiration}>Inspiration</button>
-      <ul>
-        {inspirations.map((insp) => (
-          <li key={insp.destination}>
-            {insp.destination} (Avg Price: {insp.price.total})
           </li>
         ))}
       </ul>
