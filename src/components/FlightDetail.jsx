@@ -11,7 +11,7 @@ function FlightDetail() {
     const fetchFlightDetails = async () => {
       setLoading(true);
       try {
-        const result = await RannerApi.getFlight(id); // Replace with your flight detail API
+        const result = await RannerApi.getFlight(id);
         setFlight(result);
       } catch (err) {
         console.error("Error fetching flight details:", err);
@@ -32,7 +32,6 @@ function FlightDetail() {
       <p>From: {flight.itineraries[0].segments[0].departure.iataCode}</p>
       <p>To: {flight.itineraries[0].segments[0].arrival.iataCode}</p>
       <p>Price: {flight.price.total} {flight.price.currency}</p>
-      {/* Add more detailed information here */}
     </div>
   );
 }
