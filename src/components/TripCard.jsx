@@ -1,16 +1,20 @@
 import React from 'react';
+import { Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
 function TripCard({ id, name, origin, destination, startDate, endDate }) {
   return (
-    <div className="TripCard" key={id}>
-      <h3>{name}</h3>
-      <p>Origin: {origin}</p>
-      <p>Destination: {destination}</p>
-      <p>Start Date: {new Date(startDate).toLocaleDateString()}</p>
-      <p>End Date: {new Date(endDate).toLocaleDateString()}</p>
-      <Link to={`/trip/${id}`}>View Details</Link>
-    </div>
+    <Card key={id}>
+      <Card.Body>
+        <Card.Title>{name}</Card.Title>
+        <Card.Text>
+          <strong>Origin:</strong> {origin}<br />
+          <strong>Destination:</strong> {Destination}<br />
+          <strong>Dates:</strong> {startDate} - {endDate}
+        </Card.Text>
+        <Link to={`/trip/${id}`} className="btn btn-primary btn-sm">View Details</Link>
+      </Card.Body>
+    </Card>
   );
 }
 

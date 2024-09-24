@@ -1,14 +1,17 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Card } from 'react-bootstrap';
 
 function UserCard({ username, firstName, lastName, email }) {
   return (
-    <div className="UserCard">
-      <h3>{username}</h3>
-      <p>{firstName} {lastName}</p>
-      <p>{email}</p>
-      {/* <Link to={`/users/${username}`}>View Profile</Link> */}
-    </div>
+    <Card>
+      <Card.Body>
+        <Card.Title>{username}</Card.Title>
+        <Card.Text>
+          <p>{firstName} {lastName}</p>
+          <p>{email}</p>
+        </Card.Text>
+      </Card.Body>
+    </Card>
   );
 }
 
