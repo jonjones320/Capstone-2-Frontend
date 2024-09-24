@@ -3,16 +3,15 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import AuthContext from '../context/AuthContext';
 import RannerApi from '../../api';
 import TripForm from './TripForm';
-
+import { Container, Button, Alert } from 'react-bootstrap';
 
 function TripDates() {
   const { currentUser } = useContext(AuthContext);
   const { state } = useLocation();
-  const { origin, destination } = state || {}; // Destructure origin and destination from state.
+  const { origin, destination } = state || {};
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
-
 
   const handleSaveTrip = async (tripData) => {
     setIsLoading(true);
@@ -39,21 +38,20 @@ function TripDates() {
     navigate("/destination", { state: { origin, destination } });
   };
 
-
   return (
-    <div>
-      <h2>Create Your Trip</h2>
-      {error && <p>{error}</p>}
+    <Container className="mt-5">
+      <h2 className="mb-4">Create Your Trip</h2>
+      {error && <Alert variant="danger">{error}</Alert>}
       {isLoading ? (
-        <p>Saving trip...</p>
+        <Alert variant="info">Saving trip...</Alert>
       ) : (
         <TripForm 
           initialData={{ origin, destination }}
           onSubmit={handleSaveTrip}
         />
       )}
-      <button onClick={handleBack}>Back</button>
-    </div>
+      <Button variant="secondary" onClick={handleBack} className="mt-3">Back</Button>
+    </Container>
   );
 }
 

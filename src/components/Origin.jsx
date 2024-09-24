@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import RannerApi from '../../api';
+import { Container, Form, Button, ListGroup } from 'react-bootstrap';
 
 function Origin() {
   const [origin, setOrigin] = useState('');
@@ -28,26 +29,31 @@ function Origin() {
     navigate("/destination", { state: { origin } });
   };
 
-
   return (
-    <div>
-      <h2>Choose Your Starting Location</h2>
-      <input
-        type="text"
-        placeholder="Enter city or airport"
-        value={origin}
-        onChange={handleChange}
-      />
-      <ul>
-        {suggestions.map((suggestion) => (
-          <li key={suggestion.id} onClick={() => handleSuggestionClick(suggestion.iataCode)}>
-            {suggestion.name} ({suggestion.iataCode})
-          </li>
-        ))}
-      </ul>
-      <button onClick={handleBack}>Back</button>
-      <button onClick={handleNext}>Next</button>
-    </div>
+    <Container className="mt-5">
+      <h2 className="mb-4">Choose Your Starting Location</h2>
+      <Form>
+        <Form.Group className="mb-3">
+          <Form.Control
+            type="text"
+            placeholder="Enter city or airport"
+            value={origin}
+            onChange={handleChange}
+          />
+        </Form.Group>
+        <ListGroup className="mb-3">
+          {suggestions.map((suggestion) => (
+            <ListGroup.Item key={suggestion.id} action onClick={() => handleSuggestionClick(suggestion.iataCode)}>
+              {suggestion.name} ({suggestion.iataCode})
+            </ListGroup.Item>
+          ))}
+        </ListGroup>
+        <div className="d-flex justify-content-between">
+          <Button variant="secondary" onClick={handleBack}>Back</Button>
+          <Button variant="primary" onClick={handleNext}>Next</Button>
+        </div>
+      </Form>
+    </Container>
   );
 }
 

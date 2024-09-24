@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import RannerApi from '../../api';
-
+import { Form, Button, Alert, ListGroup } from 'react-bootstrap';
 
 function TripForm({ initialData, onSubmit, isEdit = false }) {
   const [formData, setFormData] = useState({
@@ -15,7 +15,6 @@ function TripForm({ initialData, onSubmit, isEdit = false }) {
   const [error, setError] = useState(null);
   const [originSuggestions, setOriginSuggestions] = useState([]);
   const [destinationSuggestions, setDestinationSuggestions] = useState([]);
-
 
   useEffect(() => {
     if (initialData) {
@@ -69,95 +68,95 @@ function TripForm({ initialData, onSubmit, isEdit = false }) {
     onSubmit(dataToSubmit);
   };
 
-
   return (
-    <form onSubmit={handleSubmit}>
-      {error && <div className="error">{error}</div>}
+    <Form onSubmit={handleSubmit}>
+      {error && <Alert variant="danger">{error}</Alert>}
 
-      <div>
-        <label htmlFor="name">Trip Name:</label>
-        <input
+      <Form.Group className="mb-3">
+        <Form.Label>Trip Name:</Form.Label>
+        <Form.Control
           type="text"
-          id="name"
           name="name"
           value={formData.name}
           onChange={handleChange}
           required
         />
-      </div>
-      <div>
-        <label htmlFor="origin">Origin:</label>
-        <input
+      </Form.Group>
+
+      <Form.Group className="mb-3">
+        <Form.Label>Origin:</Form.Label>
+        <Form.Control
           type="text"
-          id="origin"
           name="origin"
           value={formData.origin}
           onChange={handleChange}
           required
         />
-        <ul>
+        <ListGroup>
           {originSuggestions.map(suggestion => (
-            <li key={suggestion.id} onClick={() => handleSuggestionClick('origin', suggestion.iataCode)}>
+            <ListGroup.Item key={suggestion.id} action onClick={() => handleSuggestionClick('origin', suggestion.iataCode)}>
               {suggestion.name} ({suggestion.iataCode})
-            </li>
+            </ListGroup.Item>
           ))}
-        </ul>
-      </div>
+        </ListGroup>
+      </Form.Group>
 
-      <div>
-        <label htmlFor="destination">Destination:</label>
-        <input
+      <Form.Group className="mb-3">
+        <Form.Label>Destination:</Form.Label>
+        <Form.Control
           type="text"
-          id="destination"
           name="destination"
           value={formData.destination}
           onChange={handleChange}
           required
         />
-        <ul>
+        <ListGroup>
           {destinationSuggestions.map(suggestion => (
-            <li key={suggestion.id} onClick={() => handleSuggestionClick('destination', suggestion.iataCode)}>
+            <ListGroup.Item key={suggestion.id} action onClick={() => handleSuggestionClick('destination', suggestion.iataCode)}>
               {suggestion.name} ({suggestion.iataCode})
-            </li>
+            </ListGroup.Item>
           ))}
-        </ul>
-      </div>
-      <div>
-        <label htmlFor="startDate">Departure Date:</label>
-        <input
+        </ListGroup>
+      </Form.Group>
+
+      <Form.Group className="mb-3">
+        <Form.Label>Departure Date:</Form.Label>
+        <Form.Control
           type="date"
-          id="startDate"
           name="startDate"
           value={formData.startDate}
           onChange={handleChange}
           required
         />
-      </div>
-      <div>
-        <label htmlFor="endDate">Return Date:</label>
-        <input
+      </Form.Group>
+
+      <Form.Group className="mb-3">
+        <Form.Label>Return Date:</Form.Label>
+        <Form.Control
           type="date"
-          id="endDate"
           name="endDate"
           value={formData.endDate}
           onChange={handleChange}
           required
         />
-      </div>
-      <div>
-        <label htmlFor="passengers">Passengers:</label>
-        <input
+      </Form.Group>
+
+      <Form.Group className="mb-3">
+        <Form.Label>Passengers:</Form.Label>
+        <Form.Control
           type="number"
-          id="passengers"
           name="passengers"
           value={formData.passengers}
           onChange={handleChange}
           min="1"
           required
         />
-      </div>
-      <button type="submit">{isEdit ? 'Update Trip' : 'Create Trip'}</button>
-    </form>
+      </Form.Group>
+
+      <Button type="submit" variant="primary">
+        {isEdit ? 'Update Trip' : 'Create Trip'}
+      </Button>
+    </Form>
   );
 }
 
