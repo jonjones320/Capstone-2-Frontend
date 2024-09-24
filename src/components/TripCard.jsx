@@ -9,7 +9,7 @@ function TripCard({ id, name, origin, destination, startDate, endDate }) {
         <Card.Title>{name}</Card.Title>
         <Card.Text>
           <strong>Origin:</strong> {origin}<br />
-          <strong>Destination:</strong> {Destination}<br />
+          <strong>Destination:</strong> {destination}<br />
           <strong>Dates:</strong> {startDate} - {endDate}
         </Card.Text>
         <Link to={`/trip/${id}`} className="btn btn-primary btn-sm">View Details</Link>
