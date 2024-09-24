@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
 import AuthContext from '../context/AuthContext';
+import { Form, Button, Container, Row, Col, Alert } from 'react-bootstrap';
 
 function Login() {
   const [formData, setFormData] = useState({ username: '', password: '' });
@@ -15,7 +16,6 @@ function Login() {
     }
   }, [currentUser, navigate]);
 
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(data => ({ ...data, [name]: value }));
@@ -26,34 +26,44 @@ function Login() {
     try {
       await login(formData);
     } catch (err) {
-      setError(err.message || "An unexpected error occured. Please try again.");
+      setError(err.message || "An unexpected error occurred. Please try again.");
     }
   };
 
   return (
-    <div>
-      <h1>Login</h1>
-      <form onSubmit={handleSubmit}>
-        <input 
-          type="text" 
-          name="username" 
-          value={formData.username} 
-          onChange={handleChange} 
-          placeholder="Username" 
-          required 
-        />
-        <input 
-          type="password" 
-          name="password" 
-          value={formData.password} 
-          onChange={handleChange} 
-          placeholder="Password" 
-          required 
-        />
-        <button type="submit">Login</button>
-        {error && <p className="error-message">{error}</p>}
-      </form>
-    </div>
+    <Container className="mt-5">
+      <Row className="justify-content-md-center">
+        <Col md={6}>
+          <h1 className="text-center mb-4">Login</h1>
+          <Form onSubmit={handleSubmit}>
+            <Form.Group className="mb-3">
+              <Form.Control
+                type="text"
+                name="username"
+                value={formData.username}
+                onChange={handleChange}
+                placeholder="Username"
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Control
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Password"
+                required
+              />
+            </Form.Group>
+            <Button variant="primary" type="submit" className="w-100">
+              Login
+            </Button>
+            {error && <Alert variant="danger" className="mt-3">{error}</Alert>}
+          </Form>
+        </Col>
+      </Row>
+    </Container>
   );
 }
 

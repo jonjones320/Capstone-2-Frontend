@@ -1,7 +1,8 @@
 import React, { useContext, useState } from 'react';
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
 import AuthContext from '../context/AuthContext';
 import RannerApi from '../../api';
+import { Form, Button, Container, Row, Col, Alert } from 'react-bootstrap';
 
 function SignUp() {
   const [formData, setFormData] = useState({
@@ -32,53 +33,69 @@ function SignUp() {
   };
 
   return (
-    <div>
-      <h1>Sign Up</h1>
-      <form onSubmit={handleSubmit}>
-        <input 
-          type="text" 
-          name="username" 
-          value={formData.username} 
-          onChange={handleChange} 
-          placeholder="Username" 
-          required 
-        />
-        <input 
-          type="password" 
-          name="password" 
-          value={formData.password} 
-          onChange={handleChange} 
-          placeholder="Password" 
-          required 
-        />
-        <input 
-          type="text" 
-          name="firstName" 
-          value={formData.firstName} 
-          onChange={handleChange} 
-          placeholder="First Name" 
-          required 
-        />
-        <input 
-          type="text" 
-          name="lastName" 
-          value={formData.lastName} 
-          onChange={handleChange} 
-          placeholder="Last Name" 
-          required 
-        />
-        <input 
-          type="email" 
-          name="email" 
-          value={formData.email} 
-          onChange={handleChange} 
-          placeholder="Email" 
-          required 
-        />
-        <button type="submit"> Sign Up </button>
-        {error && <p>{error.message}</p>}
-      </form>
-    </div>
+    <Container className="mt-5">
+      <Row className="justify-content-md-center">
+        <Col md={6}>
+          <h1 className="text-center mb-4">Sign Up</h1>
+          <Form onSubmit={handleSubmit}>
+            <Form.Group className="mb-3">
+              <Form.Control
+                type="text"
+                name="username"
+                value={formData.username}
+                onChange={handleChange}
+                placeholder="Username"
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Control
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Password"
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Control
+                type="text"
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleChange}
+                placeholder="First Name"
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Control
+                type="text"
+                name="lastName"
+                value={formData.lastName}
+                onChange={handleChange}
+                placeholder="Last Name"
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Control
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="Email"
+                required
+              />
+            </Form.Group>
+            <Button variant="primary" type="submit" className="w-100">
+              Sign Up
+            </Button>
+            {error && <Alert variant="danger" className="mt-3">{error.message}</Alert>}
+          </Form>
+        </Col>
+      </Row>
+    </Container>
   );
 }
 

@@ -3,6 +3,7 @@ import AuthContext from '../context/AuthContext';
 import RannerApi from '../../api';
 import ProfileView from './ProfileView';
 import ProfileEdit from './ProfileEdit';
+import { Container, Button, Alert } from 'react-bootstrap';
 
 
 function Profile() {
@@ -46,16 +47,16 @@ function Profile() {
   }
 
   return (
-    <div>
+    <Container className="mt-5">
       {isEditing ? (
         <ProfileEdit user={user} onUpdate={handleUpdate} />
       ) : (
         <ProfileView user={user} trips={trips} />
       )}
-      <button onClick={toggleEdit}>
+      <Button onClick={toggleEdit} variant="outline-primary" className="mt-3">
         {isEditing ? 'Cancel' : 'Edit Profile'}
-      </button>
-    </div>
+      </Button>
+    </Container>
   );
 }
 

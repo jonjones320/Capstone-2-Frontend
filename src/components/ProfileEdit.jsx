@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import RannerApi from '../../api';
+import { Form, Button, Alert } from 'react-bootstrap';
 
 function ProfileEdit({ user, onUpdate }) {
   const [formData, setFormData] = useState({
@@ -26,7 +27,7 @@ function ProfileEdit({ user, onUpdate }) {
     e.preventDefault();
     try {
       await RannerApi.patchUser(user.username, formData);
-      onUpdate(formData); // Pass updated data to parent or manage it in a context
+      onUpdate(formData); // Pass updated data to parent.
     } catch (err) {
       setError('There was an error updating your profile. Please try again.');
     }
@@ -34,41 +35,38 @@ function ProfileEdit({ user, onUpdate }) {
 
   return (
     <div>
-      <h3>Edit Profile</h3>
-      {error && <p>{error}</p>}
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor='firstName'>First Name:</label>
-          <input
-            type='text'
-            id='firstName'
-            name='firstName'
+      <h3 className="mb-4">Edit Profile</h3>
+      {error && <Alert variant="danger">{error}</Alert>}
+      <Form onSubmit={handleSubmit}>
+        <Form.Group className="mb-3">
+          <Form.Label>First Name:</Form.Label>
+          <Form.Control
+            type="text"
+            name="firstName"
             value={formData.firstName}
             onChange={handleChange}
           />
-        </div>
-        <div>
-          <label htmlFor='lastName'>Last Name:</label>
-          <input
-            type='text'
-            id='lastName'
-            name='lastName'
+        </Form.Group>
+        <Form.Group className="mb-3">
+          <Form.Label>Last Name:</Form.Label>
+          <Form.Control
+            type="text"
+            name="lastName"
             value={formData.lastName}
             onChange={handleChange}
           />
-        </div>
-        <div>
-          <label htmlFor='email'>Email:</label>
-          <input
-            type='text'
-            id='email'
-            name='email'
+        </Form.Group>
+        <Form.Group className="mb-3">
+          <Form.Label>Email:</Form.Label>
+          <Form.Control
+            type="email"
+            name="email"
             value={formData.email}
             onChange={handleChange}
           />
-        </div>
-        <button type='submit'>Save Changes</button>
-      </form>
+        </Form.Group>
+        <Button type="submit" variant="primary">Save Changes</Button>
+      </Form>
     </div>
   );
 }
