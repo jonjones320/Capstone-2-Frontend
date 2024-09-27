@@ -89,7 +89,9 @@ class RannerApi {
   }
   /** Get trip by ID */ 
   static async getTripById(id) {
+    console.log("api.js - getTripById - ID: ", id);
     let res = await this.request(`trips/${id}`);
+    console.log("api.js - getTripById - RES: ", res);
     return res.trip;
   }
   /** Delete a trip by ID */
@@ -212,19 +214,21 @@ class RannerApi {
   
   ///// Saved Flight API routes /////
   
+  /** Post a new saved flight. */
+  static async postFlight(properties) {
+    let res = await this.request(`flights`, properties, "post");
+    return res.flight;
+  }
   /** Get or search all flights. */
-  static async getFlightAll(query = {}) {
-    let res = await this.request(`flights`, query);
+  static async getFlightAll(filters = {}) {
+    console.log("api.js - getFlightAll - FILTERS: ", filters);
+    let res = await this.request(`flights`, filters);
+    console.log("api.js - getFlightAll - RES: ", res);
     return res.flights;
   }
   /** Get details on a saved flight by id. */
   static async getFlight(id) {
-    let res = await this.request(`flights/${id}`);
-    return res.flight;
-  }
-  /** Post a new saved flight. */
-  static async postFlight(properties) {
-    let res = await this.request(`flights`, properties, "post");
+    let res = await this.request(`flights`, id);
     return res.flight;
   }
   /** Patch a saved flight by id. */
