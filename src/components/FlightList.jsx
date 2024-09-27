@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import RannerApi from '../../api';
 import { useLocation } from 'react-router-dom';
 import FlightCard from './FlightCard';
+import { Container, Alert, Spinner } from 'react-bootstrap';
 
 function FlightList() {
   const { state } = useLocation();
-  const { trip } = state || {}; // Destructure new Trip from state
+  const { trip } = state || {};
   const [flights, setFlights] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -36,28 +37,42 @@ function FlightList() {
     }
   }, [trip]);
 
-
   if (isLoading) { 
-    return ( <div><p>Loading flights...</p></div> ); 
-  };
+    return (
+      <Container className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Loading flights...</span>
+        </Spinner>
+      </Container>
+    );
+  }
 
   if (error) { 
-    return ( <div><p>{error}</p></div> ); 
-  };
+    return (
+      <Container className="mt-5">
+        <Alert variant="danger">{error}</Alert>
+      </Container>
+    );
+  }
 
   if (flights.length === 0) {
-    return ( <div><p>No flights found for your search criteria. Please try different dates or locations.</p></div> );
+    return (
+      <Container className="mt-5">
+        <Alert variant="info">
+          No flights found for your search criteria. Please try different dates or locations.
+        </Alert>
+      </Container>
+    );
   }
 
   return (
-    <div>
-      <h2>Flight Offers</h2>
+    <Container className="mt-5">
+      <h2 className="mb-4">Flight Offers</h2>
       {flights.map((flight) => (
         <FlightCard key={flight.id} flight={flight} />
       ))}
-    </div>
+    </Container>
   );
 }
-
 
 export default FlightList;
