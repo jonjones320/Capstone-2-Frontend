@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import RannerApi from '../../api';
-import { useLocation } from 'react-router-dom';
 import FlightCard from './FlightCard';
-import { Container, Alert, Spinner } from 'react-bootstrap';
+import { Container, Alert, Spinner, Button, Card } from 'react-bootstrap';
 
 function FlightList() {
   const { state } = useLocation();
@@ -10,6 +10,7 @@ function FlightList() {
   const [flights, setFlights] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchFlights = async () => {
@@ -36,6 +37,16 @@ function FlightList() {
       fetchFlights();
     }
   }, [trip]);
+
+  const handleSelectFlight = async (flight) => {
+    try {
+      await RannerApi.addFlightToTrip(trip.id, flight.id);
+      navigate(`/trips/${trip.id}`);
+    } catch (err) {
+      console.error("Error adding flight to trip:", err);
+      setError("Unable to add flight to trip. Please try again later.");
+    }
+  };
 
   if (isLoading) { 
     return (
@@ -69,7 +80,18 @@ function FlightList() {
     <Container className="mt-5">
       <h2 className="mb-4">Flight Offers</h2>
       {flights.map((flight) => (
-        <FlightCard key={flight.id} flight={flight} />
+        <Card key={flight.id} className="mb-4">
+          <Card.Body>
+            <FlightCard flight={flight} />
+            <Button 
+              onClick={() => handleSelectFlight(flight)} 
+              className="mt-3 w-100"
+              variant="primary"
+            >
+              Add Flight
+            </Button>
+          </Card.Body>
+        </Card>
       ))}
     </Container>
   );
