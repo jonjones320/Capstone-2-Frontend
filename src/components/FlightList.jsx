@@ -32,15 +32,25 @@ function FlightList() {
         setIsLoading(false);
       }
     };
-    
     if (trip) {
       fetchFlights();
     }
   }, [trip]);
 
-  const handleSelectFlight = async (flight) => {
+  function extractFlightNumbers(flight) {
+    const outboundFlightNumber = flight.itineraries[0].segments[0].carrierCode + 
+                                 flight.itineraries[0].segments[0].number;
+    const inboundFlightNumber = flight.itineraries[1].segments[0].carrierCode + 
+                                flight.itineraries[1].segments[0].number;
+
+    return { flightOfferId: flight.id, outboundFlightNumber, inboundFlightNumber };
+  }
+
+  const handleAddFlight = async (flight) => {
     try {
-      await RannerApi.addFlightToTrip(trip.id, flight.id);
+      const { outboundFlightNumber, inboundFlightNumber, flightOfferId } = extractFlightNumbers(flight);
+      console.log("FlightList.jsx - handleAddFlight - FLIGHT: ", flight);
+      await RannerApi.postFlight(trip.id, { flightOfferId, outboundFlightNumber, inboundFlightNumber });
       navigate(`/trips/${trip.id}`);
     } catch (err) {
       console.error("Error adding flight to trip:", err);
@@ -84,7 +94,7 @@ function FlightList() {
           <Card.Body>
             <FlightCard flight={flight} />
             <Button 
-              onClick={() => handleSelectFlight(flight)} 
+              onClick={() => handleAddFlight(flight)} 
               className="mt-3 w-100"
               variant="primary"
             >
