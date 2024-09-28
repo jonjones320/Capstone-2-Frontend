@@ -51,7 +51,7 @@ function FlightList() {
       const tripId = trip.tripId;
       const { outboundFlightNumber, inboundFlightNumber, flightOfferId } = extractFlightNumbers(flight);
       await RannerApi.postFlight({ tripId, flightOfferId, outboundFlightNumber, inboundFlightNumber });
-      navigate(`/trips/${tripId}`);
+      navigate(`/trip/${tripId}`);
     } catch (err) {
       console.error("Error adding flight to trip:", err);
       setError("Unable to add flight to trip. Please try again later.");
