@@ -89,9 +89,7 @@ class RannerApi {
   }
   /** Get trip by ID */ 
   static async getTripById(id) {
-    console.log("api.js - getTripById - ID: ", id);
     let res = await this.request(`trips/${id}`);
-    console.log("api.js - getTripById - RES: ", res);
     return res.trip;
   }
   /** Delete a trip by ID */
@@ -111,7 +109,6 @@ class RannerApi {
 
   /** Search for flight offers */
   static async searchFlightOffers(query = {}) {
-    console.log("RannerApi - searchFlightOffers - query:", query);
     let res = await this.request(`flights/offers`, query);
     return res;
   }
@@ -221,9 +218,7 @@ class RannerApi {
   }
   /** Get details on a saved flight or flights by filters. */
   static async getFlight(filters) {
-    console.log("api.js - getFlight - FILTERS: ", filters);
     let res = await this.request(`flights`, filters);
-    console.log("api.js - getFlight - RES: ", res);
     return res.flight;
   }
   /** Patch a saved flight by id. */

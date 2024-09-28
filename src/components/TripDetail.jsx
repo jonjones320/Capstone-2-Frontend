@@ -19,12 +19,9 @@ function TripDetail() {
   const fetchTripAndFlights = async () => {
     setIsLoading(true);
     try {
-      console.log("TripDetail.jsx - fetchTripAndFlights - ID", id)
       const fetchedTrip = await RannerApi.getTripById(id);
-      console.log("TripDetail.jsx - fetchTripAndFlights - FETCHEDTRIP", fetchedTrip)
       setTrip(fetchedTrip);
       const fetchedFlights = await RannerApi.getFlight({ tripId : id});
-      console.log("TripDetail.jsx - fetchTripAndFlights - FETCHEDFLIGHTS", fetchedFlights)
       setFlights(fetchedFlights || []);
       setError(null);
     } catch (err) {
