@@ -28,7 +28,8 @@ function ProfileView({ user, trips }) {
                 <TripCard
                   id={trip.tripId}
                   name={trip.name || 'Name unavailable'}
-                  location={trip.location || 'Location unavailable'}
+                  origin={trip.origin || 'Origin unavailable'}
+                  destination={trip.destination || 'Destination unavailable'}
                   startDate={trip.startDate}
                   endDate={trip.endDate}
                 />
