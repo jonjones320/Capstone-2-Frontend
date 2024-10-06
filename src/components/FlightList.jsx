@@ -40,8 +40,11 @@ function FlightList() {
   function extractFlightNumbers(flight) {
     const outboundFlightNumber = flight.itineraries[0].segments[0].carrierCode + 
                                  flight.itineraries[0].segments[0].number;
-    const inboundFlightNumber = flight.itineraries[1].segments[0].carrierCode + 
-                                flight.itineraries[1].segments[0].number;
+    let inboundFlightNumber = null;
+    if (flight.itineraries[1]) {
+      inboundFlightNumber = flight.itineraries[1].segments[0].carrierCode + 
+                                  flight.itineraries[1].segments[0].number;
+    }
 
     return { flightOfferId: flight.id, outboundFlightNumber, inboundFlightNumber };
   }
