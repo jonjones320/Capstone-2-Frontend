@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import RannerApi from '../../api';
 import AuthContext from '../context/AuthContext';
 import TripForm from './TripForm';
-import FlightCard from './FlightCard';
+import FlightCardDetail from './FlightCardDetail';
 import { Container, Button, Alert, Spinner } from 'react-bootstrap';
 
 function TripDetail() {
@@ -21,8 +21,11 @@ function TripDetail() {
     try {
       const fetchedTrip = await RannerApi.getTripById(id);
       setTrip(fetchedTrip);
-      const fetchedFlights = await RannerApi.getFlight({ tripId : id});
-      setFlights(fetchedFlights || []);
+      const fetchedFlights = await RannerApi.getFlightsByTrip(id);
+
+      const flightsArray = Array.isArray(fetchedFlights) ? fetchedFlights :(fetchedFlights ? [fetchedFlights] : []);
+      setFlights(flightsArray);
+
       setError(null);
     } catch (err) {
       console.error('Failed to fetch trip and flights:', err);
@@ -32,7 +35,6 @@ function TripDetail() {
       setIsLoading(false);
     }
   };
-
   useEffect(() => {
     fetchTripAndFlights();
   }, [id]);
@@ -105,7 +107,7 @@ function TripDetail() {
           <h3 className="mt-4">Flights</h3>
           {flights.length > 0 ? (
             flights.map(flight => (
-              <FlightCard key={flight.id} flight={flight} />
+              <FlightCardDetail key={flight.id} flightOfferId={flight.flightOfferId} />
             ))
           ) : (
             <p>No flights associated with this trip yet.</p>
