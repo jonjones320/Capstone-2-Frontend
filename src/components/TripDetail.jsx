@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import RannerApi from '../../api';
-import AuthContext from '../context/AuthContext';
+import FlightCard from './FlightCard';
 import TripForm from './TripForm';
-import FlightCardDetail from './FlightCardDetail';
+import AuthContext from '../context/AuthContext';
 import { Container, Button, Alert, Spinner } from 'react-bootstrap';
 
 function TripDetail() {
@@ -12,30 +12,26 @@ function TripDetail() {
   const { currentUser } = useContext(AuthContext);
   const [trip, setTrip] = useState(null);
   const [flights, setFlights] = useState([]);
-  const [isEditing, setIsEditing] = useState(false);
-  const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
 
-  const fetchTripAndFlights = async () => {
-    setIsLoading(true);
-    try {
-      const fetchedTrip = await RannerApi.getTripById(id);
-      setTrip(fetchedTrip);
-      const fetchedFlights = await RannerApi.getFlightsByTrip(id);
-
-      const flightsArray = Array.isArray(fetchedFlights) ? fetchedFlights :(fetchedFlights ? [fetchedFlights] : []);
-      setFlights(flightsArray);
-
-      setError(null);
-    } catch (err) {
-      console.error('Failed to fetch trip and flights:', err);
-      setError('Failed to load trip details and flights.');
-      setFlights([]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
   useEffect(() => {
+    const fetchTripAndFlights = async () => {
+      try {
+        const fetchedTrip = await RannerApi.getTripById(id);
+        setTrip(fetchedTrip);
+        const fetchedFlights = await RannerApi.getFlightsByTrip(id);
+        setFlights(fetchedFlights);
+        setError(null);
+      } catch (err) {
+        console.error('Failed to fetch trip and flights:', err);
+        setError('Failed to load trip details and flights.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
     fetchTripAndFlights();
   }, [id]);
 
@@ -57,7 +53,8 @@ function TripDetail() {
     setIsLoading(true);
     try {
       await RannerApi.updateTrip(id, updatedTripData);
-      await fetchTripAndFlights();
+      const updatedTrip = await RannerApi.getTripById(id);
+      setTrip(updatedTrip);
       setIsEditing(false);
     } catch (err) {
       console.error('Failed to update trip:', err);
@@ -67,7 +64,7 @@ function TripDetail() {
     }
   };
 
-  const handleSearchFlights = () => {
+  const handleChangeFlights = () => {
     navigate('/flights', { state: { trip } });
   };
 
@@ -104,17 +101,17 @@ function TripDetail() {
             </div>
           )}
           
-          <h3 className="mt-4">Flights</h3>
+          <h3>Flights</h3>
           {flights.length > 0 ? (
             flights.map(flight => (
-              <FlightCardDetail key={flight.id} flightOfferId={flight.flightOfferId} />
+              <FlightCard key={flight.id} flight={flight} />
             ))
           ) : (
-            <p>No flights associated with this trip yet.</p>
+            <p>No flights booked for this trip yet.</p>
           )}
           
-          <Button variant="primary" onClick={handleSearchFlights} className="mt-3">
-            {flights && flights.length > 0 ? 'Change Flights' : 'Search Flights'}
+          <Button variant="primary" onClick={handleChangeFlights} className="mt-3">
+            {flights.length > 0 ? 'Change Flights' : 'Add Flight'}
           </Button>
         </>
       )}
