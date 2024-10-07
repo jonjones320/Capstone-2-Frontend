@@ -5,7 +5,10 @@ import { Card, Row, Col, Badge, Button } from 'react-bootstrap';
 const FlightCard = ({ flight }) => {
   console.log("FlightCard.jsx - FlightCard - FLIGHT: ", flight);
   // Handle bad or missing data.
-  if (!flight || !flight.itineraries || flight.itineraries.length === 0) {
+  if (!flight || 
+      !flight.flightDetails.flightOffers[0].itineraries || 
+      flight.flightDetails.flightOffers[0].itineraries.length === 0
+      ) {
     return (
       <Card className="mb-4 shadow-sm">
         <Card.Body>
@@ -16,8 +19,8 @@ const FlightCard = ({ flight }) => {
     );
   }
 
-  const departureSegment = flight.itineraries[0].segments[0] || {};
-  const arrivalSegment = flight.itineraries[0].segments[flight.itineraries[0].segments.length - 1] || {};
+  const departureSegment = flight.flightDetails.flightOffers[0].itineraries[0].segments[0] || {};
+  const arrivalSegment = flight.flightDetails.flightOffers[0].itineraries[0].segments[flight.flightDetails.flightOffers[0].itineraries[0].segments.length - 1] || {};
 
   return (
     <Card className="mb-4 shadow-sm">
@@ -41,12 +44,12 @@ const FlightCard = ({ flight }) => {
         <Row className="mb-3">
           <Col md={6}>
             <Card.Text>
-              <strong>Duration:</strong> {flight.itineraries[0].duration ? flight.itineraries[0].duration.replace('PT', '') : 'N/A'}
+              <strong>Duration:</strong> {flight.flightDetails.flightOffers[0].itineraries[0].duration ? flight.flightDetails.flightOffers[0].itineraries[0].duration.replace('PT', '') : 'N/A'}
             </Card.Text>
           </Col>
           <Col md={6}>
             <Card.Text>
-              <strong>Stops:</strong> {flight.itineraries[0].segments ? flight.itineraries[0].segments.length - 1 : 'N/A'}
+              <strong>Stops:</strong> {flight.flightDetails.flightOffers[0].itineraries[0].segments ? flight.flightDetails.flightOffers[0].itineraries[0].segments.length - 1 : 'N/A'}
             </Card.Text>
           </Col>
         </Row>
