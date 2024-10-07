@@ -37,23 +37,14 @@ function FlightList() {
     }
   }, [trip]);
 
-  function extractFlightNumbers(flight) {
-    const outboundFlightNumber = flight.itineraries[0].segments[0].carrierCode + 
-                                 flight.itineraries[0].segments[0].number;
-    let inboundFlightNumber = null;
-    if (flight.itineraries[1]) {
-      inboundFlightNumber = flight.itineraries[1].segments[0].carrierCode + 
-                                  flight.itineraries[1].segments[0].number;
-    }
-
-    return { flightOfferId: flight.id, outboundFlightNumber, inboundFlightNumber };
-  }
-
   const handleAddFlight = async (flight) => {
     try {
       const tripId = trip.tripId;
-      const { outboundFlightNumber, inboundFlightNumber, flightOfferId } = extractFlightNumbers(flight);
-      await RannerApi.postFlight({ tripId, flightOfferId, outboundFlightNumber, inboundFlightNumber });
+      await RannerApi.postFlight({ 
+        tripId, 
+        amadeusOrderId: flight.id,
+        flightDetails: flight
+      });
       navigate(`/trip/${tripId}`);
     } catch (err) {
       console.error("Error adding flight to trip:", err);
