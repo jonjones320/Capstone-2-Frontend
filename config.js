@@ -14,7 +14,7 @@ function getDatabaseUri() {
   return (process.env.NODE_ENV === "dev")
       ? process.env.DATABASE_TEST_URL || "postgresql:///ranner_test"
       : process.env.DATABASE_URL || "postgresql:///ranner";
-}
+};
 
 // Speed up bcrypt during tests, since the algorithm safety isn't being tested
 //
