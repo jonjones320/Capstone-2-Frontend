@@ -218,7 +218,7 @@ class RannerApi {
   }
   /** Get details on a saved flight or flights by filters. */
   static async getFlight(filters) {
-    console.log("api.js - getFlight(filters) - FILTERS: ", filters);  // Add this line for debugging
+    console.log("api.js - getFlight(filters) - FILTERS: ", filters);
     let res = await this.request(`flights`, filters);
     return res.flight;
   }
