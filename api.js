@@ -9,17 +9,28 @@ class RannerApi {
   static token;
 
   static async request(endpoint, data = {}, method = "get") {
-    // console.debug("API Call:", endpoint, data, method);
+    console.log(`API Call: ${method.toUpperCase()} ${endpoint}`, data);
     const url = `${BASE_URL}/${endpoint}`;
     const headers = { Authorization: `Bearer ${RannerApi.token}` };
     const params = (method === "get") ? data : {};
-
+  
     try {
-      // console.debug("RannerApi - Request - TRY:", endpoint, data, method);
-      return (await axios({ url, method, data, params, headers })).data;
+      console.log(`Sending request to: ${url}`);
+      const response = await axios({ url, method, data, params, headers });
+      console.log(`Received response from ${url}:`, response.data);
+      return response.data;
     } catch (err) {
-      console.error("RannerAPI Error:", err.response);
-      let message = err?.response?.data?.error?.message;
+      console.error("RannerAPI Error:", err);
+      if (err.response) {
+        console.error("Response data:", err.response.data);
+        console.error("Response status:", err.response.status);
+        console.error("Response headers:", err.response.headers);
+      } else if (err.request) {
+        console.error("No response received:", err.request);
+      } else {
+        console.error("Error setting up request:", err.message);
+      }
+      let message = err?.response?.data?.error?.message || "An error occurred";
       throw Array.isArray(message) ? message : [message];
     }
   }
@@ -218,13 +229,28 @@ class RannerApi {
   }
   /** Get details on a saved flight or flights by filters. */
   static async getFlight(filters) {
-    console.log("api.js - getFlight(filters) - FILTERS: ", filters);
-    let res = await this.request(`flights`, filters);
-    return res.flight;
+    try {
+      let params;
+      if (typeof filters === 'number' || typeof filters === 'string') {
+        // If filters is a number or string, assume it's an ID.
+        params = { id: filters };
+      } else if (typeof filters === 'object' && filters !== null) {
+        // If filters is already an object, use it as is.
+        params = filters;
+      } else {
+        // If filters is neither a number/string nor an object, throw an error.
+        throw new Error('Invalid filters parameter');
+      }
+
+      let res = await this.request('flights', params);
+      return res.flight;
+    } catch (error) {
+      console.error("api.js - getFlight - ERROR:", error);
+      throw error;
+    }
   }
   /** Get flights by trip id */
   static async getFlightsByTrip(tripId) {
-    console.log("RannerApi - getFlightsByTrips - tripId: ", tripId);
     let res = await this.request(`flights/trip/${tripId}`);
     return res.flights
   }
@@ -278,7 +304,6 @@ class RannerApi {
   }
 }
 
-// for now, put token ("testuser" / "password" on class)
-RannerApi.token = "your-token-here";
+
 
 export default RannerApi;
