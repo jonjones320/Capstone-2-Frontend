@@ -31,6 +31,7 @@ export const AuthProvider = ({ children }) => {
     const login = async ({ username, password }) => {
         try {
             const token = await RannerApi.login({ username, password });
+            RannerApi.token = token;
             setToken(token);
             localStorage.setItem('token', token);
             const user = getUserFromToken(token);
