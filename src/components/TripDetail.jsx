@@ -18,6 +18,7 @@ function TripDetail() {
 
   useEffect(() => {
     const fetchTripAndFlights = async () => {
+      setIsLoading(true);
       try {
         const fetchedTrip = await RannerApi.getTripById(id);
         setTrip(fetchedTrip);
