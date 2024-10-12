@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:3001";
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || "https://capstone-2-backend-iahv.onrender.com";
 
 /** API Class - Static class tying together methods used to get/send to the API. */
 
