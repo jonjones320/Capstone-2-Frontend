@@ -37,6 +37,7 @@ export const AuthProvider = ({ children }) => {
             setCurrentUser(user);
         } catch (err) {
             console.error("Login error: ", err);
+            throw new Error(err.response?.data?.error || "Invalid username or password");
         }
     };
 
