@@ -12,7 +12,10 @@ export const AuthProvider = ({ children }) => {
     function getUserFromToken(token) {
         try {
             const decoded = jwtDecode(token);
-            return decoded;
+            return {
+                username: decoded.username,
+                isAdmin: decoded.isAdmin
+            };
         } catch (error) {
             console.error('Token failed to decode', error);
             return null;
