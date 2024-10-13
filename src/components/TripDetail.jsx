@@ -105,7 +105,7 @@ function TripDetail() {
           <h3>Flights</h3>
           {flights.length > 0 ? (
             flights.map(flight => (
-              <FlightCard key={flight.id} flight={flight} />
+              <FlightCard key={flight.flightDetails.id} flight={flight.flightDetails} />
             ))
           ) : (
             <p>No flights booked for this trip yet.</p>
