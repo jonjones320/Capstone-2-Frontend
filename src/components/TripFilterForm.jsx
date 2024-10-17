@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Form, Button, Row, Col } from 'react-bootstrap';
 
 function TripFilterForm({ onFilter }) {
   const initialFilters = {
@@ -11,7 +12,6 @@ function TripFilterForm({ onFilter }) {
   };
   const [filters, setFilters] = useState(initialFilters);
 
-  // Handle input changes and update the filter state
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFilters((f) => ({
@@ -20,68 +20,98 @@ function TripFilterForm({ onFilter }) {
     }));
   };
 
-  // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    onFilter(filters);  // Send filters to parent component
+    onFilter(filters);
   };
 
-  // Handle reset filters
   const handleReset = () => {
     setFilters(initialFilters);
-    onFilter(initialFilters);  // Send empty filters to parent component
+    onFilter(initialFilters);
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label htmlFor="name">Name</label>
-      <input
-        type="text"
-        name="name"
-        placeholder="Trip Name"
-        value={filters.name}
-        onChange={handleChange}
-      />
-      <label htmlFor="origin">Origin</label>
-      <input
-        type="text"
-        name="origin"
-        placeholder="Origin"
-        value={filters.origin}
-        onChange={handleChange}
-      />
-      <label htmlFor="destination">Destination</label>
-      <input
-        type="text"
-        name="destination"
-        placeholder="Destination"
-        value={filters.destination}
-        onChange={handleChange}
-      />
-      <label htmlFor="startDate">Start Date</label>
-      <input
-        type="date"
-        name="startDate"
-        value={filters.startDate}
-        onChange={handleChange}
-      />
-      <label htmlFor="endDate">End Date</label>
-      <input
-        type="date"
-        name="endDate"
-        value={filters.endDate}
-        onChange={handleChange}
-      />
-      <label htmlFor="passengers">Passengers</label>
-      <input
-        type="number"
-        name="passengers"
-        value={filters.passengers}
-        onChange={handleChange}
-      />
-      <button type="submit">Filter</button>
-      <button type="button" onClick={handleReset}>Reset</button>
-    </form>
+    <Form onSubmit={handleSubmit} className="mb-4">
+      <Row>
+        <Col md={6} lg={4}>
+          <Form.Group className="mb-3">
+            <Form.Label>Name</Form.Label>
+            <Form.Control
+              type="text"
+              name="name"
+              placeholder="Trip Name"
+              value={filters.name}
+              onChange={handleChange}
+            />
+          </Form.Group>
+        </Col>
+        <Col md={6} lg={4}>
+          <Form.Group className="mb-3">
+            <Form.Label>Origin</Form.Label>
+            <Form.Control
+              type="text"
+              name="origin"
+              placeholder="Origin"
+              value={filters.origin}
+              onChange={handleChange}
+            />
+          </Form.Group>
+        </Col>
+        <Col md={6} lg={4}>
+          <Form.Group className="mb-3">
+            <Form.Label>Destination</Form.Label>
+            <Form.Control
+              type="text"
+              name="destination"
+              placeholder="Destination"
+              value={filters.destination}
+              onChange={handleChange}
+            />
+          </Form.Group>
+        </Col>
+        <Col md={6} lg={4}>
+          <Form.Group className="mb-3">
+            <Form.Label>Start Date</Form.Label>
+            <Form.Control
+              type="date"
+              name="startDate"
+              value={filters.startDate}
+              onChange={handleChange}
+            />
+          </Form.Group>
+        </Col>
+        <Col md={6} lg={4}>
+          <Form.Group className="mb-3">
+            <Form.Label>End Date</Form.Label>
+            <Form.Control
+              type="date"
+              name="endDate"
+              value={filters.endDate}
+              onChange={handleChange}
+            />
+          </Form.Group>
+        </Col>
+        <Col md={6} lg={4}>
+          <Form.Group className="mb-3">
+            <Form.Label>Passengers</Form.Label>
+            <Form.Control
+              type="number"
+              name="passengers"
+              value={filters.passengers}
+              onChange={handleChange}
+            />
+          </Form.Group>
+        </Col>
+      </Row>
+      <div className="d-flex justify-content-end">
+        <Button variant="secondary" onClick={handleReset} className="me-2">
+          Reset
+        </Button>
+        <Button variant="primary" type="submit">
+          Apply Filters
+        </Button>
+      </div>
+    </Form>
   );
 }
 
