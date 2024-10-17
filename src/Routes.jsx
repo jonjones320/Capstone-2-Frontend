@@ -9,7 +9,7 @@ import Signup from './components/Signup';
 import Profile from './components/Profile';
 import Origin from './components/Origin';
 import Destination from './components/Destination';
-import TripDates from './components/TripDates';
+// import TripDates from './components/TripDates';
 import FlightList from './components/FlightList';
 import TripForm from './components/TripForm';
 import TripList from './components/TripList';
@@ -37,7 +37,7 @@ function AppRoutes() {
       <Route path="/trip/:id" element={<ProtectedRoute element={<TripDetail />} />} />
       <Route path="/origin" element={<ProtectedRoute element={<Origin />} />} />
       <Route path="/destination" element={<ProtectedRoute element={<Destination />} />} />
-      <Route path="/dates" element={<ProtectedRoute element={<TripDates />} />} />
+      {/* <Route path="/dates" element={<ProtectedRoute element={<TripDates />} />} /> */}
       <Route path="/flights" element={<ProtectedRoute element={<FlightList />} />} />
       <Route path="/flights/search" element={<ProtectedRoute element={<FlightSearch />} />} />
       <Route path="/flights/:id" element={<ProtectedRoute element={<FlightDetail />} />} />
