@@ -233,6 +233,7 @@ class RannerApi {
   static async getFlight(filters) {
     try {
       let params;
+      
       if (typeof filters === 'number' || typeof filters === 'string') {
         // If filters is a number or string, assume it's an ID.
         params = { id: filters };
