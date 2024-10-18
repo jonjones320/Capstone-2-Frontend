@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Card, Row, Col, Badge, Button } from 'react-bootstrap';
 
 const FlightCard = ({ flight }) => {
+  console.log("FlightCard - FLIGHT: ", flight);
   // Handle bad or missing data.
   if (!flight || !flight.itineraries || flight.itineraries.length === 0) {
     return (
