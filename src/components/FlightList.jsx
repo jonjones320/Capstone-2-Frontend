@@ -24,7 +24,6 @@ function FlightList() {
           returnDate: trip.endDate,
           adults: trip.passengers,
         });
-        console.log("FlistList.jsx - setFlights(res.data): ", res.data);
         setFlights(res.data);
       } catch (err) {
         console.error("Error fetching flights:", err);
