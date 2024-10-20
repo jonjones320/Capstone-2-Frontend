@@ -5,10 +5,10 @@ import { Card, Row, Col, Badge, Button } from 'react-bootstrap';
 const FlightCard = ({ flight }) => {
   console.log("FlightCard - FLIGHT: ", flight);
 
-  // Normalize the flight data structure for searching flights or loading saved flights.
+  // Normalize flightData from either TripDetails || FLightList.
   const flightData = flight.flightDetails || flight;
 
-  // Handle bad or missing data.
+  // Faulty flight data creates an error card.
   if (!flightData || !flightData.itineraries || flightData.itineraries.length === 0) {
     return (
       <Card className="mb-4 shadow-sm">
@@ -20,39 +20,43 @@ const FlightCard = ({ flight }) => {
     );
   }
 
-  const departureSegment = flightData.itineraries[0].segments[0] || {};
-  const arrivalSegment = flightData.itineraries[0].segments[flightData.itineraries[0].segments.length - 1] || {};
+  // Shortens date for better aesthetics. 
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' });
+  };
+
+  // Splits card into a rendering of departure and return segments (if roundtrip).
+  const renderFlightLeg = (itinerary, legType) => {
+    const departureSegment = itinerary.segments[0];
+    const arrivalSegment = itinerary.segments[itinerary.segments.length - 1];
+
+    return (
+      <Col md={6}>
+        <h5>{legType}</h5>
+        <p>
+          <strong>{departureSegment.departure.iataCode}</strong> → <strong>{arrivalSegment.arrival.iataCode}</strong>
+        </p>
+        <p>
+          {formatDate(departureSegment.departure.at)} - {formatDate(arrivalSegment.arrival.at)}
+        </p>
+        <p>Duration: {itinerary.duration.replace('PT', '')}</p>
+        <p>Stops: {itinerary.segments.length - 1}</p>
+      </Col>
+    );
+  };
 
   return (
     <Card className="mb-4 shadow-sm">
       <Card.Body>
         <Card.Title className="d-flex justify-content-between align-items-center mb-3">
           <h3 className="mb-0">
-            {departureSegment.departure?.iataCode || 'N/A'} to {arrivalSegment.arrival?.iataCode || 'N/A'}
+            {flightData.itineraries[0].segments[0].departure.iataCode} ↔ {flightData.itineraries[0].segments[flightData.itineraries[0].segments.length - 1].arrival.iataCode}
           </h3>
           <Badge bg="secondary">{flightData.validatingAirlineCodes?.[0] || 'N/A'}</Badge>
         </Card.Title>
         <Row className="mb-3">
-          <Col md={6}>
-            <Card.Subtitle className="mb-2 text-muted">Departure</Card.Subtitle>
-            <Card.Text>{departureSegment.departure?.at ? new Date(departureSegment.departure.at).toLocaleString() : 'N/A'}</Card.Text>
-          </Col>
-          <Col md={6}>
-            <Card.Subtitle className="mb-2 text-muted">Arrival</Card.Subtitle>
-            <Card.Text>{arrivalSegment.arrival?.at ? new Date(arrivalSegment.arrival.at).toLocaleString() : 'N/A'}</Card.Text>
-          </Col>
-        </Row>
-        <Row className="mb-3">
-          <Col md={6}>
-            <Card.Text>
-              <strong>Duration:</strong> {flightData.itineraries[0].duration ? flightData.itineraries[0].duration.replace('PT', '') : 'N/A'}
-            </Card.Text>
-          </Col>
-          <Col md={6}>
-            <Card.Text>
-              <strong>Stops:</strong> {flightData.itineraries[0].segments ? flightData.itineraries[0].segments.length - 1 : 'N/A'}
-            </Card.Text>
-          </Col>
+          {renderFlightLeg(flightData.itineraries[0], 'Outbound')}
+          {flightData.itineraries.length > 1 && renderFlightLeg(flightData.itineraries[1], 'Return')}
         </Row>
         <div className="d-flex justify-content-between align-items-center">
           <Card.Text className="h4 mb-0">
