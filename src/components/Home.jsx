@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Container, Row, Col, Button } from 'react-bootstrap';
+import photo from ''
 
 function Home() {
   return (
@@ -19,7 +20,7 @@ function Home() {
           </Col>
           <Col md={6}>
             <div className="hero-image">
-              <img src="/images/travel-illustration.svg" alt="Travel illustration" className="img-fluid" />
+              <img src="../../public/tom-barrett-cloudy-wing-tip.jpg" alt="Travel illustration" className="img-fluid" />
             </div>
           </Col>
         </Row>
