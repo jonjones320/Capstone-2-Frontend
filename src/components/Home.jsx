@@ -19,7 +19,7 @@ function Home() {
           </Col>
           <Col md={6}>
             <div className="hero-image">
-              <img src="../../public/tom-barrett-cloudy-wing-tip.jpg" alt="Travel illustration" className="img-fluid" />
+              <img src="images/tom-barrett-cloudy-wing-tip.jpg" alt="Travel illustration" className="img-fluid" />
             </div>
           </Col>
         </Row>
