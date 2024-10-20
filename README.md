@@ -11,7 +11,11 @@
 "Amadeus provides a rich set of APIs for the travel industry."   
 [Amadeus API Docs](https://developers.amadeus.com/self-service/apis-docs)
 
+---
 
+##### Credits
+
+[Homepage photo by Tom Barrett](https://unsplash.com/photos/airplane-on-sky-during-golden-hour-M0AWNxnLaMw?utm_content=creditShareLink&utm_medium=referral&utm_source=unsplash)
 
 ##### React + Vite
 
