@@ -14,6 +14,7 @@ function FlightDetail() {
       setLoading(true);
       try {
         const result = await RannerApi.getFlight(id);
+        console.log("FlightDetail.jsx - fetchFlightDetails - result: ", result);
         setFlight(result.flight);
       } catch (err) {
         console.error("Error fetching flight details:", err);
@@ -25,6 +26,8 @@ function FlightDetail() {
 
     fetchFlightDetails();
   }, [id]);
+
+  console.log("FlightDetail.jsx - fetchFlightDetails - current flight state:", flight);
 
   if (loading) return (
     <Container className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
@@ -47,7 +50,6 @@ function FlightDetail() {
   );
 
   const { flightDetails } = flight;
-  const itinerary = flightDetails.itineraries[0];
 
   return (
     <Container className="mt-5">
@@ -57,21 +59,28 @@ function FlightDetail() {
           <Row>
             <Col md={6}>
               <Card.Title>Itinerary</Card.Title>
-              {itinerary.segments.map((segment, index) => (
-                <Card key={index} className="mb-3">
+              {flightDetails.itineraries.map((itinerary, itineraryIndex) => (
+                <Card key={itineraryIndex} className="mb-3">
                   <Card.Body>
-                    <h5>Segment {index + 1}</h5>
-                    <p><strong>From:</strong> {segment.departure.iataCode}</p>
-                    <p><strong>To:</strong> {segment.arrival.iataCode}</p>
-                    <p><strong>Departure:</strong> {new Date(segment.departure.at).toLocaleString()}</p>
-                    <p><strong>Arrival:</strong> {new Date(segment.arrival.at).toLocaleString()}</p>
-                    <p><strong>Duration:</strong> {segment.duration}</p>
-                    <p><strong>Carrier:</strong> {segment.carrierCode} {segment.number}</p>
-                    <p><strong>Aircraft:</strong> {segment.aircraft.code}</p>
+                    <h5>{itineraryIndex === 0 ? 'Outbound' : 'Return'} Flight</h5>
+                    <p><strong>Duration:</strong> {itinerary.duration}</p>
+                    {itinerary.segments.map((segment, segmentIndex) => (
+                      <Card key={segmentIndex} className="mb-2">
+                        <Card.Body>
+                          <h6>Segment {segmentIndex + 1}</h6>
+                          <p><strong>From:</strong> {segment.departure.iataCode}</p>
+                          <p><strong>To:</strong> {segment.arrival.iataCode}</p>
+                          <p><strong>Departure:</strong> {new Date(segment.departure.at).toLocaleString()}</p>
+                          <p><strong>Arrival:</strong> {new Date(segment.arrival.at).toLocaleString()}</p>
+                          <p><strong>Duration:</strong> {segment.duration}</p>
+                          <p><strong>Carrier:</strong> {segment.carrierCode} {segment.number}</p>
+                          <p><strong>Aircraft:</strong> {segment.aircraft.code}</p>
+                        </Card.Body>
+                      </Card>
+                    ))}
                   </Card.Body>
                 </Card>
               ))}
-              <p><strong>Total Duration:</strong> {itinerary.duration}</p>
             </Col>
             <Col md={6}>
               <Card.Title>Price Details</Card.Title>
