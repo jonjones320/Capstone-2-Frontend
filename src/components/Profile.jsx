@@ -10,11 +10,13 @@ function Profile() {
   const { currentUser } = useContext(AuthContext);
   const [user, setUser] = useState(null);
   const [trips, setTrips] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     async function fetchUser() {
+      setIsLoading(true);
       try {
         const userData = await RannerApi.getUser(currentUser.username);
         const userTrips = await RannerApi.getTripsByUsername(currentUser.username);
@@ -24,6 +26,8 @@ function Profile() {
 
       } catch (err) {
         setError('There was an error fetching your profile information.');
+      } finally {
+        setIsLoading(false);
       }
     }
     if (currentUser) {
@@ -34,17 +38,30 @@ function Profile() {
   const toggleEdit = () => setIsEditing(!isEditing);
 
   const handleUpdate = (updatedData) => {
-    setUser({ ...user, ...updatedData });
-    setIsEditing(false); 
+    setIsLoading(true);
+    try {
+      setUser({ ...user, ...updatedData });
+      setIsEditing(false); 
+    } catch (err) {
+      console.error('Failed to update profile:', err);
+      setError('Failed to update profile.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
+  // Loading spinner JSX.
+  if (isLoading) return (
+    <Container className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
+      <Spinner animation="border" role="status">
+        <span className="visually-hidden">Loading...</span>
+      </Spinner>
+    </Container>
+  );
   // Check if there is an error before rendering the view.
-  if (error) return <p>{error}</p>;
+  if (error) return <Alert variant="danger">{error}</Alert>;
+  if (!user) return <Alert variant="info">No user found.</Alert>;
 
-  // Check if the user data has been fetched before rendering the view.
-  if (!user) {
-    return <p>Loading profile...</p>;
-  }
 
   return (
     <Container className="mt-5">
