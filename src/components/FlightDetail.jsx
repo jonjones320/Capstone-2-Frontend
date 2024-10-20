@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Container, Card, Spinner, Alert, Row, Col, Badge } from 'react-bootstrap';
+import { Container, Card, Spinner, Alert, Row, Col, Badge, Button } from 'react-bootstrap';
 import RannerApi from '../../api';
 
 function FlightDetail() {
