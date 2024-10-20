@@ -1,0 +1,88 @@
+:root {
+    --primary-color: #3498db;
+    --secondary-color: #2ecc71;
+    --accent-color: #e74c3c;
+    --background-color: #ecf0f1;
+    --text-color: #2c3e50;
+  }
+  
+  body {
+    font-family: 'Roboto', sans-serif;
+    color: var(--text-color);
+    background-color: var(--background-color);
+  }
+  
+  .app-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  .main-content {
+    flex-grow: 1;
+    padding: 2rem 0;
+  }
+  
+  .app-footer {
+    background-color: var(--text-color);
+    color: var(--background-color);
+    padding: 1rem 0;
+    text-align: center;
+  }
+  
+  /* Navigation styles */
+  .navbar {
+    background-color: var(--primary-color);
+  }
+  
+  .navbar-brand {
+    font-weight: bold;
+    color: white !important;
+  }
+  
+  .nav-link {
+    color: rgba(255, 255, 255, 0.8) !important;
+    transition: color 0.3s ease;
+  }
+  
+  .nav-link:hover {
+    color: white !important;
+  }
+  
+  /* Button styles */
+  .btn-primary {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+  }
+  
+  .btn-primary:hover {
+    background-color: #27ae60;
+    border-color: #27ae60;
+  }
+  
+  /* Card styles */
+  .card {
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+  }
+  
+  .card:hover {
+    transform: translateY(-5px);
+  }
+  
+  /* Form styles */
+  .form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+  }
+  
+  /* Custom animation for page transitions */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  .fade-in {
+    animation: fadeIn 0.5s ease-in;
+  }
