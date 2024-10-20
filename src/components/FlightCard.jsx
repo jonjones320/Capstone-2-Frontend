@@ -1,11 +1,9 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Card, Row, Col, Badge, Button } from 'react-bootstrap';
-import AuthContext from '../context/AuthContext';
 import RannerApi from '../../api';
 
-const FlightCard = ({ flight, onRemove }) => {
-  const { currentUser } = useContext(AuthContext);
+const FlightCard = ({ flight, onRemove, username }) => {
   const [error, setError] = useState(null);
 
   // Normalize flightData from either TripDetails || FLightList.
@@ -50,7 +48,7 @@ const FlightCard = ({ flight, onRemove }) => {
 
   const handleRemoveFlight = async () => {
     try {
-      await RannerApi.deleteFlight(flight.id, currentUser.username);
+      await RannerApi.deleteFlight(flight.id, username);
       onRemove(flight.id);
     } catch (error) {
       console.error('Error removing flight:', error);

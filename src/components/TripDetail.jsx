@@ -116,7 +116,12 @@ function TripDetail() {
           <h3>Flights</h3>
           {flights.length > 0 ? (
             flights.map(flight => (
-              <FlightCard key={flight.id} flight={flight} onRemove={handleRemoveFlight} />
+              <FlightCard 
+                key={flight.id} 
+                flight={flight} 
+                onRemove={handleRemoveFlight} 
+                username={trip.username} 
+              />
             ))
           ) : (
             <p>No flights booked for this trip yet.</p>
