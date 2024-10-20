@@ -4,7 +4,7 @@ import RannerApi from '../../api';
 import FlightCard from './FlightCard';
 import TripForm from './TripForm';
 import AuthContext from '../context/AuthContext';
-import { Container, Button, Alert, Spinner, Button } from 'react-bootstrap';
+import { Container, Button, Alert, Spinner } from 'react-bootstrap';
 
 function TripDetail() {
   const { id } = useParams();
