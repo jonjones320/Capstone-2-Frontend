@@ -4,7 +4,7 @@ import RannerApi from '../../api';
 import FlightCard from './FlightCard';
 import TripForm from './TripForm';
 import AuthContext from '../context/AuthContext';
-import { Container, Button, Alert, Spinner } from 'react-bootstrap';
+import { Container, Button, Alert, Spinner, Button } from 'react-bootstrap';
 
 function TripDetail() {
   const { id } = useParams();
@@ -69,6 +69,10 @@ function TripDetail() {
     navigate('/flights', { state: { trip } });
   };
 
+  const handleBack = () => {
+    navigate(-1);
+  };
+
   if (isLoading) return (
     <Container className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
       <Spinner animation="border" role="status">
@@ -81,6 +85,9 @@ function TripDetail() {
 
   return (
     <Container className="mt-5">
+      <Button variant="secondary" onClick={handleBack} className="mb-3">
+        &larr; Back
+      </Button>
       {isEditing ? (
         <TripForm
           initialData={trip}
