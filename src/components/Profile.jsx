@@ -3,7 +3,7 @@ import AuthContext from '../context/AuthContext';
 import RannerApi from '../../api';
 import ProfileView from './ProfileView';
 import ProfileEdit from './ProfileEdit';
-import { Container, Button, Alert } from 'react-bootstrap';
+import { Container, Button, Alert, Spinner } from 'react-bootstrap';
 
 
 function Profile() {
