@@ -28,7 +28,12 @@ function SignUp() {
       await login(formData);
       navigate("/");
     } catch (err) {
-      setError(err);
+      console.error('Registration failed:', err);
+      if (err.message == "duplicate key value violates unique constraint \"users_email_key\"") {
+        setError('Email already registered. Please login.')
+      } else {
+        setError('Something went wrong. Probably user error... Please try again');
+      }
     }
   };
 
