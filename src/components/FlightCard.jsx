@@ -4,7 +4,7 @@ import { Card, Row, Col, Badge, Button } from 'react-bootstrap';
 import RannerApi from '../../api';
 
 const FlightCard = ({ flight, onRemove }) => {
-  console.log("FlightCard - FLIGHT: ", flight);
+  const [error, setError] = useState(null);
 
   // Normalize flightData from either TripDetails || FLightList.
   const flightData = flight.flightDetails || flight;
