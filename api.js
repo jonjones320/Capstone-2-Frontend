@@ -233,7 +233,6 @@ class RannerApi {
   static async getFlight(filters) {
     try {
       let params;
-      
       if (typeof filters === 'number' || typeof filters === 'string') {
         // If filters is a number or string, assume it's an ID.
         params = { id: filters };
@@ -263,8 +262,8 @@ class RannerApi {
     return res.flight;
   }
   /** Delete a saved flight by id. */
-  static async deleteFlight(id) {
-    await this.request(`flights/${id}`, {}, "delete");
+  static async deleteFlight(id, username) {
+    await this.request(`flights/${id}`, { username }, "delete");
   }
 
   ///// Accommodation API routes /////
