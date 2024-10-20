@@ -73,6 +73,10 @@ function TripDetail() {
     navigate(-1);
   };
 
+  const handleRemoveFlight = (flightId) => {
+    setFlights(flights.filter(flight => flight.id !== flightId));
+  };
+
   if (isLoading) return (
     <Container className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
       <Spinner animation="border" role="status">
@@ -105,14 +109,14 @@ function TripDetail() {
           {currentUser && (
             <div className="mb-4">
               <Button variant="primary" onClick={handleEdit} className="me-2">Edit</Button>
-              <Button variant="danger" onClick={handleDelete}>Delete</Button>
+              <Button variant="danger" onClick={handleDelete}>Delete Trip</Button>
             </div>
           )}
           
           <h3>Flights</h3>
           {flights.length > 0 ? (
             flights.map(flight => (
-              <FlightCard key={flight.id} flight={flight} />
+              <FlightCard key={flight.id} flight={flight} onRemove={handleRemoveFlight} />
             ))
           ) : (
             <p>No flights booked for this trip yet.</p>

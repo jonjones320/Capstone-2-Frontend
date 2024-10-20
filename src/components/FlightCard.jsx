@@ -1,8 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Card, Row, Col, Badge, Button } from 'react-bootstrap';
+import RannerApi from '../../api';
 
-const FlightCard = ({ flight }) => {
+const FlightCard = ({ flight, onRemove }) => {
   console.log("FlightCard - FLIGHT: ", flight);
 
   // Normalize flightData from either TripDetails || FLightList.
@@ -45,6 +46,16 @@ const FlightCard = ({ flight }) => {
     );
   };
 
+  const handleRemoveFlight = async () => {
+    try {
+      await RannerApi.deleteFlight(flight.id);
+      onRemove(flight.id);
+    } catch (error) {
+      console.error('Error removing flight:', error);
+      setError('Failed to delete flight.');
+    }
+  };
+
   return (
     <Card className="mb-4 shadow-sm">
       <Card.Body>
@@ -63,9 +74,14 @@ const FlightCard = ({ flight }) => {
             {flightData.price?.total || 'N/A'} {flightData.price?.currency || ''}
           </Card.Text>
           {flight.tripId && (
-            <Button as={Link} to={`/flights/${flight.id}`} variant="primary">
-              View Details
-            </Button>
+            <>
+              <Button as={Link} to={`/flights/${flight.id}`} variant="primary" className="me-2">
+                View Details
+              </Button>
+              <Button onClick={handleRemoveFlight} variant="danger">
+                Remove Flight
+              </Button>
+            </>
           )}
         </div>
       </Card.Body>
