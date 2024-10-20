@@ -5,6 +5,7 @@ import RannerApi from '../../api';
 
 function FlightDetail() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [flight, setFlight] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -24,6 +25,10 @@ function FlightDetail() {
 
     fetchFlightDetails();
   }, [id]);
+
+  const handleBack = () => {
+    navigate(-1);
+  };
 
 
   if (loading) return (
@@ -59,6 +64,9 @@ function FlightDetail() {
 
   return (
     <Container className="mt-5">
+      <Button variant="secondary" onClick={handleBack} className="mb-3">
+        &larr; Back
+      </Button>
       <Card>
         <Card.Header as="h2">Flight Details</Card.Header>
         <Card.Body>
