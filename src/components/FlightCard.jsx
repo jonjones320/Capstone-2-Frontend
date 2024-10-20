@@ -2,10 +2,12 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Card, Row, Col, Badge, Button } from 'react-bootstrap';
 
+
 const FlightCard = ({ flight }) => {
   console.log("FlightCard - FLIGHT: ", flight);
+
   // Handle bad or missing data.
-  if (!flight || !flight.itineraries || flight.itineraries.length === 0) {
+  if (!flight || !flight.flightDetails.itineraries || flight.flightDetails.itineraries.length === 0) {
     return (
       <Card className="mb-4 shadow-sm">
         <Card.Body>
@@ -16,8 +18,11 @@ const FlightCard = ({ flight }) => {
     );
   }
 
-  const departureSegment = flight.itineraries[0].segments[0] || {};
-  const arrivalSegment = flight.itineraries[0].segments[flight.itineraries[0].segments.length - 1] || {};
+  const departureSegment = flight.flightDetails.itineraries[0].segments[0
+                            ] || {};
+  const arrivalSegment = flight.flightDetails.itineraries[0].segments[
+                            flight.flightDetails.itineraries[0].segments.length - 1
+                            ] || {};
 
   return (
     <Card className="mb-4 shadow-sm">
@@ -26,7 +31,7 @@ const FlightCard = ({ flight }) => {
           <h3 className="mb-0">
             {departureSegment.departure?.iataCode || 'N/A'} to {arrivalSegment.arrival?.iataCode || 'N/A'}
           </h3>
-          <Badge bg="secondary">{flight.validatingAirlineCodes?.[0] || 'N/A'}</Badge>
+          <Badge bg="secondary">{flight.flightDetails.validatingAirlineCodes?.[0] || 'N/A'}</Badge>
         </Card.Title>
         <Row className="mb-3">
           <Col md={6}>
@@ -41,18 +46,18 @@ const FlightCard = ({ flight }) => {
         <Row className="mb-3">
           <Col md={6}>
             <Card.Text>
-              <strong>Duration:</strong> {flight.itineraries[0].duration ? flight.itineraries[0].duration.replace('PT', '') : 'N/A'}
+              <strong>Duration:</strong> {flight.flightDetails.itineraries[0].duration ? flight.flightDetails.itineraries[0].duration.replace('PT', '') : 'N/A'}
             </Card.Text>
           </Col>
           <Col md={6}>
             <Card.Text>
-              <strong>Stops:</strong> {flight.itineraries[0].segments ? flight.itineraries[0].segments.length - 1 : 'N/A'}
+              <strong>Stops:</strong> {flight.flightDetails.itineraries[0].segments ? flight.flightDetails.itineraries[0].segments.length - 1 : 'N/A'}
             </Card.Text>
           </Col>
         </Row>
         <div className="d-flex justify-content-between align-items-center">
           <Card.Text className="h4 mb-0">
-            {flight.price?.total || 'N/A'} {flight.price?.currency || ''}
+            {flight.flightDetails.price?.total || 'N/A'} {flight.flightDetails.price?.currency || ''}
           </Card.Text>
           {flight.id && (
             <Button as={Link} to={`/flights/${flight.id}`} variant="primary">
