@@ -1,44 +1,57 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Container, Row, Col, Button, Card } from 'react-bootstrap';
+import { Container, Row, Col, Button } from 'react-bootstrap';
 
 function Home() {
   return (
-    <div style={{ position: 'relative', overflow: 'hidden', minHeight: '100vh' }}>
-      <video
-        autoPlay
-        loop
-        muted
-        style={{
-          position: 'absolute',
-          width: '100%',
-          left: '50%',
-          top: '50%',
-          height: '100%',
-          objectFit: 'cover',
-          transform: 'translate(-50%, -50%)',
-          zIndex: '-1'
-        }}
-      >
-        <source src="../../public/Video/backyard-takeoff.mp4" type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
-      
-      <Container className="mt-5">
-        <Row className="justify-content-center">
-          <Col md={8} className="text-center">
-            <Card className="shadow-sm bg-white bg-opacity-75">
-              <Card.Body>
-                <h1 className="display-4 mb-4">Welcome to Ranner!</h1>
-                <p className="lead mb-4">Start planning your next big adventure, one step at a time!</p>
-                <Link to="/origin">
-                  <Button variant="primary" size="lg">Start Your Journey</Button>
-                </Link>
-              </Card.Body>
-            </Card>
+    <div className="home-page fade-in">
+      <Container>
+        <Row className="align-items-center" style={{ minHeight: '80vh' }}>
+          <Col md={6}>
+            <h1 className="display-4 mb-4">Explore the World with Ranner</h1>
+            <p className="lead mb-4">Plan your next adventure with ease. Discover new destinations, find the best flights, and create unforgettable memories.</p>
+            <Link to="/origin">
+              <Button variant="primary" size="lg" className="mr-3">Start Your Journey</Button>
+            </Link>
+            <Link to="/signup">
+              <Button variant="outline-primary" size="lg">Sign Up</Button>
+            </Link>
+          </Col>
+          <Col md={6}>
+            <div className="hero-image">
+              <img src="/images/travel-illustration.svg" alt="Travel illustration" className="img-fluid" />
+            </div>
           </Col>
         </Row>
       </Container>
+      <div className="features-section">
+        <Container>
+          <h2 className="text-center mb-5">Why Choose Ranner?</h2>
+          <Row>
+            <Col md={4}>
+              <div className="feature-item text-center">
+                <i className="fas fa-globe fa-3x mb-3"></i>
+                <h3>Explore Anywhere</h3>
+                <p>Find flights to any destination around the world.</p>
+              </div>
+            </Col>
+            <Col md={4}>
+              <div className="feature-item text-center">
+                <i className="fas fa-dollar-sign fa-3x mb-3"></i>
+                <h3>Best Prices</h3>
+                <p>Get the most competitive prices for your trips.</p>
+              </div>
+            </Col>
+            <Col md={4}>
+              <div className="feature-item text-center">
+                <i className="fas fa-user-shield fa-3x mb-3"></i>
+                <h3>Secure Booking</h3>
+                <p>Book with confidence using our secure platform.</p>
+              </div>
+            </Col>
+          </Row>
+        </Container>
+      </div>
     </div>
   );
 }
