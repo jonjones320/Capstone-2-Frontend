@@ -6,16 +6,14 @@ import RannerApi from '../../api';
 function FlightDetail() {
   const { id } = useParams();
   const [flight, setFlight] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchFlightDetails = async () => {
-      setLoading(true);
       try {
         const result = await RannerApi.getFlight(id);
-        console.log("FlightDetail.jsx - fetchFlightDetails - result: ", result);
-        setFlight(result.flight);
+        setFlight(result);
       } catch (err) {
         console.error("Error fetching flight details:", err);
         setError("Failed to load flight details. Please try again later.");
@@ -27,7 +25,6 @@ function FlightDetail() {
     fetchFlightDetails();
   }, [id]);
 
-  console.log("FlightDetail.jsx - fetchFlightDetails - current flight state:", flight);
 
   if (loading) return (
     <Container className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
@@ -43,13 +40,22 @@ function FlightDetail() {
     </Container>
   );
 
-  if (!flight || !flight.flightDetails) return (
+  if (!flight) return (
     <Container className="mt-5">
       <Alert variant="info">No flight found.</Alert>
     </Container>
   );
 
   const { flightDetails } = flight;
+
+  if (!flightDetails) {
+    console.error("Flight object exists, but flightDetails is missing:", flight);
+    return (
+      <Container className="mt-5">
+        <Alert variant="warning">Flight details are incomplete. Please try again later.</Alert>
+      </Container>
+    );
+  }
 
   return (
     <Container className="mt-5">
