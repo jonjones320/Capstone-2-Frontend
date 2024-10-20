@@ -26,7 +26,7 @@ function SignUp() {
     try {
       await RannerApi.signUp(formData);
       await login(formData);
-      navigate("/");
+      navigate("/origin");
     } catch (err) {
       console.error('Registration failed:', err);
       if (err.message == "duplicate key value violates unique constraint \"users_email_key\"") {
