@@ -7,7 +7,7 @@ function NavBar() {
   const { currentUser } = useContext(AuthContext);
   
   return (
-    <Navbar bg="light" expand="lg" className="mb-3">
+    <Navbar expand="lg" className="mb-3 custom-navbar">
       <Container>
         <Navbar.Brand as={Link} to="/">Ranner</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
