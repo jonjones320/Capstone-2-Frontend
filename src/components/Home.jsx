@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { Container, Row, Col, Button } from 'react-bootstrap';
+import AuthContext from '../context/AuthContext';
 
 function Home() {
+  const { currentUser } = useContext(AuthContext);
+
   return (
     <div className="home-page fade-in">
       <Container>
@@ -15,20 +18,33 @@ function Home() {
             </p>
             <Row>
               <Col>
-                <Link to="/origin">
-                  <Button variant="primary" size="lg" className="mr-3">Start Your Journey</Button>
-                </Link>
+                {currentUser ? (
+                  <Link to="/origin">
+                    <Button variant="primary" size="lg" className="mr-3">Start Your Journey</Button>
+                  </Link>
+                ) : (
+                  <Link to="/login">
+                    <Button variant="primary" size="lg" className="mr-3">Log In</Button>
+                  </Link>
+                )}
               </Col>
               <Col>
-                <Link to="/signup">
-                  <Button variant="outline-primary" size="lg">Sign Up</Button>
-                </Link>
+                {!currentUser && (
+                  <Link to="/signup">
+                    <Button variant="outline-primary" size="lg">Sign Up</Button>
+                  </Link>
+                )}
               </Col>
             </Row>
           </Col>
           <Col md={6}>
             <div className="hero-image">
-            <img src="/images/tom-barrett-cloudy-wing-tip.jpg" alt="Airplane wing tip in clouds" className="img-fluid" />            </div>
+              <img 
+                src="/images/tom-barrett-cloudy-wing-tip.jpg" 
+                alt="Airplane wing tip in clouds" 
+                className="img-fluid" 
+              />
+            </div>
           </Col>
         </Row>
       </Container>
