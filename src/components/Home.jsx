@@ -9,13 +9,22 @@ function Home() {
         <Row className="align-items-center" style={{ minHeight: '80vh' }}>
           <Col md={6}>
             <h1 className="display-4 mb-4">Explore the World with Ranner</h1>
-            <p className="lead mb-4">Plan your next adventure with ease. Discover new destinations, find the best flights, and create unforgettable memories.</p>
-            <Link to="/origin">
-              <Button variant="primary" size="lg" className="mr-3">Start Your Journey</Button>
-            </Link>
-            <Link to="/signup">
-              <Button variant="outline-primary" size="lg">Sign Up</Button>
-            </Link>
+            <p className="lead mb-4">
+              Plan your next adventure with ease. Discover new destinations, 
+              find the best flights, and create unforgettable memories.
+            </p>
+            <Row>
+              <Col>
+                <Link to="/origin">
+                  <Button variant="primary" size="lg" className="mr-3">Start Your Journey</Button>
+                </Link>
+              </Col>
+              <Col>
+                <Link to="/signup">
+                  <Button variant="outline-primary" size="lg">Sign Up</Button>
+                </Link>
+              </Col>
+            </Row>
           </Col>
           <Col md={6}>
             <div className="hero-image">
