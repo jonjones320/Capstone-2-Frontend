@@ -17,7 +17,7 @@ function Home() {
               find the best flights, and create unforgettable memories.
             </p>
             <Row>
-              <Col>
+              <Col className="justify-content-center">
                 {currentUser ? (
                   <Link to="/origin">
                     <Button variant="primary" size="lg" className="mr-3">Start Your Journey</Button>
@@ -28,7 +28,7 @@ function Home() {
                   </Link>
                 )}
               </Col>
-              <Col>
+              <Col className="justify-content-center">
                 {!currentUser && (
                   <Link to="/signup">
                     <Button variant="outline-primary" size="lg">Sign Up</Button>
