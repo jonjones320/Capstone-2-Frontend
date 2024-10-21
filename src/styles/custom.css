@@ -114,6 +114,11 @@ body {
     z-index: -1;
 }
 
+.homepage-buttons {
+    display: flex;
+    justify-content: center;
+}
+
 .hero-image {
     max-width: 100%;
     height: auto;
