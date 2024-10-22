@@ -22,8 +22,7 @@ function FlightList() {
           destinationLocationCode: trip.destination,
           departureDate: trip.startDate,
           returnDate: trip.endDate,
-          adults: trip.passengers,
-          currencyCode: 'USD'
+          adults: trip.passengers
         });
         setFlights(res.data);
       } catch (err) {
