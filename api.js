@@ -59,7 +59,7 @@ class RannerApi {
   }
   /** Get details on a user by username. */
   static async getUser(username) {
-    let res = await this.request(`users/${username}`);
+    let res = await this.request(`users/${username}`, { username });
     return res.user;
   }
   /** Post a new user. */
@@ -74,7 +74,7 @@ class RannerApi {
   }
   /** Delete a user by username. */
   static async deleteUser(username) {
-    await this.request(`users/${username}`, {}, "delete");
+    await this.request(`users/${username}`, { username }, "delete");
   }
 
   /////// TRIPS ///////
@@ -107,7 +107,7 @@ class RannerApi {
   }
   /** Delete a trip by ID */
   static async deleteTrip(id) {
-    let res = await this.request(`trips/${id}`, {}, 'delete');
+    let res = await this.request(`trips/${id}`, { username }, 'delete');
     return res.message;
   }
 
