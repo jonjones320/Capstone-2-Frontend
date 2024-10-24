@@ -9,7 +9,7 @@ function Home() {
   return (
     <div className="home-page fade-in">
       <Container>
-        <Row className="align-items-center" style={{ minHeight: '80vh' }}>
+        <Row className="align-items-center" style={{ minHeight: '80vh', marginLeft: '1vw' }}>
           <Col md={6}>
             <h1 className="display-4 mb-4">Explore the World with Ranner</h1>
             <p className="lead mb-4">
