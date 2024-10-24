@@ -5,6 +5,7 @@ import TripFilterForm from './TripFilterForm';
 import { Button, Collapse, Container, Row, Col, Spinner, Alert } from 'react-bootstrap';
 
 function TripList() {
+  const { currentUser } = useContext(AuthContext); 
   const [trips, setTrips] = useState([]);
   const [filters, setFilters] = useState({});
   const [open, setOpen] = useState(false);
@@ -16,7 +17,8 @@ function TripList() {
       setIsLoading(true);
       setError(null);
       try {
-        const fetchedTrips = await RannerApi.getTrips(filters);
+        const userFilters = { ...filters, username: currentUser.username };
+        const fetchedTrips = await RannerApi.getTrips(userFilters);
         setTrips(fetchedTrips);
       } catch (err) {
         console.error("Error fetching trips:", err);
@@ -25,8 +27,12 @@ function TripList() {
         setIsLoading(false);
       }
     }
-    fetchTrips();
-  }, [filters]);
+    if (currentUser) {
+      fetchTrips();
+    } else {
+      setError("Please log in to view your trips.");
+    }
+  }, [filters, currentUser]); 
 
   const handleFilter = (newFilters) => {
     setFilters(newFilters);
