@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import AuthContext from '../context/AuthContext';
 import RannerApi from '../../api';
 import TripCard from './TripCard';
@@ -6,7 +6,7 @@ import TripFilterForm from './TripFilterForm';
 import { Button, Collapse, Container, Row, Col, Spinner, Alert } from 'react-bootstrap';
 
 function TripList() {
-  const { currentUser } = useContext(AuthContext); 
+  const { currentUser } = useContext(AuthContext);
   const [trips, setTrips] = useState([]);
   const [filters, setFilters] = useState({});
   const [open, setOpen] = useState(false);
