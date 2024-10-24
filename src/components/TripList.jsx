@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import AuthContext from '../context/AuthContext';
 import RannerApi from '../../api';
 import TripCard from './TripCard';
 import TripFilterForm from './TripFilterForm';
