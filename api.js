@@ -106,7 +106,7 @@ class RannerApi {
     return res.trip;
   }
   /** Delete a trip by ID */
-  static async deleteTrip(id) {
+  static async deleteTrip(id, username) {
     let res = await this.request(`trips/${id}`, { username }, 'delete');
     return res.message;
   }
