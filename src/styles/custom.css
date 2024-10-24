@@ -54,6 +54,10 @@ body {
     color: white !important;
 }
 
+.nav-bar-toggler {
+    background-color: white;
+}
+
 /* Button styles */
 .btn-primary {
     background-color: var(--secondary-color);
