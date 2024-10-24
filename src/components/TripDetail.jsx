@@ -38,7 +38,7 @@ function TripDetail() {
 
   const handleDelete = async () => {
     try {
-      await RannerApi.deleteTrip(id);
+      await RannerApi.deleteTrip(id, currentUser.username);
       navigate('/trips');
     } catch (err) {
       console.error('Failed to delete trip:', err);
