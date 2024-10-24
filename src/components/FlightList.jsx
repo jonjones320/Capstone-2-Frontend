@@ -67,9 +67,6 @@ function FlightList() {
         className="d-flex justify-content-center align-items-center" 
         style={{ height: '100vh' }}
       >
-        <Button variant="secondary" onClick={handleBack} className="mb-3">
-          &larr; Back
-        </Button>
         <Spinner animation="border" role="status">
           <span className="visually-hidden">Loading flights...</span>
         </Spinner>
