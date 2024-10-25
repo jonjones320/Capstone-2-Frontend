@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useErrorHandler } from '../utils/errorHandler';
+import ErrorDisplay from '../components/ErrorDisplay';
 import RannerApi from '../../api';
 import FlightCard from './FlightCard';
 import { Container, Alert, Spinner, Button, Card } from 'react-bootstrap';
@@ -9,7 +11,7 @@ function FlightList() {
   const { trip } = state || {};
   const [flights, setFlights] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { error, handleError, clearError } = useErrorHandler();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,8 +30,7 @@ function FlightList() {
         });
         setFlights(res.data);
       } catch (err) {
-        console.error("Error fetching flights:", err);
-        setError("Unable to fetch flights. Please try again later.");
+        handleError(err);
       } finally {
         setIsLoading(false);
       }
@@ -74,18 +75,6 @@ function FlightList() {
     );
   }
 
-  // JSX display in case of error while loading flights.
-  if (error) { 
-    return (
-      <Container className="mt-5">
-        <Button variant="secondary" onClick={handleBack} className="mb-3">
-          &larr; Back
-        </Button>
-        <Alert variant="danger">{error}</Alert>
-      </Container>
-    );
-  }
-
   // JSX display if no flights are found.
   if (flights.length === 0) {
     return (
@@ -103,6 +92,7 @@ function FlightList() {
   // Flight List JSX display. Creates a FlightCard for each flight.
   return (
     <Container className="mt-5">
+      <ErrorDisplay error={error} onClose={clearError} />
       <Button variant="secondary" onClick={handleBack} className="mb-3">
         &larr; Back
       </Button>
