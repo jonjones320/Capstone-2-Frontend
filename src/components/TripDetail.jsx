@@ -36,7 +36,7 @@ function TripDetail() {
     fetchTripAndFlights();
   }, [id, handleError]);
 
-// Handle Trip section //
+  // Handle Trip section //
   const handleUpdate = async (updatedTripData) => {
     setIsLoading(true);
     try {
@@ -45,8 +45,7 @@ function TripDetail() {
       setTrip(updatedTrip);
       setIsEditing(false);
     } catch (err) {
-      console.error('Failed to update trip:', err);
-      setError('Failed to update trip.');
+      handleError(err);
     } finally {
       setIsLoading(false);
     }
@@ -57,8 +56,7 @@ function TripDetail() {
       await RannerApi.deleteTrip(id, currentUser.username);
       navigate('/trips');
     } catch (err) {
-      console.error('Failed to delete trip:', err);
-      setError('Failed to delete trip.');
+      handleError(err);
     }
   };
 
@@ -71,8 +69,13 @@ function TripDetail() {
     navigate('/flights', { state: { trip } });
   };
 
-  const handleRemoveFlight = (flightId) => {
-    setFlights(flights.filter(flight => flight.id !== flightId));
+  const handleRemoveFlight = async (flightId) => {
+    try {
+      await RannerApi.deleteFlight(flightId, currentUser.username);
+      setFlights(flights.filter(flight => flight.id !== flightId));
+    } catch (err) {
+      handleError(err); // Use the standardized error handler
+    }
   };
   
   // Go back //
@@ -89,7 +92,14 @@ function TripDetail() {
     </Container>
   );
 
-  if (!trip) return <Alert variant="info">No trip found.</Alert>;
+  if (!trip) return (
+    <Container className="mt-5">
+      <ErrorDisplay 
+        error={new Error("Trip not found")} 
+        onClose={() => navigate('/trips')} 
+      />
+    </Container>
+  );
 
   // Main display - includes editing and viewing //
   return (
