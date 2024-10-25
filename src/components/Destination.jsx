@@ -8,6 +8,7 @@ import ErrorDisplay from '../components/ErrorDisplay';
 function Destination() {
   const [destination, setDestination] = useState('');
   const [suggestions, setSuggestions] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { origin } = location.state || {};
