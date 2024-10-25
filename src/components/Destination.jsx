@@ -16,12 +16,18 @@ function Destination() {
   const handleChange = async (e) => {
     setDestination(e.target.value);
     if (e.target.value.length >= 3) {
+      setIsLoading(true);
       try {
         const res = await RannerApi.getAirportSuggestions(e.target.value);
         setSuggestions(res);
       } catch (err) {
         handleError(err);
+        setSuggestions([]);
+      } finally {
+        setIsLoading(false);
       }
+    } else {
+      setSuggestions([]);
     }
   };
 
@@ -56,15 +62,21 @@ function Destination() {
           />
         </Form.Group>
         <ListGroup className="mb-3">
-          {suggestions.map((suggestion) => (
-            <ListGroup.Item 
-              key={suggestion.id} 
-              action 
-              onClick={() => handleSuggestionClick(suggestion.iataCode)}
-            >
-              {suggestion.name} ({suggestion.iataCode})
-            </ListGroup.Item>
-          ))}
+          {isLoading ? (
+            <div className="text-center py-3">
+              <Spinner animation="border" size="sm" />
+            </div>
+          ) : (
+            suggestions.map((suggestion) => (
+              <ListGroup.Item 
+                key={suggestion.id} 
+                action 
+                onClick={() => handleSuggestionClick(suggestion.iataCode)}
+              >
+                {suggestion.name} ({suggestion.iataCode})
+              </ListGroup.Item>
+            ))
+          )}
         </ListGroup>
         <div className="d-flex justify-content-between">
           <Button variant="secondary" onClick={handleBack}>Back</Button>
