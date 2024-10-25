@@ -1,4 +1,3 @@
-// src/__tests__/components/TripForm.test.jsx
 import { screen, fireEvent, waitFor } from '@testing-library/react';
 import TripForm from '../../components/TripForm';
 import { renderWithContext, mockTrip } from '../setup';
