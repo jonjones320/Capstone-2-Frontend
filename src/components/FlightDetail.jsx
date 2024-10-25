@@ -1,69 +1,54 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Container, Card, Spinner, Alert, Row, Col, Badge, Button } from 'react-bootstrap';
+import { Container, Card, Spinner, Button, Row, Col, Badge } from 'react-bootstrap';
 import RannerApi from '../../api';
+import { useErrorHandler } from '../utils/errorHandler';
+import ErrorDisplay from '../components/ErrorDisplay';
 
 function FlightDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [flight, setFlight] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { error, handleError, clearError } = useErrorHandler();
 
   useEffect(() => {
     const fetchFlightDetails = async () => {
       try {
+        setLoading(true);
         const result = await RannerApi.getFlight(id);
         setFlight(result);
       } catch (err) {
-        console.error("Error fetching flight details:", err);
-        setError("Failed to load flight details. Please try again later.");
+        handleError(err);
       } finally {
         setLoading(false);
       }
     };
 
     fetchFlightDetails();
-  }, [id]);
+  }, [id, handleError]);
 
   const handleBack = () => {
     navigate(-1);
   };
 
-
-  if (loading) return (
-    <Container className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
-      <Spinner animation="border" role="status">
-        <span className="visually-hidden">Loading...</span>
-      </Spinner>
-    </Container>
-  );
-
-  if (error) return (
-    <Container className="mt-5">
-      <Alert variant="danger">{error}</Alert>
-    </Container>
-  );
-
-  if (!flight) return (
-    <Container className="mt-5">
-      <Alert variant="info">No flight found.</Alert>
-    </Container>
-  );
-
-  const { flightDetails } = flight;
-
-  if (!flightDetails) {
-    console.error("Flight object exists, but flightDetails is missing:", flight);
+  if (loading) {
     return (
-      <Container className="mt-5">
-        <Alert variant="warning">Flight details are incomplete. Please try again later.</Alert>
+      <Container className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </Spinner>
       </Container>
     );
   }
 
+  if (!flight) return null;
+
+  const { flightDetails } = flight;
+
   return (
     <Container className="mt-5">
+      <ErrorDisplay error={error} onClose={clearError} />
       <Button variant="secondary" onClick={handleBack} className="mb-3">
         &larr; Back
       </Button>
