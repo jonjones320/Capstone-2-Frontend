@@ -1,20 +1,22 @@
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 import AuthContext from '../context/AuthContext';
 import RannerApi from '../../api';
-import { Form, Button, Container, Row, Col, Alert } from 'react-bootstrap';
+import { useErrorHandler } from '../utils/errorHandler';
+import ErrorDisplay from '../components/ErrorDisplay';
 
 function SignUp() {
   const [formData, setFormData] = useState({
-      username: '',
-      password: '',
-      firstName: '',
-      lastName: '',
-      email: '',
-    });
+    username: '',
+    password: '',
+    firstName: '',
+    lastName: '',
+    email: '',
+  });
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
-  const [error, setError] = useState(null);
+  const { error, handleError, clearError } = useErrorHandler();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,20 +30,17 @@ function SignUp() {
       await login(formData);
       navigate("/origin");
     } catch (err) {
-      console.error('Registration failed:', err);
-      if (err.message == "duplicate key value violates unique constraint \"users_email_key\"") {
-        setError('Email already registered. Please login.')
-      } else {
-        setError('Something went wrong. Probably user error... Please try again');
-      }
+      handleError(err);
     }
   };
+
 
   return (
     <Container className="mt-5">
       <Row className="justify-content-md-center">
         <Col md={6}>
           <h1 className="text-center mb-4">Sign Up</h1>
+          <ErrorDisplay error={error} onClose={clearError} />
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3">
               <Form.Label>Username</Form.Label>
@@ -101,7 +100,6 @@ function SignUp() {
             <Button variant="primary" type="submit" className="w-100">
               Sign Up
             </Button>
-            {error && <Alert variant="danger" className="mt-3">{error.message}</Alert>}
           </Form>
         </Col>
       </Row>
