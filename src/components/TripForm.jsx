@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { format } from 'date-fns';
+import { Form, Button, ListGroup, Spinner } from 'react-bootstrap';
 import RannerApi from '../../api';
-import { Form, Button, Alert, ListGroup } from 'react-bootstrap';
+import { useErrorHandler } from '../utils/errorHandler';
+import ErrorDisplay from '../components/ErrorDisplay';
 
 function TripForm({ initialData, onSubmit, isEdit = false }) {
   const [formData, setFormData] = useState({
@@ -12,65 +14,89 @@ function TripForm({ initialData, onSubmit, isEdit = false }) {
     endDate: '',
     passengers: 1,
   });
-  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [originSuggestions, setOriginSuggestions] = useState([]);
   const [destinationSuggestions, setDestinationSuggestions] = useState([]);
+  const { error, handleError, clearError } = useErrorHandler();
 
   useEffect(() => {
     if (initialData) {
-      setFormData({
-        name: initialData.name || '',
-        origin: initialData.origin || '',
-        destination: initialData.destination || '',
-        startDate: initialData.startDate ? format(new Date(initialData.startDate), 'yyyy-MM-dd') : '',
-        endDate: initialData.endDate ? format(new Date(initialData.endDate), 'yyyy-MM-dd') : '',
-        passengers: initialData.passengers || 1,
-      });
+      try {
+        setFormData({
+          name: initialData.name || '',
+          origin: initialData.origin || '',
+          destination: initialData.destination || '',
+          startDate: initialData.startDate ? format(new Date(initialData.startDate), 'yyyy-MM-dd') : '',
+          endDate: initialData.endDate ? format(new Date(initialData.endDate), 'yyyy-MM-dd') : '',
+          passengers: initialData.passengers || 1,
+        });
+      } catch (err) {
+        handleError(new Error('Error formatting dates'));
+      }
     }
-  }, [initialData]);
+  }, [initialData, handleError]);
 
   const handleChange = async ({ target: { name, value } }) => {
     setFormData(data => ({ ...data, [name]: value }));
+    clearError();
 
-    if (name === 'origin' && value.length >= 3) {
-      const res = await RannerApi.getAirportSuggestions(value);
-      setOriginSuggestions(res);
-    } else if (name === 'destination' && value.length >= 3) {
-      const res = await RannerApi.getAirportSuggestions(value);
-      setDestinationSuggestions(res);
+    if ((name === 'origin' || name === 'destination') && value.length >= 3) {
+      setIsLoading(true);
+      try {
+        const res = await RannerApi.getAirportSuggestions(value);
+        if (name === 'origin') {
+          setOriginSuggestions(res);
+        } else {
+          setDestinationSuggestions(res);
+        }
+      } catch (err) {
+        handleError(err);
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
-  const handleSuggestionClick = (name, iataCode) => {
-    setFormData(data => ({ ...data, [name]: iataCode }));
-    if (name === 'origin') {
-      setOriginSuggestions([]);
-    } else if (name === 'destination') {
-      setDestinationSuggestions([]);
+  const validateForm = () => {
+    if (formData.origin.length > 100 || formData.destination.length > 100) {
+      handleError(new Error('Location codes must be less than 100 characters'));
+      return false;
     }
+    if (formData.name.length > 50) {
+      handleError(new Error('Trip name must be less than 50 characters'));
+      return false;
+    }
+    if (new Date(formData.startDate) > new Date(formData.endDate)) {
+      handleError(new Error('Start date cannot be after end date'));
+      return false;
+    }
+    return true;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validateForm()) return;
 
-    if (formData.origin.length > 100 || formData.destination.length > 100 || formData.name.length > 50) {
-      setError('Location must be less than 101 characters and Name must be less than 51 characters.');
-      return;
-    };
-
-    const dataToSubmit = { 
-      ...formData, 
-      startDate: format(new Date(formData.startDate), 'yyyy-MM-dd'),
-      endDate: format(new Date(formData.endDate), 'yyyy-MM-dd'),
-      passengers: parseInt(formData.passengers, 10),
-    };
-
-    onSubmit(dataToSubmit);
+    setIsSaving(true);
+    try {
+      const dataToSubmit = {
+        ...formData,
+        startDate: format(new Date(formData.startDate), 'yyyy-MM-dd'),
+        endDate: format(new Date(formData.endDate), 'yyyy-MM-dd'),
+        passengers: parseInt(formData.passengers, 10),
+      };
+      await onSubmit(dataToSubmit);
+    } catch (err) {
+      handleError(err);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
     <Form onSubmit={handleSubmit}>
-      {error && <Alert variant="danger">{error}</Alert>}
+      <ErrorDisplay error={error} onClose={clearError} />
 
       <Form.Group className="mb-3">
         <Form.Label>Trip Name:</Form.Label>
@@ -80,6 +106,7 @@ function TripForm({ initialData, onSubmit, isEdit = false }) {
           value={formData.name}
           onChange={handleChange}
           required
+          disabled={isSaving}
         />
       </Form.Group>
 
@@ -91,6 +118,7 @@ function TripForm({ initialData, onSubmit, isEdit = false }) {
           value={formData.origin}
           onChange={handleChange}
           required
+          disabled={isSaving}
         />
         <ListGroup>
           {originSuggestions.map(suggestion => (
@@ -109,6 +137,7 @@ function TripForm({ initialData, onSubmit, isEdit = false }) {
           value={formData.destination}
           onChange={handleChange}
           required
+          disabled={isSaving}
         />
         <ListGroup>
           {destinationSuggestions.map(suggestion => (
@@ -127,6 +156,7 @@ function TripForm({ initialData, onSubmit, isEdit = false }) {
           value={formData.startDate}
           onChange={handleChange}
           required
+          disabled={isSaving}
         />
       </Form.Group>
 
@@ -138,6 +168,7 @@ function TripForm({ initialData, onSubmit, isEdit = false }) {
           value={formData.endDate}
           onChange={handleChange}
           required
+          disabled={isSaving}
         />
       </Form.Group>
 
@@ -150,11 +181,23 @@ function TripForm({ initialData, onSubmit, isEdit = false }) {
           onChange={handleChange}
           min="1"
           required
+          disabled={isSaving}
         />
       </Form.Group>
 
-      <Button type="submit" variant="primary">
-        {isEdit ? 'Update Trip' : 'Create Trip'}
+      <Button 
+        type="submit" 
+        variant="primary"
+        disabled={isSaving}
+      >
+        {isSaving ? (
+          <>
+            <Spinner size="sm" className="me-2" />
+            {isEdit ? 'Updating...' : 'Creating...'}
+          </>
+        ) : (
+          isEdit ? 'Update Trip' : 'Create Trip'
+        )}
       </Button>
     </Form>
   );
