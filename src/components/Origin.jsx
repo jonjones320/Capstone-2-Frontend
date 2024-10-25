@@ -2,11 +2,14 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import RannerApi from '../../api';
 import { Container, Form, Button, ListGroup } from 'react-bootstrap';
+import { useErrorHandler } from '../utils/errorHandler';
+import ErrorDisplay from '../components/ErrorDisplay';
 
 function Origin() {
   const [origin, setOrigin] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const navigate = useNavigate();
+  const { error, handleError, clearError } = useErrorHandler();
 
   const handleChange = async (e) => {
     setOrigin(e.target.value);
