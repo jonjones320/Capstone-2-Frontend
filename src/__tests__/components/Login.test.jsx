@@ -1,7 +1,7 @@
 import { screen, fireEvent, waitFor } from '@testing-library/react';
-import { renderWithContext, mockUser } from './setup';
-import Login from '../components/Login';
-import RannerApi from '../../api';
+import { renderWithContext, mockUser } from '../setup';
+import Login from '../../components/Login';
+import RannerApi from '../../../api';
 
 describe('Login Component', () => {
   beforeEach(() => {
