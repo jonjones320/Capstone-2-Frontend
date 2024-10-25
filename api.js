@@ -1,4 +1,5 @@
 import axios from "axios";
+import ErrorHandler from "../Ranner-Frontend/src/utils/errorHandler"
 
 // const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:3001";
 const BASE_URL = import.meta.env.REACT_APP_BASE_URL || "https://capstone-2-backend-iahv.onrender.com";
@@ -11,31 +12,20 @@ class RannerApi {
   static token;
 
   static async request(endpoint, data = {}, method = "get") {
-    console.log(`API Call: ${method.toUpperCase()} ${endpoint}`, data);
-    const url = `${BASE_URL}/${endpoint}`;
-    const headers = { Authorization: `Bearer ${RannerApi.token}` };
-    const params = (method === "get") ? data : {};
-  
     try {
-      console.log(`Sending request to: ${url}`);
-      const response = await axios({ url, method, data, params, headers });
-      console.log(`Received response from ${url}:`, response.data);
+      const response = await axios({
+        url: `${BASE_URL}/${endpoint}`,
+        method,
+        data,
+        params: (method === "get") ? data : {},
+        headers: { Authorization: `Bearer ${RannerApi.token}` }
+      });
       return response.data;
     } catch (err) {
-      console.error("RannerAPI Error:", err);
-      if (err.response) {
-        console.error("Response data:", err.response.data);
-        console.error("Response status:", err.response.status);
-        console.error("Response headers:", err.response.headers);
-      } else if (err.request) {
-        console.error("No response received:", err.request);
-      } else {
-        console.error("Error setting up request:", err.message);
-      }
-      let message = err?.response?.data?.error?.message || "An error occurred";
-      throw Array.isArray(message) ? message : [message];
+      ErrorHandler.handleApiError(err);
     }
-  }
+  };
+
 
   /////// SIGN-UP & LOGIN ///////
 
