@@ -71,7 +71,7 @@ function FlightDetail() {
         <Card.Header as="h2">Flight Details</Card.Header>
         <Card.Body>
           <Row>
-            <Row md={6}>
+            <Col md={6}>
               <Card.Title>Itinerary</Card.Title>
               {flightDetails.itineraries.map((itinerary, itineraryIndex) => (
                 <Card key={itineraryIndex} className="mb-3">
@@ -95,8 +95,8 @@ function FlightDetail() {
                   </Card.Body>
                 </Card>
               ))}
-            </Row>
-            <Row md={6}>
+            </Col>
+            <Col md={6}>
               <Card.Title>Price Details</Card.Title>
               <p><strong>Total:</strong> {flightDetails.price.total} {flightDetails.price.currency}</p>
               <p><strong>Base:</strong> {flightDetails.price.base} {flightDetails.price.currency}</p>
@@ -120,7 +120,7 @@ function FlightDetail() {
                   <Badge key={index} bg="secondary" className="me-1">{code}</Badge>
                 ))}
               </div>
-            </Row>
+            </Col>
           </Row>
         </Card.Body>
       </Card>
