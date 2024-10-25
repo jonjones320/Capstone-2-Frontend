@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useErrorHandler } from '../utils/errorHandler';
-import ErrorDisplay from '../components/ErrorDisplay';
+import { Container, Spinner, Button, Card } from 'react-bootstrap';
 import RannerApi from '../../api';
 import FlightCard from './FlightCard';
-import { Container, Alert, Spinner, Button, Card } from 'react-bootstrap';
+import { useErrorHandler } from '../utils/errorHandler';
+import ErrorDisplay from '../components/ErrorDisplay';
 
 function FlightList() {
   const { state } = useLocation();
@@ -15,12 +15,9 @@ function FlightList() {
   const navigate = useNavigate();
 
   useEffect(() => {
-
-    // Retrieves flight offers from Amadeus API.
     const fetchFlights = async () => {
+      setIsLoading(true);
       try {
-        setIsLoading(true);
-        setError(null);
         const res = await RannerApi.searchFlightOffers({
           originLocationCode: trip.origin,
           destinationLocationCode: trip.destination,
@@ -35,12 +32,12 @@ function FlightList() {
         setIsLoading(false);
       }
     };
+    
     if (trip) {
       fetchFlights();
     }
-  }, [trip]);
+  }, [trip, handleError]);
 
-  // Saves flight to the database with Amadeus flightOrder object and Ranner tripId.
   const handleAddFlight = async (flight) => {
     try {
       const tripId = trip.tripId;
@@ -55,18 +52,13 @@ function FlightList() {
     }
   };
 
-  // Uses browser previous page to "go back".
   const handleBack = () => {
     navigate(-1);
   };
 
-  // Loading flights JSX display.
-  if (isLoading) { 
+  if (isLoading) {
     return (
-      <Container 
-        className="d-flex justify-content-center align-items-center" 
-        style={{ height: '100vh' }}
-      >
+      <Container className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
         <Spinner animation="border" role="status">
           <span className="visually-hidden">Loading flights...</span>
         </Spinner>
@@ -74,27 +66,12 @@ function FlightList() {
     );
   }
 
-  // JSX display if no flights are found.
-  if (flights.length === 0) {
-    return (
-      <Container className="mt-5">
-        <Button variant="secondary" onClick={handleBack} className="mb-3">
-          &larr; Back
-        </Button>
-        <Alert variant="info">
-          No flights found for your search criteria. Please try different dates or locations.
-        </Alert>
-      </Container>
-    );
-  }
-
-  // Flight List JSX display. Creates a FlightCard for each flight.
   return (
     <Container className="mt-5">
-      <ErrorDisplay error={error} onClose={clearError} />
       <Button variant="secondary" onClick={handleBack} className="mb-3">
         &larr; Back
       </Button>
+      <ErrorDisplay error={error} onClose={clearError} />
       <h2 className="mb-4">Flight Offers</h2>
       {flights.map((flight) => (
         <Card key={flight.id} className="mb-4">
