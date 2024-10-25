@@ -51,8 +51,7 @@ function FlightList() {
       });
       navigate(`/trip/${tripId}`);
     } catch (err) {
-      console.error("Error adding flight to trip:", err);
-      setError("Unable to add flight to trip. Please try again later.");
+      handleError(err);
     }
   };
 
