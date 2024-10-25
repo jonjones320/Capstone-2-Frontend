@@ -1,18 +1,19 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 import AuthContext from '../context/AuthContext';
-import { Form, Button, Container, Row, Col, Alert } from 'react-bootstrap';
+import { useErrorHandler } from '../utils/errorHandler';
+import ErrorDisplay from '../components/ErrorDisplay';
 
 function Login() {
   const [formData, setFormData] = useState({ username: '', password: '' });
   const { login, currentUser } = useContext(AuthContext);
   const navigate = useNavigate();
-  const [error, setError] = useState(null);
+  const { error, handleError, clearError } = useErrorHandler();
 
   useEffect(() => {
     if (currentUser) {
       navigate("/");
-      console.log("Log in successful. Welcome!");
     }
   }, [currentUser, navigate]);
 
@@ -26,7 +27,7 @@ function Login() {
     try {
       await login(formData);
     } catch (err) {
-      setError(err.message || "An unexpected error occurred. Please try again.");
+      handleError(err);
     }
   };
 
@@ -35,6 +36,7 @@ function Login() {
       <Row className="justify-content-md-center">
         <Col md={6}>
           <h1 className="text-center mb-4">Login</h1>
+          <ErrorDisplay error={error} onClose={clearError} />
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3">
               <Form.Control
@@ -59,7 +61,6 @@ function Login() {
             <Button variant="primary" type="submit" className="w-100">
               Login
             </Button>
-            {error && <Alert variant="danger" className="mt-3">{error}</Alert>}
           </Form>
         </Col>
       </Row>
