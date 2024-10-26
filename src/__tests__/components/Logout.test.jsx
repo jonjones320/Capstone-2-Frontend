@@ -1,6 +1,6 @@
 import { screen, waitFor } from '@testing-library/react';
 import { mockUser } from '../helpers/testData';
-import { renderWithContext } from '../testUtils';
+import { renderWithContext } from '../utils/testUtils';
 import { AuthContext } from '../context/AuthContext';
 import Logout from '../../components/Logout';
 

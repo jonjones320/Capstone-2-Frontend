@@ -1,7 +1,7 @@
 import { screen, fireEvent } from '@testing-library/react';
-import { renderWithContext } from '../helpers/testUtils';
+import { renderWithContext } from '../utils/testUtils';
 import { mockUser } from '../helpers/testData';
-import { findAlertMessage, waitForLoadingToFinish } from '../helpers/testUtils';
+import { findAlertMessage, waitForLoadingToFinish } from '../utils/testUtils';
 import Login from '../../components/Login';
 import RannerApi from '../../api';
 

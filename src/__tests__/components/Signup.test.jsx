@@ -1,6 +1,6 @@
 import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { mockUser } from '../helpers/testData';
-import { renderWithContext } from '../testUtils';
+import { renderWithContext } from '../utils/testUtils';
 import Signup from '../../components/Signup';
 import RannerApi from '../../../api';
 

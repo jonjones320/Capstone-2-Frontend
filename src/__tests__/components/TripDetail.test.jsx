@@ -1,5 +1,5 @@
 import { screen, fireEvent, waitFor } from '@testing-library/react';
-import { renderWithContext } from '../testUtils';
+import { renderWithContext } from '../utils/testUtils';
 import { mockUser, mockTrip, mockFlight } from '../helpers/testData';
 import TripDetail from '../../components/TripDetail';
 import RannerApi from '../../../api';
