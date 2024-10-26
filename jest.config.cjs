@@ -22,13 +22,6 @@ module.exports = {
   ],
   testMatch: ['**/__tests__/**/*.test.[jt]s?(x)'],
   moduleFileExtensions: ['js', 'jsx', 'json', 'mjs'],
-  collectCoverageFrom: [
-    'src/**/*.{js,jsx}',
-    '!src/main.jsx',
-    '!src/vite-env.d.ts',
-    '!**/*.d.ts',
-    '!**/node_modules/**'
-  ],
   // Add support for ESM
   extensionsToTreatAsEsm: ['.jsx'],
   globals: {
@@ -36,4 +29,7 @@ module.exports = {
       useESM: true,
     },
   },
+  clearMocks: true,
+  restoreMocks: true,
+  resetMocks: true
 };
