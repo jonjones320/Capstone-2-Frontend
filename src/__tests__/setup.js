@@ -1,10 +1,7 @@
-// Testing setup for component rendering, user interactions, //
-// API integration, forms, routes, and authentication. //
-
-import '@testing-library/jest-dom';
-import { render } from '@testing-library/react';
-import { BrowserRouter } from 'react-router-dom';
-import { AuthProvider } from '../context/AuthContext';
+require('@testing-library/jest-dom');
+const { render } = require('@testing-library/react');
+const { BrowserRouter } = require('../react-router-dom');
+const { AuthProvider } = require('../../context/AuthContext');
 
 // Mock RannerApi backend functions.
 jest.mock('../../api', () => ({
@@ -28,14 +25,14 @@ jest.mock('date-fns', () => ({
 }));
 
 // Test data.
-export const mockUser = {
+const mockUser = {
   username: 'testuser',
   firstName: 'Test',
   lastName: 'User',
   email: 'test@test.com',
 };
 
-export const mockTrip = {
+const mockTrip = {
   tripId: 1,
   name: 'Test Trip',
   origin: 'SFO',
@@ -45,7 +42,7 @@ export const mockTrip = {
   passengers: 2,
 };
 
-export const mockFlight = {
+const mockFlight = {
   id: 1,
   tripId: 1,
   flightOfferId: 'ABC123',
@@ -65,8 +62,7 @@ export const mockFlight = {
   ],
 };
 
-// Custom render function that includes router and auth context.
-export function renderWithContext(ui, { route = '/', user = null } = {}) {
+function renderWithContext(ui, { route = '/', user = null } = {}) {
   window.history.pushState({}, 'Test page', route);
 
   return render(
@@ -76,6 +72,13 @@ export function renderWithContext(ui, { route = '/', user = null } = {}) {
   );
 }
 
-// Helper to wait for async operations.
-export const waitForLoading = () => 
+const waitForLoading = () => 
   new Promise(resolve => setTimeout(resolve, 0));
+
+module.exports = {
+  mockUser,
+  mockTrip,
+  mockFlight,
+  renderWithContext,
+  waitForLoading
+};
