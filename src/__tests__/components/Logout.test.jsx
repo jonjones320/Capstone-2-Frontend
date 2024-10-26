@@ -1,5 +1,6 @@
 import { screen, waitFor } from '@testing-library/react';
-import { renderWithContext, mockUser } from '../setup.cjs';
+import { mockUser } from '../setup.cjs';
+import { renderWithContext } from '../testUtils';
 import { AuthContext } from '../context/AuthContext';
 import Logout from '../../components/Logout';
 
