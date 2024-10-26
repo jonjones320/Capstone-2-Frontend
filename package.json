@@ -8,7 +8,9 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview --host 0.0.0.0 --port $PORT",
-    "test": "jest -i"
+    "test": "jest --config jest.config.js",
+    "test:watch": "jest --config jest.config.js --watch",
+    "test:coverage": "jest --config jest.config.js --coverage"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
