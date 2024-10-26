@@ -1,7 +1,4 @@
 require('@testing-library/jest-dom');
-const { render } = require('@testing-library/react');
-const { BrowserRouter } = require('../react-router-dom');
-const { AuthProvider } = require('../../context/AuthContext');
 
 // Mock RannerApi backend functions.
 jest.mock('../../api', () => ({
@@ -62,16 +59,6 @@ const mockFlight = {
   ],
 };
 
-function renderWithContext(ui, { route = '/', user = null } = {}) {
-  window.history.pushState({}, 'Test page', route);
-
-  return render(
-    <AuthProvider initialUser={user}>
-      <BrowserRouter>{ui}</BrowserRouter>
-    </AuthProvider>
-  );
-}
-
 const waitForLoading = () => 
   new Promise(resolve => setTimeout(resolve, 0));
 
@@ -79,6 +66,5 @@ module.exports = {
   mockUser,
   mockTrip,
   mockFlight,
-  renderWithContext,
   waitForLoading
 };
