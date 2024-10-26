@@ -21,7 +21,9 @@ describe('Destination', () => {
   test('renders destination search form', () => {
     renderWithContext(<Destination />);
     
-    expect(screen.getByPlaceholderText(/enter city or airport/i)).toBeInTheDocument();
+    expect(screen.getByRole('textbox', { 
+      name: /enter city or airport/i 
+    })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /next/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /back/i })).toBeInTheDocument();
   });
@@ -34,7 +36,9 @@ describe('Destination', () => {
 
     renderWithContext(<Destination />);
 
-    fireEvent.change(screen.getByPlaceholderText(/enter city or airport/i), {
+    fireEvent.change(screen.getByRole('textbox', { 
+      name: /enter city or airport/i 
+    }), {
       target: { value: 'New' }
     });
 
@@ -90,12 +94,14 @@ describe('Destination', () => {
     });
   });
 
-  test('handles API errors', async () => {
+  test('handles error state', async () => {
     RannerApi.getAirportSuggestions.mockRejectedValueOnce(new Error('API Error'));
-
+    
     renderWithContext(<Destination />);
 
-    fireEvent.change(screen.getByPlaceholderText(/enter city or airport/i), {
+    fireEvent.change(screen.getByRole('textbox', { 
+      name: /enter city or airport/i 
+    }), {
       target: { value: 'New' }
     });
 
