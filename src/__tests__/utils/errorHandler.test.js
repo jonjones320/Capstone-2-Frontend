@@ -1,4 +1,4 @@
-import { ErrorHandler, useErrorHandler } from '../utils/errorHandler';
+import { ErrorHandler, useErrorHandler } from '../../utils/errorHandler';
 import { renderHook, act } from '@testing-library/react-hooks';
 
 describe('ErrorHandler Utility', () => {
