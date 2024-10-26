@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Form, Button, Container, Row, Col } from 'react-bootstrap';
+import { Form, Button, Container, Row, Col, Spinner } from 'react-bootstrap';
 import AuthContext from '../context/AuthContext';
 import RannerApi from '../../api';
 import { useErrorHandler } from '../utils/errorHandler';
@@ -15,6 +15,7 @@ function SignUp() {
     email: '',
   });
   const { login } = useContext(AuthContext);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { error, handleError, clearError } = useErrorHandler();
 
@@ -25,12 +26,15 @@ function SignUp() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
       await RannerApi.signUp(formData);
       await login(formData);
       navigate("/origin");
     } catch (err) {
       handleError(err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -97,8 +101,27 @@ function SignUp() {
                 required
               />
             </Form.Group>
-            <Button variant="primary" type="submit" className="w-100">
-              Sign Up
+            <Button 
+              variant="primary" 
+              type="submit" 
+              className="w-100" 
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <>
+                  <Spinner
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                    aria-hidden="true"
+                    className="me-2"
+                  />
+                  Signing up...
+                </>
+              ) : (
+                'Sign Up'
+              )}
             </Button>
           </Form>
         </Col>

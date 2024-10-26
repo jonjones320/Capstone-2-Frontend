@@ -1,12 +1,13 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Form, Button, Container, Row, Col } from 'react-bootstrap';
+import { Form, Button, Container, Row, Col, Spinner } from 'react-bootstrap';
 import AuthContext from '../context/AuthContext';
 import { useErrorHandler } from '../utils/errorHandler';
 import ErrorDisplay from '../components/ErrorDisplay';
 
 function Login() {
   const [formData, setFormData] = useState({ username: '', password: '' });
+  const [isLoading, setIsLoading] = useState(false);
   const { login, currentUser } = useContext(AuthContext);
   const navigate = useNavigate();
   const { error, handleError, clearError } = useErrorHandler();
@@ -24,10 +25,13 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
       await login(formData);
     } catch (err) {
       handleError(err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -58,8 +62,27 @@ function Login() {
                 required
               />
             </Form.Group>
-            <Button variant="primary" type="submit" className="w-100">
-              Login
+            <Button 
+              variant="primary" 
+              type="submit" 
+              className="w-100" 
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <>
+                  <Spinner
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                    aria-hidden="true"
+                    className="me-2"
+                  />
+                  Logging in...
+                </>
+              ) : (
+                'Login'
+              )}
             </Button>
           </Form>
         </Col>
