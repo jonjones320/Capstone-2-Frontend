@@ -1,35 +1,11 @@
-require('@testing-library/jest-dom');
-
-// Mock RannerApi backend functions.
-jest.mock('../../api', () => ({
-  login: jest.fn(),
-  signUp: jest.fn(),
-  getUser: jest.fn(),
-  getTripsByUsername: jest.fn(),
-  getTrips: jest.fn(),
-  postTrip: jest.fn(),
-  updateTrip: jest.fn(),
-  deleteTrip: jest.fn(),
-  getAirportSuggestions: jest.fn(),
-  searchFlightOffers: jest.fn(),
-  getFlightsByTrip: jest.fn(),
-}));
-
-// Mock date-fns to avoid timezone issues in tests.
-jest.mock('date-fns', () => ({
-  ...jest.requireActual('date-fns'),
-  format: jest.fn(date => date.toISOString().split('T')[0]),
-}));
-
-// Test data.
-const mockUser = {
+export const mockUser = {
   username: 'testuser',
   firstName: 'Test',
   lastName: 'User',
   email: 'test@test.com',
 };
 
-const mockTrip = {
+export const mockTrip = {
   tripId: 1,
   name: 'Test Trip',
   origin: 'SFO',
@@ -39,7 +15,7 @@ const mockTrip = {
   passengers: 2,
 };
 
-const mockFlight = {
+export const mockFlight = {
   id: 1,
   tripId: 1,
   flightOfferId: 'ABC123',
@@ -59,12 +35,4 @@ const mockFlight = {
   ],
 };
 
-const waitForLoading = () => 
-  new Promise(resolve => setTimeout(resolve, 0));
-
-module.exports = {
-  mockUser,
-  mockTrip,
-  mockFlight,
-  waitForLoading
-};
+export const waitForLoading = () => new Promise(resolve => setTimeout(resolve, 0));
