@@ -1,11 +1,14 @@
 module.exports = {
     testEnvironment: 'jsdom',
-    setupFilesAfterEnv: ['<rootDir>/src/__tests__/setup.cjs'],
+    setupFilesAfterEnv: [
+      '<rootDir>/src/__tests__/setup.cjs',
+      '<rootDir>/src/__tests__/testUtils.jsx'
+    ],
     moduleNameMapper: {
       // Handle CSS imports (if you're using CSS in your components)
       '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
       // Handle image imports
-      '\\.(jpg|jpeg|png|gif|webp|svg)$': '<rootDir>/__mocks__/fileMock.js',
+      '\\.(jpg|jpeg|png|gif|webp|svg)$': '<rootDir>/__mocks__/fileMock.cjs',
       // Handle module aliases (if you're using them)
       '^@/(.*)$': '<rootDir>/src/$1'
     },
