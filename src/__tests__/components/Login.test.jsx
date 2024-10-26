@@ -1,5 +1,5 @@
 import { screen, fireEvent, waitFor } from '@testing-library/react';
-import { renderWithContext } from '../testUtils';
+import { renderWithContext } from '../utils/testUtils';
 import { mockUser } from '../setup.cjs';
 import Login from '../../components/Login';
 import RannerApi from '../../../api';
