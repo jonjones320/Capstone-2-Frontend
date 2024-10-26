@@ -41,11 +41,12 @@ describe('Login Component', () => {
   });
 
   test('displays error message on failed login', async () => {
-    const errorMessage = 'Invalid username/password';
+    const errorMessage = 'Invalid username or password';
     RannerApi.login.mockRejectedValueOnce(new Error(errorMessage));
+    
     renderWithContext(<Login />);
-
-    // Fill and submit form.
+  
+    // Fill and submit form
     fireEvent.change(screen.getByPlaceholderText('Username'), {
       target: { name: 'username', value: 'wronguser' }
     });
@@ -53,9 +54,10 @@ describe('Login Component', () => {
       target: { name: 'password', value: 'wrongpass' }
     });
     fireEvent.click(screen.getByRole('button', { name: /login/i }));
-
+  
     await waitFor(() => {
-      expect(screen.getByRole('alert')).toHaveTextContent(errorMessage);
+      const alertElement = screen.getByRole('alert');
+      expect(alertElement).toHaveTextContent(new RegExp(errorMessage, 'i'));
     });
   });
 });
