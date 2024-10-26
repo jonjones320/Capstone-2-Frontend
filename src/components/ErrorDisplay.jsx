@@ -1,6 +1,10 @@
 import React from 'react';
 import { Alert } from 'react-bootstrap';
-import { ErrorHandler } from '../utils/errorHandler';
+import { 
+    ErrorHandler, 
+    ValidationError, 
+    AuthenticationError 
+  } from '../utils/errorHandler';
 
 const ErrorDisplay = ({ error, onClose }) => {
   if (!error) return null;
