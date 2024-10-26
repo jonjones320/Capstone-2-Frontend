@@ -99,11 +99,11 @@ function TripForm({ initialData, onSubmit, isEdit = false }) {
       <ErrorDisplay error={error} onClose={clearError} />
 
       <Form.Group className="mb-3">
-        <Form.Label>Trip Name:</Form.Label>
+        <Form.Label htmlFor="tripName">Trip Name:</Form.Label>
         <Form.Control
+          id="tripName"
           type="text"
           name="name"
-          aria-label="Trip Name"
           value={formData.name}
           onChange={handleChange}
           required
@@ -112,11 +112,11 @@ function TripForm({ initialData, onSubmit, isEdit = false }) {
       </Form.Group>
 
       <Form.Group className="mb-3">
-        <Form.Label>Origin:</Form.Label>
+        <Form.Label htmlFor="origin">Origin:</Form.Label>
         <Form.Control
+          id="origin"
           type="text"
           name="origin"
-          aria-label="Origin"
           value={formData.origin}
           onChange={handleChange}
           required
@@ -132,11 +132,11 @@ function TripForm({ initialData, onSubmit, isEdit = false }) {
       </Form.Group>
 
       <Form.Group className="mb-3">
-        <Form.Label>Destination:</Form.Label>
+        <Form.Label htmlFor="destination">Destination:</Form.Label>
         <Form.Control
+          id="destination"
           type="text"
           name="destination"
-          aria-label="Destination"
           value={formData.destination}
           onChange={handleChange}
           required
@@ -152,11 +152,11 @@ function TripForm({ initialData, onSubmit, isEdit = false }) {
       </Form.Group>
 
       <Form.Group className="mb-3">
-        <Form.Label>Departure Date:</Form.Label>
+        <Form.Label htmlFor="departureDate">Departure Date:</Form.Label>
         <Form.Control
+          id="departureDate"
           type="date"
           name="startDate"
-          aria-label="Departure Date"
           value={formData.startDate}
           onChange={handleChange}
           required
@@ -165,11 +165,11 @@ function TripForm({ initialData, onSubmit, isEdit = false }) {
       </Form.Group>
 
       <Form.Group className="mb-3">
-        <Form.Label>Return Date:</Form.Label>
+        <Form.Label htmlFor="returnDate">Return Date:</Form.Label>
         <Form.Control
+          id="returnDate"
           type="date"
           name="endDate"
-          aria-label="Return Date"
           value={formData.endDate}
           onChange={handleChange}
           required
@@ -178,11 +178,11 @@ function TripForm({ initialData, onSubmit, isEdit = false }) {
       </Form.Group>
 
       <Form.Group className="mb-3">
-        <Form.Label>Passengers:</Form.Label>
+        <Form.Label htmlFor="passengers">Passengers:</Form.Label>
         <Form.Control
+          id="passengers"
           type="number"
           name="passengers"
-          aria-label="Passengers"
           value={formData.passengers}
           onChange={handleChange}
           min="1"
