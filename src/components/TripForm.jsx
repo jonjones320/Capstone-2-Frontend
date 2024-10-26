@@ -103,6 +103,7 @@ function TripForm({ initialData, onSubmit, isEdit = false }) {
         <Form.Control
           type="text"
           name="name"
+          aria-label="Trip Name"
           value={formData.name}
           onChange={handleChange}
           required
@@ -115,6 +116,7 @@ function TripForm({ initialData, onSubmit, isEdit = false }) {
         <Form.Control
           type="text"
           name="origin"
+          aria-label="Origin"
           value={formData.origin}
           onChange={handleChange}
           required
@@ -134,6 +136,7 @@ function TripForm({ initialData, onSubmit, isEdit = false }) {
         <Form.Control
           type="text"
           name="destination"
+          aria-label="Destination"
           value={formData.destination}
           onChange={handleChange}
           required
@@ -153,6 +156,7 @@ function TripForm({ initialData, onSubmit, isEdit = false }) {
         <Form.Control
           type="date"
           name="startDate"
+          aria-label="Departure Date"
           value={formData.startDate}
           onChange={handleChange}
           required
@@ -165,6 +169,7 @@ function TripForm({ initialData, onSubmit, isEdit = false }) {
         <Form.Control
           type="date"
           name="endDate"
+          aria-label="Return Date"
           value={formData.endDate}
           onChange={handleChange}
           required
@@ -177,6 +182,7 @@ function TripForm({ initialData, onSubmit, isEdit = false }) {
         <Form.Control
           type="number"
           name="passengers"
+          aria-label="Passengers"
           value={formData.passengers}
           onChange={handleChange}
           min="1"
