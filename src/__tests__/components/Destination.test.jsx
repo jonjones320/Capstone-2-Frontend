@@ -1,5 +1,5 @@
 import { screen, fireEvent, waitFor } from '@testing-library/react';
-import { renderWithContext } from './setup';
+import { renderWithContext } from '../testUtils';
 import Destination from '../components/Destination';
 import RannerApi from '../../api';
 

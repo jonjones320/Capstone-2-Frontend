@@ -1,5 +1,5 @@
-import { screen, fireEvent, waitFor } from '@testing-library/react';
-import { renderWithContext, mockTrip } from './setup';
+import { screen, fireEvent } from '@testing-library/react';
+import { renderWithContext } from '../testUtils';
 import TripFilterForm from '../components/TripFilterForm';
 
 describe('TripFilterForm', () => {
