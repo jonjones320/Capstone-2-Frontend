@@ -6,7 +6,7 @@ configure({
   testIdAttribute: 'data-testid',
 });
 
-// Suppress common React 18 warnings
+// Mock console.error to reduce warnings
 const originalError = console.error;
 beforeAll(() => {
   console.error = (...args) => {
@@ -14,7 +14,8 @@ beforeAll(() => {
       /Warning: ReactDOM.render is no longer supported/.test(args[0]) ||
       /Warning: act\(\)/.test(args[0]) ||
       /Warning: unmountComponentAtNode/.test(args[0]) ||
-      /Invalid token specified/.test(args[0])
+      /Invalid token specified/.test(args[0]) ||
+      /Warning: `ReactDOMTestUtils.act`/.test(args[0])
     ) {
       return;
     }
@@ -26,7 +27,7 @@ afterAll(() => {
   console.error = originalError;
 });
 
-// Mock RannerApi backend functions
+// Mock RannerApi backend routes
 jest.mock('../../api', () => ({
   login: jest.fn(),
   signUp: jest.fn(),
@@ -49,3 +50,8 @@ jest.mock('date-fns', () => ({
   ...jest.requireActual('date-fns'),
   format: jest.fn(date => date.toISOString().split('T')[0]),
 }));
+
+// Reset all mocks between tests
+beforeEach(() => {
+  jest.clearAllMocks();
+});
