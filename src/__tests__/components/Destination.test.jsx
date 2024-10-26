@@ -1,16 +1,16 @@
-import { screen, fireEvent, waitFor } from '@testing-library/react';
-import { renderWithContext } from '../testUtils';
+import { screen, fireEvent } from '@testing-library/react';
+import { renderWithContext } from '../helpers/testUtils';
+import { findAlertMessage } from '../helpers/testUtils';
 import Destination from '../../components/Destination';
-import RannerApi from '../../../api';
+import RannerApi from '../../api';
 
-const mockState = {
-  origin: 'SFO'
-};
+const mockState = { origin: 'SFO' };
 
-// Use actual 'react-router-dom' hook `useLocation`.
+// Mock router with state.
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useLocation: () => ({ state: mockState })
+  useLocation: () => ({ state: mockState }),
+  useNavigate: () => jest.fn()
 }));
 
 describe('Destination', () => {
@@ -21,7 +21,8 @@ describe('Destination', () => {
   test('renders destination search form', () => {
     renderWithContext(<Destination />);
     
-    expect(screen.getByRole('textbox', { 
+    // Use semantic roles for form elements.
+    expect(screen.getByRole('combobox', { 
       name: /enter city or airport/i 
     })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /next/i })).toBeInTheDocument();
@@ -36,43 +37,35 @@ describe('Destination', () => {
 
     renderWithContext(<Destination />);
 
-    fireEvent.change(screen.getByRole('textbox', { 
+    // Use combobox role for autocomplete input.
+    const searchInput = screen.getByRole('combobox', { 
       name: /enter city or airport/i 
-    }), {
-      target: { value: 'New' }
     });
+    fireEvent.change(searchInput, { target: { value: 'New' } });
 
-    await waitFor(() => {
-      expect(screen.getByText(/john f. kennedy airport/i)).toBeInTheDocument();
+    // Wait for suggestions to appear.
+    const suggestion = await screen.findByRole('option', { 
+      name: /john f. kennedy airport/i 
     });
+    expect(suggestion).toBeInTheDocument();
   });
 
-  test('handles navigation back to origin', () => {
+  test('handles navigation', async () => {
     const mockNavigate = jest.fn();
     jest.spyOn(require('react-router-dom'), 'useNavigate')
       .mockImplementation(() => mockNavigate);
 
     renderWithContext(<Destination />);
 
+    // Test back navigation.
     fireEvent.click(screen.getByRole('button', { name: /back/i }));
-
     expect(mockNavigate).toHaveBeenCalledWith('/origin', {
       state: { origin: mockState.origin }
     });
-  });
 
-  test('handles navigation to dates page', () => {
-    const mockNavigate = jest.fn();
-    jest.spyOn(require('react-router-dom'), 'useNavigate')
-      .mockImplementation(() => mockNavigate);
-
-    renderWithContext(<Destination />);
-
-    // Select a destination.
-    fireEvent.change(screen.getByPlaceholderText(/enter city or airport/i), {
-      target: { value: 'JFK' }
-    });
-
+    // Test forward navigation.
+    const searchInput = screen.getByRole('combobox', { name: /enter city or airport/i });
+    fireEvent.change(searchInput, { target: { value: 'JFK' } });
     fireEvent.click(screen.getByRole('button', { name: /next/i }));
 
     expect(mockNavigate).toHaveBeenCalledWith('/dates', {
@@ -85,28 +78,21 @@ describe('Destination', () => {
 
   test('validates destination selection', async () => {
     renderWithContext(<Destination />);
-
     fireEvent.click(screen.getByRole('button', { name: /next/i }));
-
-    await waitFor(() => {
-      expect(screen.getByRole('alert'))
-        .toHaveTextContent(/please select a destination/i);
-    });
+    
+    // Use our custom alert helper.
+    expect(await findAlertMessage(/please select a destination/i)).toBe(true);
   });
 
-  test('handles error state', async () => {
+  test('handles API errors', async () => {
     RannerApi.getAirportSuggestions.mockRejectedValueOnce(new Error('API Error'));
     
     renderWithContext(<Destination />);
+    
+    const searchInput = screen.getByRole('combobox', { name: /enter city or airport/i });
+    fireEvent.change(searchInput, { target: { value: 'New' } });
 
-    fireEvent.change(screen.getByRole('textbox', { 
-      name: /enter city or airport/i 
-    }), {
-      target: { value: 'New' }
-    });
-
-    await waitFor(() => {
-      expect(screen.getByRole('alert')).toHaveTextContent(/api error/i);
-    });
+    // Use our custom alert helper.
+    expect(await findAlertMessage(/api error/i)).toBe(true);
   });
 });
