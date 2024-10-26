@@ -1,24 +1,21 @@
 module.exports = {
     testEnvironment: 'jsdom',
-    setupFilesAfterEnv: [
-      '<rootDir>/src/__tests__/setup.cjs',
-      '<rootDir>/src/__tests__/testUtils.jsx'
-    ],
+    setupFilesAfterEnv: ['<rootDir>/src/setupTests.js'],
     moduleNameMapper: {
-      // Handle CSS imports (if you're using CSS in your components)
+      // Handle router mocking with custom react-router-dom.
+      '^react-router-dom$': '<rootDir>/src/__tests__/__mocks__/react-router-dom.js',
+      // Handle CSS imports (if you're using CSS in your components).
       '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
-      // Handle image imports
-      '\\.(jpg|jpeg|png|gif|webp|svg)$': '<rootDir>/__mocks__/fileMock.cjs',
-      // Handle module aliases (if you're using them)
+      // Handle image imports.
+      '\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$':
+        '<rootDir>/src/__tests__/__mocks__/fileMock.js',
+      // Handle module aliases (if you're using them).
       '^@/(.*)$': '<rootDir>/src/$1'
     },
     transform: {
       '^.+\\.(js|jsx)$': ['babel-jest', { configFile: './babel.config.cjs' }]
     },
-    testMatch: [
-      '<rootDir>/src/**/__tests__/**/*.{js,jsx}',
-      '<rootDir>/src/**/*.{spec,test}.{js,jsx}'
-    ],
+    testMatch: ['**/__tests__/**/*.test.[jt]s?(x)'],
     moduleFileExtensions: ['js', 'jsx'],
     // Optional: Configure coverage
     collectCoverageFrom: [
