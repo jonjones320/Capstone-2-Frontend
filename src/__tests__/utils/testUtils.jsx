@@ -1,27 +1,29 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from '../../context/AuthContext';
 
-// Custom render with router and auth context
+// Custom render with providers
 export function renderWithContext(ui, { route = '/', user = null, state = {} } = {}) {
   window.history.pushState(state, 'Test page', route);
-
-  return render(
+  
+  const Wrapper = ({ children }) => (
     <AuthProvider initialUser={user}>
-      <BrowserRouter>{ui}</BrowserRouter>
+      <BrowserRouter>{children}</BrowserRouter>
     </AuthProvider>
   );
+
+  return render(ui, { wrapper: Wrapper });
 }
 
 // Helper to find alert messages
-export const findAlertMessage = async (message) => {
+export const findAlertMessage = async (message, { screen }) => {
   const alert = await screen.findByRole('alert');
   return alert.textContent.includes(message);
 };
 
 // Helper to wait for loading state to clear
-export const waitForLoadingToFinish = async () => {
+export const waitForLoadingToFinish = async ({ screen }) => {
   try {
     await screen.findByRole('status');
     await screen.queryByRole('status');
