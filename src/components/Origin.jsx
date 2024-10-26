@@ -64,7 +64,7 @@ function Origin() {
         <ListGroup className="mb-3">
           {isLoading ? (
             <div className="text-center py-3">
-              <Spinner animation="border" size="sm" />
+              <Spinner animation="border" role="status" size="sm" />
             </div>
           ) : (
             suggestions.map((suggestion) => (

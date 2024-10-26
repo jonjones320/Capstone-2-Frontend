@@ -198,7 +198,7 @@ function TripForm({ initialData, onSubmit, isEdit = false }) {
       >
         {isSaving ? (
           <>
-            <Spinner size="sm" className="me-2" />
+            <Spinner size="sm" role="status" className="me-2" />
             {isEdit ? 'Updating...' : 'Creating...'}
           </>
         ) : (
