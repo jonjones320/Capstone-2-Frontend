@@ -15,7 +15,7 @@ describe('FlightList', () => {
       state: { trip: mockTrip },
     });
     
-    expect(screen.getByText(/Loading/i)).toBeInTheDocument();
+    expect(screen.getByRole('status')).toBeInTheDocument();
   });
 
   test('renders flights after loading', async () => {
@@ -25,7 +25,10 @@ describe('FlightList', () => {
     });
     
     await waitFor(() => {
-      expect(screen.getByText(mockFlight.itineraries[0].segments[0].departure.iataCode)).toBeInTheDocument();
+      // Look for flight card heading
+      expect(screen.getByRole('heading', { 
+        name: new RegExp(`${mockFlight.itineraries[0].segments[0].departure.iataCode}.*${mockFlight.itineraries[0].segments[0].arrival.iataCode}`, 'i')
+      })).toBeInTheDocument();
     });
   });
 
@@ -38,7 +41,20 @@ describe('FlightList', () => {
     });
     
     await waitFor(() => {
-      expect(screen.getByText(/Unable to fetch flights/i)).toBeInTheDocument();
+      expect(screen.getByRole('alert')).toHaveTextContent(/unable to fetch flights/i);
+    });
+  });
+
+  test('shows no flights message when empty', async () => {
+    RannerApi.searchFlightOffers.mockResolvedValue({ data: [] });
+    
+    renderWithContext(<FlightList />, {
+      route: '/flights',
+      state: { trip: mockTrip },
+    });
+    
+    await waitFor(() => {
+      expect(screen.getByRole('alert')).toHaveTextContent(/no flights found/i);
     });
   });
 });
