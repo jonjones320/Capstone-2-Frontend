@@ -1,6 +1,6 @@
 import { screen, fireEvent, waitFor } from '@testing-library/react';
-import TripFilterForm from '../components/TripFilterForm';
 import { renderWithContext, mockTrip } from './setup';
+import TripFilterForm from '../components/TripFilterForm';
 
 describe('TripFilterForm', () => {
   const mockOnFilter = jest.fn();

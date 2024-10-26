@@ -1,7 +1,6 @@
-// src/__tests__/components/FlightList.test.jsx
 import { screen, waitFor } from '@testing-library/react';
-import FlightList from '../../components/FlightList';
 import { renderWithContext, mockFlight } from '../setup';
+import FlightList from '../../components/FlightList';
 import RannerApi from '../../api';
 
 describe('FlightList', () => {

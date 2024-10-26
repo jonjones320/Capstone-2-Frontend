@@ -1,6 +1,6 @@
 import { screen, fireEvent, waitFor } from '@testing-library/react';
-import TripDates from '../components/TripDates';
 import { renderWithContext, mockUser, mockTrip } from './setup';
+import TripDates from '../components/TripDates';
 import RannerApi from '../../api';
 
 // Mock router state.

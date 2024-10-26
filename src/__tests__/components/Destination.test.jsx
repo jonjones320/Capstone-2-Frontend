@@ -1,6 +1,6 @@
 import { screen, fireEvent, waitFor } from '@testing-library/react';
-import Destination from '../components/Destination';
 import { renderWithContext } from './setup';
+import Destination from '../components/Destination';
 import RannerApi from '../../api';
 
 const mockState = {
