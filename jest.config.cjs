@@ -1,7 +1,7 @@
 module.exports = {
   testEnvironment: 'jsdom',
   setupFilesAfterEnv: [
-    '/home/jonjones320/Springboard/Capstone/Trip_Planner/Ranner-Frontend/src/setupTests.js'
+    '/home/jonjones320/Springboard/Capstone/Trip_Planner/Ranner-Frontend/src/__tests__/setupTest.js'
   ],
   moduleNameMapper: {
     // Handle router mocking
