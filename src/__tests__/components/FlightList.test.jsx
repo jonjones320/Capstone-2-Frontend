@@ -2,7 +2,7 @@ import { screen, waitFor } from '@testing-library/react';
 import { renderWithContext } from '../testUtils';
 import { mockTrip, mockFlight } from '../setup.cjs';
 import FlightList from '../../components/FlightList';
-import RannerApi from '../../api';
+import RannerApi from '../../../api';
 
 describe('FlightList', () => {
   beforeEach(() => {
