@@ -80,7 +80,7 @@ describe('Destination', () => {
     renderWithContext(<Destination />);
     fireEvent.click(screen.getByRole('button', { name: /next/i }));
     
-    // Use our custom alert helper.
+    // Use custom alert helper.
     expect(await findAlertMessage(/please select a destination/i)).toBe(true);
   });
 
@@ -92,7 +92,7 @@ describe('Destination', () => {
     const searchInput = screen.getByRole('combobox', { name: /enter city or airport/i });
     fireEvent.change(searchInput, { target: { value: 'New' } });
 
-    // Use our custom alert helper.
+    // Use custom alert helper.
     expect(await findAlertMessage(/api error/i)).toBe(true);
   });
 });
