@@ -1,10 +1,11 @@
-import { screen, fireEvent, waitFor } from '@testing-library/react';
-import { renderWithContext } from '../utils/testUtils';
-import { mockUser } from '../setup.cjs';
+import { screen, fireEvent } from '@testing-library/react';
+import { renderWithContext } from '../helpers/testUtils';
+import { mockUser } from '../helpers/testData';
+import { findAlertMessage, waitForLoadingToFinish } from '../helpers/testUtils';
 import Login from '../../components/Login';
-import RannerApi from '../../../api';
+import RannerApi from '../../api';
 
-describe('Login Component', () => {
+describe('Login', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -12,8 +13,8 @@ describe('Login Component', () => {
   test('renders login form correctly', () => {
     renderWithContext(<Login />);
     
-    expect(screen.getByPlaceholderText('Username')).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('Password')).toBeInTheDocument();
+    expect(screen.getByRole('textbox', { name: /username/i })).toBeInTheDocument();
+    expect(screen.getByLabelText(/password/i)).toBeInTheDocument(); // password inputs have no implicit role
     expect(screen.getByRole('button', { name: /login/i })).toBeInTheDocument();
   });
 
@@ -21,22 +22,19 @@ describe('Login Component', () => {
     RannerApi.login.mockResolvedValueOnce('fake-token');
     renderWithContext(<Login />);
 
-    // Fill form.
-    fireEvent.change(screen.getByPlaceholderText('Username'), {
-      target: { name: 'username', value: mockUser.username }
+    fireEvent.change(screen.getByRole('textbox', { name: /username/i }), {
+      target: { value: mockUser.username }
     });
-    fireEvent.change(screen.getByPlaceholderText('Password'), {
-      target: { name: 'password', value: 'password123' }
+    fireEvent.change(screen.getByLabelText(/password/i), {
+      target: { value: 'password123' }
     });
 
-    // Submit form.
     fireEvent.click(screen.getByRole('button', { name: /login/i }));
+    await waitForLoadingToFinish();
 
-    await waitFor(() => {
-      expect(RannerApi.login).toHaveBeenCalledWith({
-        username: mockUser.username,
-        password: 'password123'
-      });
+    expect(RannerApi.login).toHaveBeenCalledWith({
+      username: mockUser.username,
+      password: 'password123'
     });
   });
 
@@ -45,19 +43,15 @@ describe('Login Component', () => {
     RannerApi.login.mockRejectedValueOnce(new Error(errorMessage));
     
     renderWithContext(<Login />);
-  
-    // Fill and submit form
-    fireEvent.change(screen.getByPlaceholderText('Username'), {
-      target: { name: 'username', value: 'wronguser' }
+
+    fireEvent.change(screen.getByRole('textbox', { name: /username/i }), {
+      target: { value: 'wronguser' }
     });
-    fireEvent.change(screen.getByPlaceholderText('Password'), {
-      target: { name: 'password', value: 'wrongpass' }
+    fireEvent.change(screen.getByLabelText(/password/i), {
+      target: { value: 'wrongpass' }
     });
+    
     fireEvent.click(screen.getByRole('button', { name: /login/i }));
-  
-    await waitFor(() => {
-      const alertElement = screen.getByRole('alert');
-      expect(alertElement).toHaveTextContent(new RegExp(errorMessage, 'i'));
-    });
+    expect(await findAlertMessage(errorMessage)).toBe(true);
   });
 });
