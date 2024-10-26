@@ -1,23 +1,21 @@
-import { useNavigate as actualUseNavigate } from 'react-router-dom';
-
 const mockNavigate = jest.fn();
+const mockLocation = jest.fn(() => ({ state: {} }));
+const mockParams = jest.fn();
 
-export const useNavigate = () => mockNavigate;
-export const useParams = jest.fn();
-export const useLocation = jest.fn(() => ({ state: {} }));
-export const Link = ({ children, to, ...props }) => (
-  <a href={to} {...props}>
-    {children}
-  </a>
+const React = require('react');
+
+const BrowserRouter = ({ children }) => <div>{children}</div>;
+const Link = ({ children, to, ...props }) => (
+  <a href={to} {...props}>{children}</a>
 );
 
-// Re-export the actual BrowserRouter
-export { BrowserRouter } from 'react-router-dom';
-
-export default {
-  useNavigate,
-  useParams,
-  useLocation,
+const ReactRouterDOM = {
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+  useParams: () => mockParams(),
+  useLocation: () => mockLocation(),
   Link,
   BrowserRouter
 };
+
+module.exports = ReactRouterDOM;
