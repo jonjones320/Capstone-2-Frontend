@@ -11,22 +11,24 @@
     "test": "jest --config jest.config.cjs",
     "test:watch": "jest --config jest.config.cjs --watch",
     "test:coverage": "jest --config jest.config.cjs --coverage"
-    },
+  },
   "jest": {
     "testEnvironment": "jsdom"
-    },
+  },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
     "@fortawesome/free-brands-svg-icons": "^6.6.0",
     "@fortawesome/free-regular-svg-icons": "^6.6.0",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@fortawesome/react-fontawesome": "^0.2.2",
+    "@testing-library/jest-dom": "^6.6.2",
     "amadeus": "^10.1.0",
     "axios": "^1.7.7",
     "bootstrap": "^5.3.3",
     "colors": "^1.4.0",
     "date-fns": "^3.6.0",
     "dotenv": "^16.4.5",
+    "jest-dom": "^4.0.0",
     "jest-environment-jsdom": "^29.7.0",
     "jwt-decode": "^4.0.0",
     "pg": "^8.12.0",
