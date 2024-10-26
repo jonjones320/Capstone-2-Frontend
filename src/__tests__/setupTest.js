@@ -27,7 +27,7 @@ afterAll(() => {
 });
 
 // Mock RannerApi backend functions
-jest.mock('../api', () => ({
+jest.mock('../../api', () => ({
   login: jest.fn(),
   signUp: jest.fn(),
   getUser: jest.fn(),
