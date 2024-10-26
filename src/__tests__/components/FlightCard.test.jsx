@@ -1,8 +1,9 @@
-import { screen, fireEvent, waitFor } from '@testing-library/react';
-import { renderWithContext } from '../testUtils';
-import { mockUser, mockFlight } from '../setup.cjs';
+import { screen, fireEvent } from '@testing-library/react';
+import { renderWithContext } from '../helpers/testUtils';
+import { mockUser, mockFlight } from '../helpers/testData';
+import { findAlertMessage, waitForLoadingToFinish } from '../helpers/testUtils';
 import FlightCard from '../../components/FlightCard';
-import RannerApi from '../../../api';
+import RannerApi from '../../api';
 
 describe('FlightCard', () => {
   const mockOnRemove = jest.fn();
@@ -20,11 +21,10 @@ describe('FlightCard', () => {
       />
     );
 
-    // Check basic flight information
-    expect(screen.getByText('SFO ↔ JFK')).toBeInTheDocument();
-    expect(screen.getByText('500.00 USD')).toBeInTheDocument();
-    expect(screen.getByText(/duration:/i)).toBeInTheDocument();
-    expect(screen.getByText(/stops:/i)).toBeInTheDocument();
+    // Use semantic roles for elements
+    expect(screen.getByRole('heading', { name: 'SFO ↔ JFK' })).toBeInTheDocument();
+    expect(screen.getByRole('definition', { name: /price/i })).toHaveTextContent('500.00 USD');
+    expect(screen.getByRole('list', { name: /flight details/i })).toBeInTheDocument();
   });
 
   test('handles flight removal', async () => {
@@ -38,16 +38,14 @@ describe('FlightCard', () => {
       />
     );
 
-    const removeButton = screen.getByRole('button', { name: /remove flight/i });
-    fireEvent.click(removeButton);
+    fireEvent.click(screen.getByRole('button', { name: /remove flight/i }));
+    await waitForLoadingToFinish();
 
-    await waitFor(() => {
-      expect(RannerApi.deleteFlight).toHaveBeenCalledWith(
-        mockFlight.id, 
-        mockUser.username
-      );
-      expect(mockOnRemove).toHaveBeenCalledWith(mockFlight.id);
-    });
+    expect(RannerApi.deleteFlight).toHaveBeenCalledWith(
+      mockFlight.id, 
+      mockUser.username
+    );
+    expect(mockOnRemove).toHaveBeenCalledWith(mockFlight.id);
   });
 
   test('handles flight removal error', async () => {
@@ -62,11 +60,8 @@ describe('FlightCard', () => {
     );
 
     fireEvent.click(screen.getByRole('button', { name: /remove flight/i }));
-
-    await waitFor(() => {
-      expect(screen.getByRole('alert')).toHaveTextContent(/failed to delete flight/i);
-      expect(mockOnRemove).not.toHaveBeenCalled();
-    });
+    expect(await findAlertMessage(/failed to delete flight/i)).toBe(true);
+    expect(mockOnRemove).not.toHaveBeenCalled();
   });
 
   test('renders error card for invalid flight data', () => {
