@@ -30,7 +30,7 @@ class ErrorBoundary extends React.Component {
     if (this.state.hasError) {
       return (
         <Container className="mt-5">
-          <Alert variant="danger">
+          <Alert variant="danger" role="alert">
             <Alert.Heading>Something went wrong</Alert.Heading>
             <p>
               We're sorry, but something unexpected happened. Please try again or contact support if the problem persists.
