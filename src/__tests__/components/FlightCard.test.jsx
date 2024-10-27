@@ -3,7 +3,7 @@ import { renderWithContext } from '../utils/testUtils';
 import { mockUser, mockFlight } from '../helpers/testData';
 import { findAlertMessage, waitForLoadingToFinish } from '../utils/testUtils';
 import FlightCard from '../../components/FlightCard';
-import RannerApi from '../../api';
+import RannerApi from '../../../api';
 
 describe('FlightCard', () => {
   const mockOnRemove = jest.fn();
