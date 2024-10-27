@@ -60,6 +60,7 @@ function Destination() {
             placeholder="Enter city or airport"
             value={destination}
             onChange={handleChange}
+            aria-label="Enter city or airport"
           />
         </Form.Group>
         <ListGroup className="mb-3">
