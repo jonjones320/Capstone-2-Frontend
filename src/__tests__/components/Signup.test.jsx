@@ -132,7 +132,7 @@ describe('Signup', () => {
 
     await waitFor(() => {
       expect(screen.getByRole('alert'))
-        .toHaveTextContent(/something went wrong/i);
+        .toHaveTextContent(/ErrorSignup failed/i);
     });
   });
 });
