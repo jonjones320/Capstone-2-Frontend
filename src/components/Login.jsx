@@ -46,6 +46,7 @@ function Login() {
               <Form.Control
                 type="text"
                 name="username"
+                role="textbox"
                 value={formData.username}
                 onChange={handleChange}
                 placeholder="Username"
@@ -56,6 +57,7 @@ function Login() {
               <Form.Control
                 type="password"
                 name="password"
+                role="textbox"
                 value={formData.password}
                 onChange={handleChange}
                 placeholder="Password"
