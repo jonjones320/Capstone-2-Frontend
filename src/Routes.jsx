@@ -14,7 +14,6 @@ import FlightList from './components/FlightList';
 import TripForm from './components/TripForm';
 import TripList from './components/TripList';
 import TripDetail from './components/TripDetail';
-import FlightSearch from './components/FlightSearch';
 import FlightDetail from './components/FlightDetail';
 import NotFound from './components/NotFound';
 
@@ -39,7 +38,6 @@ function AppRoutes() {
       <Route path="/destination" element={<ProtectedRoute element={<Destination />} />} />
       <Route path="/dates" element={<ProtectedRoute element={<TripDates />} />} />
       <Route path="/flights" element={<ProtectedRoute element={<FlightList />} />} />
-      <Route path="/flights/search" element={<ProtectedRoute element={<FlightSearch />} />} />
       <Route path="/flights/:id" element={<ProtectedRoute element={<FlightDetail />} />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
