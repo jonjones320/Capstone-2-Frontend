@@ -1,7 +1,7 @@
 import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { renderWithContext } from '../utils/testUtils';
 import { mockUser, mockTrip, mockFlight } from '../helpers/testData';
-import { AuthContext } from '../../context/AuthContext';
+import AuthContext from '../../context/AuthContext';
 import TripDetail from '../../components/TripDetail';
 import RannerApi from '../../../api';
 
@@ -13,9 +13,19 @@ jest.mock('react-router-dom', () => ({
 }));
 
 describe('TripDetail', () => {
+  const mockAuthContext = {
+    currentUser: mockUser,
+    login: jest.fn(),
+    logout: jest.fn()
+  };
+
   const renderTripDetail = (user = mockUser) => {
+    const contextValue = {
+      ...mockAuthContext,
+      currentUser: user
+    };
     return renderWithContext(
-      <AuthContext.Provider value={{ currentUser: user }}>
+      <AuthContext.Provider value={ contextValue }>
         <TripDetail />
       </AuthContext.Provider>
     );

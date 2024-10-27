@@ -1,21 +1,26 @@
 import { screen, waitFor } from '@testing-library/react';
 import { mockUser } from '../helpers/testData';
 import { renderWithContext } from '../utils/testUtils';
-import { AuthContext } from '../../components/../context/AuthContext';
+import AuthContext from '../../context/AuthContext';
 import Logout from '../../components/Logout';
 
 describe('Logout', () => {
   const mockLogout = jest.fn();
+  
+  const mockAuthContext = {
+    currentUser: mockUser,
+    login: jest.fn(),
+    logout: mockLogout
+  };
 
-  // Create currentUser context and run Logout component.
   const renderLogout = (isAuthenticated = true) => {
+    const contextValue = {
+      ...mockAuthContext,
+      currentUser: isAuthenticated ? mockUser : null
+    };
+
     return renderWithContext(
-      <AuthContext.Provider 
-        value={{ 
-          currentUser: isAuthenticated ? mockUser : null, 
-          logout: mockLogout 
-        }}
-      >
+      <AuthContext.Provider value={contextValue}>
         <Logout />
       </AuthContext.Provider>
     );
