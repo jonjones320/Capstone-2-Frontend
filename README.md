@@ -6,7 +6,7 @@
 
 *Ranner* empowers users to easily plan and manage every detail of their travel plans. This means balancing information with simplicity. Users are given an experience that enables them to consider the numerous variables of traveling, while also being able to expeditiously move forward with their planning. Too much information can bog a user down and make planning an overwhelming experience, but too little information could lead to a disastrous trip. *Ranner* has the enabling balance for great trip planning! 
 
-![Ranner Homepage](../Ranner-Frontend/src/assets/screenshots/Ranner-Homepage.png "Ranner Homepage")
+![Ranner Homepage](./assets/screenshots/Ranner-Homepage.png "Ranner Homepage")
 *The Ranner Homepage keeps it simple*
 
 ### Features
@@ -107,13 +107,13 @@ Ranner uses the Amadeus Travel API for flight data. The API provides:
 [View Amadeus API Documentation](https://developers.amadeus.com/self-service/apis-docs)
 ### Screenshots
 *Trip creation begins with a simple origin and destination search*
-![Origin](../Ranner-Frontend/src/assets/screenshots/Ranner-Origin.png)
+![Origin](./screenshots/Ranner-Origin.png)
 *Then the details are added*
-![Create Trip](../Ranner-Frontend/src/assets/screenshots/Ranner-Create-Trip.png)
+![Create Trip](./screenshots/Ranner-Create-Trip.png)
 *Select a flight form the up-to-date list*
-![Flights](../Ranner-Frontend/src/assets/screenshots/Ranner-Flight-Offers.png)
+![Flights](./screenshots/Ranner-Flight-Offers.png)
 *All of a user's Trip are here.*
-![Trips](../Ranner-Frontend/src/assets/screenshots/Ranner-Trips.png)
+![Trips](./screenshots/Ranner-Trips.png)
 
 ### Future Enhancements
 
