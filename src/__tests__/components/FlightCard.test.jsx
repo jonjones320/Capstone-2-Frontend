@@ -1,4 +1,4 @@
-import { screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent, act } from '@testing-library/react';
 import { renderWithContext } from '../utils/testUtils';
 import { mockUser, mockFlight } from '../helpers/testData';
 import { findAlertMessage, waitForLoadingToFinish } from '../utils/testUtils';
