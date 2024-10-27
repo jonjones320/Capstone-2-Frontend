@@ -1,19 +1,31 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import { AuthProvider } from '../../context/AuthContext';
+import AuthContext from '../../context/AuthContext';
 
 // Custom render with providers
-export function renderWithContext(ui, { route = '/', user = null, state = {} } = {}) {
-  window.history.pushState(state, 'Test page', route);
-  
-  const Wrapper = ({ children }) => (
-    <AuthProvider initialUser={user}>
-      <BrowserRouter>{children}</BrowserRouter>
-    </AuthProvider>
-  );
+const defaultAuthContext = {
+  currentUser: null,
+  login: jest.fn(),
+  logout: jest.fn()
+};
 
-  return render(ui, { wrapper: Wrapper });
+export function renderWithContext(ui, { 
+  route = '/', 
+  authContext = defaultAuthContext,
+  ...renderOptions 
+  } = {}) {
+  window.history.pushState({}, 'Test page', route);
+  
+  function Wrapper({ children }) {
+    return (
+      <AuthContext.Provider value={authContext}>
+        <BrowserRouter>{children}</BrowserRouter>
+      </AuthContext.Provider>
+    );
+  }
+
+  return render(ui, { wrapper: Wrapper, ...renderOptions });
 }
 
 // Helper to find alert messages
