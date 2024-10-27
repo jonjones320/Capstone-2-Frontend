@@ -106,14 +106,14 @@ Ranner uses the Amadeus Travel API for flight data. The API provides:
 
 [View Amadeus API Documentation](https://developers.amadeus.com/self-service/apis-docs)
 ### Screenshots
-![Origin](../Ranner-Frontend/src/assets/screenshots/Ranner-Origin.png)
 *Trip creation begins with a simple origin and destination search*
-![Create Trip](../Ranner-Frontend/src/assets/screenshots/Ranner-Create-Trip.png)
+![Origin](../Ranner-Frontend/src/assets/screenshots/Ranner-Origin.png)
 *Then the details are added*
-![Flights](../Ranner-Frontend/src/assets/screenshots/Ranner-Flight-Offers.png)
+![Create Trip](../Ranner-Frontend/src/assets/screenshots/Ranner-Create-Trip.png)
 *Select a flight form the up-to-date list*
+![Flights](../Ranner-Frontend/src/assets/screenshots/Ranner-Flight-Offers.png)
+*All of a user's Trip are here.*
 ![Trips](../Ranner-Frontend/src/assets/screenshots/Ranner-Trips.png)
-*All of a user's Trip are here."
 
 ### Future Enhancements
 
