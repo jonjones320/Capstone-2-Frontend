@@ -47,8 +47,9 @@ function SignUp() {
           <ErrorDisplay error={error} onClose={clearError} />
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3">
-              <Form.Label>Username</Form.Label>
+              <Form.Label htmlFor="username">Username</Form.Label>
               <Form.Control
+                id="username"
                 type="text"
                 name="username"
                 value={formData.username}
@@ -58,8 +59,9 @@ function SignUp() {
               />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label>Password</Form.Label>
+              <Form.Label htmlFor="password">Password</Form.Label>
               <Form.Control
+                id="password"
                 type="password"
                 name="password"
                 value={formData.password}
@@ -69,8 +71,9 @@ function SignUp() {
               />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label>First Name</Form.Label>
+              <Form.Label htmlFor="firstName">First Name</Form.Label>
               <Form.Control
+                id="firstName"
                 type="text"
                 name="firstName"
                 value={formData.firstName}
@@ -80,8 +83,9 @@ function SignUp() {
               />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label>Last Name</Form.Label>
+              <Form.Label htmlFor="lastName">Last Name</Form.Label>
               <Form.Control
+                id="lastName"
                 type="text"
                 name="lastName"
                 value={formData.lastName}
@@ -91,8 +95,9 @@ function SignUp() {
               />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label>Email</Form.Label>
+              <Form.Label htmlFor="email">Email</Form.Label>
               <Form.Control
+                id="email"
                 type="email"
                 name="email"
                 value={formData.email}
