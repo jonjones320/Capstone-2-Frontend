@@ -1,6 +1,7 @@
-import { screen, fireEvent, waitFor } from '@testing-library/react';
+import { screen, fireEvent, act } from '@testing-library/react';
 import { mockUser } from '../helpers/testData';
 import { renderWithContext } from '../utils/testUtils';
+import { findAlertMessage } from '../utils/testUtils';
 import Signup from '../../components/Signup';
 import RannerApi from '../../../api';
 
@@ -83,40 +84,37 @@ describe('Signup', () => {
   test('validates required fields', async () => {
     renderWithContext(<Signup />);
 
-    // Submit empty form.
-    fireEvent.submit(screen.getByRole('button', { name: /sign up/i }));
-
-    await waitFor(() => {
-      expect(screen.getAllByRole('alert')).toHaveLength(1);
+    await act(async () => {
+      fireEvent.submit(screen.getByRole('button', { name: /sign up/i }));
     });
+
+    expect(await findAlertMessage(/required/i)).toBe(true);
   });
 
   test('validates email format', async () => {
     renderWithContext(<Signup />);
 
-    fireEvent.change(screen.getByLabelText(/email/i), {
-      target: { value: 'invalid-email' }
+    await act(async () => {
+      fireEvent.change(screen.getByLabelText(/email/i), {
+        target: { value: 'invalid-email' }
+      });
+      fireEvent.submit(screen.getByRole('button', { name: /sign up/i }));
     });
-    fireEvent.submit(screen.getByRole('button', { name: /sign up/i }));
 
-    await waitFor(() => {
-      expect(screen.getByRole('alert'))
-        .toHaveTextContent(/invalid email format/i);
-    });
+    expect(await findAlertMessage(/invalid email format/i)).toBe(true);
   });
 
   test('validates password strength', async () => {
     renderWithContext(<Signup />);
 
-    fireEvent.change(screen.getByLabelText(/password/i), {
-      target: { value: '123' } // Too short.
+    await act(async () => {
+      fireEvent.change(screen.getByLabelText(/password/i), {
+        target: { value: '123' }
+      });
+      fireEvent.submit(screen.getByRole('button', { name: /sign up/i }));
     });
-    fireEvent.submit(screen.getByRole('button', { name: /sign up/i }));
 
-    await waitFor(() => {
-      expect(screen.getByRole('alert'))
-        .toHaveTextContent(/password must be at least/i);
-    });
+    expect(await findAlertMessage(/password must be at least/i)).toBe(true);
   });
 
   test('handles generic signup error', async () => {
