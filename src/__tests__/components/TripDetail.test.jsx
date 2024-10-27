@@ -1,16 +1,26 @@
 import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { renderWithContext } from '../utils/testUtils';
 import { mockUser, mockTrip, mockFlight } from '../helpers/testData';
+import { AuthContext } from '../../context/AuthContext';
 import TripDetail from '../../components/TripDetail';
 import RannerApi from '../../../api';
 
-// Tell jest to not mock react-router-dom's `useParams` for the id.
+// Mock router.
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useParams: () => ({ id: '1' })
+  useParams: () => ({ id: '1' }),
+  useNavigate: () => jest.fn()
 }));
 
 describe('TripDetail', () => {
+  const renderTripDetail = (user = mockUser) => {
+    return renderWithContext(
+      <AuthContext.Provider value={{ currentUser: user }}>
+        <TripDetail />
+      </AuthContext.Provider>
+    );
+  };
+
   beforeEach(() => {
     jest.clearAllMocks();
     // Setup default mock responses.
@@ -19,12 +29,12 @@ describe('TripDetail', () => {
   });
 
   test('renders loading state initially', () => {
-    renderWithContext(<TripDetail />);
+    renderTripDetail();
     expect(screen.getByRole('status')).toBeInTheDocument();
   });
 
   test('renders trip and flight details after loading', async () => {
-    renderWithContext(<TripDetail />, { user: mockUser });
+    renderTripDetail();
 
     await waitFor(() => {
       // Trip details.
@@ -33,20 +43,37 @@ describe('TripDetail', () => {
       expect(screen.getByText(`Destination: ${mockTrip.destination}`)).toBeInTheDocument();
       
       // Flight section.
-      expect(screen.getByText(/flights/i)).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: /flights/i })).toBeInTheDocument();
       expect(screen.getByText(/sfo ↔ jfk/i)).toBeInTheDocument();
     });
   });
 
-  test('handles edit mode toggle', async () => {
-    renderWithContext(<TripDetail />, { user: mockUser });
+  test('shows edit/delete buttons when user is authenticated', async () => {
+    renderTripDetail();
 
     await waitFor(() => {
-      expect(screen.getByText(mockTrip.name)).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /edit/i })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /delete trip/i })).toBeInTheDocument();
+    });
+  });
+
+  test('hides edit/delete buttons when user is not authenticated', async () => {
+    renderTripDetail(null); // Pass null as currentUser.
+
+    await waitFor(() => {
+      expect(screen.queryByRole('button', { name: /edit/i })).not.toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: /delete trip/i })).not.toBeInTheDocument();
+    });
+  });
+
+  test('handles edit mode toggle', async () => {
+    renderTripDetail();
+
+    await waitFor(() => {
+      fireEvent.click(screen.getByRole('button', { name: /edit/i }));
     });
 
-    fireEvent.click(screen.getByRole('button', { name: /edit/i }));
-    expect(screen.getByLabelText(/trip name/i)).toHaveValue(mockTrip.name);
+    expect(screen.getByRole('textbox', { name: /trip name/i })).toHaveValue(mockTrip.name);
   });
 
   test('handles trip update', async () => {
@@ -54,13 +81,13 @@ describe('TripDetail', () => {
     RannerApi.updateTrip.mockResolvedValueOnce(updatedTrip);
     RannerApi.getTripById.mockResolvedValueOnce(updatedTrip);
 
-    renderWithContext(<TripDetail />, { user: mockUser });
+    renderTripDetail();
 
     await waitFor(() => {
       fireEvent.click(screen.getByRole('button', { name: /edit/i }));
     });
 
-    fireEvent.change(screen.getByLabelText(/trip name/i), {
+    fireEvent.change(screen.getByRole('textbox', { name: /trip name/i }), {
       target: { value: 'Updated Trip Name' }
     });
     fireEvent.click(screen.getByRole('button', { name: /update trip/i }));
@@ -75,10 +102,10 @@ describe('TripDetail', () => {
     jest.spyOn(require('react-router-dom'), 'useNavigate')
       .mockImplementation(() => mockNavigate);
 
-    renderWithContext(<TripDetail />, { user: mockUser });
+    renderTripDetail();
 
     await waitFor(() => {
-      fireEvent.click(screen.getByRole('button', { name: /delete/i }));
+      fireEvent.click(screen.getByRole('button', { name: /delete trip/i }));
     });
 
     await waitFor(() => {
@@ -88,7 +115,7 @@ describe('TripDetail', () => {
   });
 
   test('handles flight removal', async () => {
-    renderWithContext(<TripDetail />, { user: mockUser });
+    renderTripDetail(user);
 
     await waitFor(() => {
       const removeButton = screen.getByRole('button', { name: /remove flight/i });
@@ -103,7 +130,7 @@ describe('TripDetail', () => {
   test('handles API errors', async () => {
     RannerApi.getTripById.mockRejectedValueOnce(new Error('Failed to load trip'));
 
-    renderWithContext(<TripDetail />, { user: mockUser });
+    renderTripDetail(user);
 
     await waitFor(() => {
       expect(screen.getByRole('alert'))
@@ -114,7 +141,7 @@ describe('TripDetail', () => {
   test('handles no flights case', async () => {
     RannerApi.getFlightsByTrip.mockResolvedValueOnce([]);
 
-    renderWithContext(<TripDetail />, { user: mockUser });
+    renderTripDetail(user);
 
     await waitFor(() => {
       expect(screen.getByText(/no flights booked/i)).toBeInTheDocument();
