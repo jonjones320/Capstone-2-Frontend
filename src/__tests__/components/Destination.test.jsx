@@ -1,7 +1,7 @@
 import { screen, fireEvent } from '@testing-library/react';
 import { renderWithContext, findAlertMessage } from '../utils/testUtils';
 import Destination from '../../components/Destination';
-import RannerApi from '../../api';
+import RannerApi from '../../../api';
 
 const mockState = { origin: 'SFO' };
 
