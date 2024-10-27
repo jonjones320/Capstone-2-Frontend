@@ -6,7 +6,7 @@
 
 *Ranner* empowers users to easily plan and manage every detail of their travel plans. This means balancing information with simplicity. Users are given an experience that enables them to consider the numerous variables of traveling, while also being able to expeditiously move forward with their planning. Too much information can bog a user down and make planning an overwhelming experience, but too little information could lead to a disastrous trip. *Ranner* has the enabling balance for great trip planning! 
 
-![Ranner Homepage](./assets/screenshots/Ranner-Homepage.png "Ranner Homepage")
+![Ranner Homepage](./screenshots/Ranner-Homepage.png "Ranner Homepage")
 *The Ranner Homepage keeps it simple*
 
 ### Features
