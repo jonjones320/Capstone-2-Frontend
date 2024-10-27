@@ -115,36 +115,52 @@ describe('TripDetail', () => {
   });
 
   test('handles flight removal', async () => {
-    renderTripDetail(user);
-
+    // Mock successful flight deletion.
+    RannerApi.deleteFlight.mockResolvedValueOnce();
+    renderTripDetail();
+  
+    // Wait for component to load and find remove button.
+    const removeButton = await screen.findByRole('button', { name: /remove flight/i });
+    
+    // Click remove button.
+    fireEvent.click(removeButton);
+  
     await waitFor(() => {
-      const removeButton = screen.getByRole('button', { name: /remove flight/i });
-      fireEvent.click(removeButton);
-    });
-
-    await waitFor(() => {
+      // Verify API was called correctly.
+      expect(RannerApi.deleteFlight).toHaveBeenCalledWith(
+        mockFlight.id,
+        mockUser.username
+      );
+      // Verify flight was removed from display.
       expect(screen.queryByText(/sfo ↔ jfk/i)).not.toBeInTheDocument();
     });
   });
-
+  
   test('handles API errors', async () => {
-    RannerApi.getTripById.mockRejectedValueOnce(new Error('Failed to load trip'));
-
-    renderTripDetail(user);
-
-    await waitFor(() => {
-      expect(screen.getByRole('alert'))
-        .toHaveTextContent(/failed to load trip/i);
-    });
+    const errorMessage = 'Failed to load trip';
+    RannerApi.getTripById.mockRejectedValueOnce(new Error(errorMessage));
+  
+    renderTripDetail();
+  
+    // Wait for error to display.
+    const alert = await screen.findByRole('alert');
+    expect(alert).toHaveTextContent(errorMessage);
+    
+    // Verify loading state is removed.
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
   });
-
+  
   test('handles no flights case', async () => {
+    RannerApi.getTripById.mockResolvedValueOnce(mockTrip);
     RannerApi.getFlightsByTrip.mockResolvedValueOnce([]);
-
-    renderTripDetail(user);
-
-    await waitFor(() => {
-      expect(screen.getByText(/no flights booked/i)).toBeInTheDocument();
-    });
+  
+    renderTripDetail();
+  
+    // Wait for no flights message.
+    await screen.findByText(/no flights booked/i);
+    
+    // Verify Add Flight button is shown instead of Change Flights.
+    expect(screen.getByRole('button', { name: /add flight/i })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /change flights/i })).not.toBeInTheDocument();
   });
 });
