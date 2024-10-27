@@ -3,7 +3,7 @@ import { renderWithContext } from '../utils/testUtils';
 import { mockUser } from '../helpers/testData';
 import { findAlertMessage, waitForLoadingToFinish } from '../utils/testUtils';
 import Login from '../../components/Login';
-import RannerApi from '../../api';
+import RannerApi from '../../../api';
 
 describe('Login', () => {
   beforeEach(() => {
