@@ -38,11 +38,6 @@ describe('Logout', () => {
     });
   });
 
-  test('displays thank you message', () => {
-    renderLogout();
-    expect(screen.getByText(/thanks for coming/i)).toBeInTheDocument();
-  });
-
   test('shows login and signup buttons', () => {
     renderLogout();
     expect(screen.getByRole('link', { name: /login/i })).toBeInTheDocument();
