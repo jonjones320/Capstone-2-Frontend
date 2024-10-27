@@ -18,7 +18,8 @@ const ErrorDisplay = ({ error, onClose }) => {
 
   return (
     <Alert 
-      variant={variant} 
+      variant={variant}
+      role="alert"
       dismissible 
       onClose={onClose}
       className="mb-4"
