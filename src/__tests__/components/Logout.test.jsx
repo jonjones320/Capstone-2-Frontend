@@ -56,7 +56,7 @@ describe('Logout', () => {
     // Wait for error message to appear.
     await waitFor(() => {
       expect(screen.getByRole('alert'))
-        .toHaveTextContent(/there was an error logging out/i);
+        .toHaveTextContent(/ErrorLogout failed/i);
     });
   });
 
