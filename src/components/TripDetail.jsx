@@ -124,8 +124,12 @@ function TripDetail() {
           <p>Passengers: {trip.passengers}</p>
           {currentUser && (
             <div className="mb-4">
-              <Button variant="primary" onClick={handleEdit} className="me-2">Edit</Button>
-              <Button variant="danger" onClick={handleDelete}>Delete Trip</Button>
+              <Button variant="primary" onClick={handleEdit} className="me-2">
+                Edit Trip
+              </Button>
+              <Button variant="danger" onClick={handleDelete} aria-label="Delete trip">
+                Delete Trip
+              </Button>
             </div>
           )}
           
