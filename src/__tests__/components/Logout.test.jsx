@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react';
+import { screen, waitFor, act } from '@testing-library/react';
 import { mockUser } from '../helpers/testData';
 import { renderWithContext } from '../utils/testUtils';
 import AuthContext from '../../context/AuthContext';
@@ -13,17 +13,19 @@ describe('Logout', () => {
     logout: mockLogout
   };
 
-  const renderLogout = (isAuthenticated = true) => {
+  const renderLogout = async (isAuthenticated = true) => {
     const contextValue = {
       ...mockAuthContext,
       currentUser: isAuthenticated ? mockUser : null
     };
 
-    return renderWithContext(
-      <AuthContext.Provider value={contextValue}>
-        <Logout />
-      </AuthContext.Provider>
-    );
+    await act(async () => {
+      renderWithContext(
+        <AuthContext.Provider value={contextValue}>
+          <Logout />
+        </AuthContext.Provider>
+      );
+    });
   };
 
   beforeEach(() => {
@@ -31,37 +33,41 @@ describe('Logout', () => {
   });
 
   test('performs logout on mount', async () => {
-    renderLogout();
-
-    await waitFor(() => {
-      expect(mockLogout).toHaveBeenCalled();
-    });
+    await renderLogout();
+    expect(mockLogout).toHaveBeenCalled();
   });
 
-  test('shows login and signup buttons', () => {
-    renderLogout();
+  test('displays thank you message', async () => {
+    await renderLogout();
+    expect(screen.getByText(/thanks for coming/i)).toBeInTheDocument();
+  });
+
+  test('shows login and signup buttons', async () => {
+    await renderLogout();
     expect(screen.getByRole('link', { name: /login/i })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /sign up/i })).toBeInTheDocument();
   });
 
   test('handles logout error', async () => {
     mockLogout.mockRejectedValueOnce(new Error('Logout failed'));
-    renderLogout();
+    
+    await renderLogout();
 
+    // Wait for error message to appear.
     await waitFor(() => {
       expect(screen.getByRole('alert'))
         .toHaveTextContent(/there was an error logging out/i);
     });
   });
 
-  test('login button links to correct route', () => {
-    renderLogout();
+  test('login button links to correct route', async () => {
+    await renderLogout();
     const loginLink = screen.getByRole('link', { name: /login/i });
     expect(loginLink).toHaveAttribute('href', '/login');
   });
 
-  test('signup button links to correct route', () => {
-    renderLogout();
+  test('signup button links to correct route', async () => {
+    await renderLogout();
     const signupLink = screen.getByRole('link', { name: /sign up/i });
     expect(signupLink).toHaveAttribute('href', '/signup');
   });
