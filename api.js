@@ -101,6 +101,51 @@ class RannerApi {
     return res.message;
   }
 
+  
+  ///// Saved Flight API routes /////
+  
+  /** Post a new saved flight. */
+  static async postFlight(properties) {
+    let res = await this.request(`flights`, properties, "post");
+    return res.flight;
+  }
+  /** Get details on a saved flight or flights by filters. */
+  static async getFlight(filters) {
+    try {
+      let params;
+      if (typeof filters === 'number' || typeof filters === 'string') {
+        // If filters is a number or string, assume it's an ID.
+        params = { id: filters };
+      } else if (typeof filters === 'object' && filters !== null) {
+        // If filters is already an object, use it as is.
+        params = filters;
+      } else {
+        // If filters is neither a number/string nor an object, throw an error.
+        throw new Error('Invalid filters parameter');
+      }
+
+      let res = await this.request('flights', params);
+      return res.flight;
+    } catch (error) {
+      console.error("api.js - getFlight - ERROR:", error);
+      throw error;
+    }
+  }
+  /** Get flights by trip id */
+  static async getFlightsByTrip(tripId) {
+    let res = await this.request(`flights/trip/${tripId}`);
+    return res.flights
+  }
+  /** Patch a saved flight by id. */
+  static async patchFlight(id, properties) {
+    let res = await this.request(`flights/${id}`, properties, "patch");
+    return res.flight;
+  }
+  /** Delete a saved flight by id. */
+  static async deleteFlight(id, username) {
+    await this.request(`flights/${id}`, { username }, "delete");
+  }
+
 
   ///// Amadeus Flight API routes /////
 
@@ -212,49 +257,6 @@ class RannerApi {
     return res;
   }
   
-  ///// Saved Flight API routes /////
-  
-  /** Post a new saved flight. */
-  static async postFlight(properties) {
-    let res = await this.request(`flights`, properties, "post");
-    return res.flight;
-  }
-  /** Get details on a saved flight or flights by filters. */
-  static async getFlight(filters) {
-    try {
-      let params;
-      if (typeof filters === 'number' || typeof filters === 'string') {
-        // If filters is a number or string, assume it's an ID.
-        params = { id: filters };
-      } else if (typeof filters === 'object' && filters !== null) {
-        // If filters is already an object, use it as is.
-        params = filters;
-      } else {
-        // If filters is neither a number/string nor an object, throw an error.
-        throw new Error('Invalid filters parameter');
-      }
-
-      let res = await this.request('flights', params);
-      return res.flight;
-    } catch (error) {
-      console.error("api.js - getFlight - ERROR:", error);
-      throw error;
-    }
-  }
-  /** Get flights by trip id */
-  static async getFlightsByTrip(tripId) {
-    let res = await this.request(`flights/trip/${tripId}`);
-    return res.flights
-  }
-  /** Patch a saved flight by id. */
-  static async patchFlight(id, properties) {
-    let res = await this.request(`flights/${id}`, properties, "patch");
-    return res.flight;
-  }
-  /** Delete a saved flight by id. */
-  static async deleteFlight(id, username) {
-    await this.request(`flights/${id}`, { username }, "delete");
-  }
 
   ///// Accommodation API routes /////
 
