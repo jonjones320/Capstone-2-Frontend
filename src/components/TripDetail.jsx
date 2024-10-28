@@ -70,12 +70,7 @@ function TripDetail() {
   };
 
   const handleRemoveFlight = async (flightId) => {
-    try {
-      await RannerApi.deleteFlight(flightId, currentUser.username);
       setFlights(flights.filter(flight => flight.id !== flightId));
-    } catch (err) {
-      handleError(err); // Use the standardized error handler
-    }
   };
   
   // Go back //
