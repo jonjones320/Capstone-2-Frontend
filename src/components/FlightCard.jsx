@@ -25,6 +25,7 @@ const FlightCard = ({ flight, onRemove, username }) => {
     );
   }
 
+  // Shorts date format for a better looking FlightCard.
   const formatDate = (dateString) => {
     try {
       return new Date(dateString).toLocaleString([], { 
@@ -37,6 +38,7 @@ const FlightCard = ({ flight, onRemove, username }) => {
     }
   };
 
+  // JSX for each leg of the flight order.
   const renderFlightLeg = (itinerary, legType) => {
     try {
       const departureSegment = itinerary.segments[0];
@@ -69,6 +71,7 @@ const FlightCard = ({ flight, onRemove, username }) => {
 
   const handleRemoveFlight = async () => {
     try {
+      // Passes username in the req body for authentication.
       await RannerApi.deleteFlight(flight.id, username);
       onRemove(flight.id);
     } catch (err) {
