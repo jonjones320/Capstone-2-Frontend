@@ -1,15 +1,20 @@
-/**
- * Custom error types for specific error scenarios.
- */
-export class ApiError extends Error {
-    constructor(message, status) {
-      super(message);
-      this.name = 'ApiError';
-      this.status = status;
-    }
+// Custom error classes
+class ApiError extends Error {
+  constructor(message, status) {
+    super(message);
+    this.name = 'ApiError';
+    this.status = status;
+  }
 }
-  
-  export class ValidationError extends Error {
+
+class AuthenticationError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'AuthenticationError';
+  }
+}
+
+class ValidationError extends Error {
   constructor(message, fields) {
     super(message);
     this.name = 'ValidationError';
@@ -17,18 +22,10 @@ export class ApiError extends Error {
   }
 }
 
-export class AuthenticationError extends Error {
-  constructor(message) {
-    super(message);
-    this.name = 'AuthenticationError';
-  }
-}
-
 /**
  * Central error handling utility.
  */
 export const ErrorHandler = {
-  // Handle API errors.
   handleApiError: (error) => {
     if (error.response) {
       // Server responded with error.
@@ -54,46 +51,22 @@ export const ErrorHandler = {
       // Error in request setup.
       throw new ApiError('An error occurred while processing your request', 0);
     }
-  },
-
-  // Format error message for display.
-  formatErrorMessage: (error) => {
-    if (error instanceof ValidationError && error.fields) {
-      return Object.entries(error.fields)
-        .map(([field, message]) => `${field}: ${message}`)
-        .join('\n');
-    }
-    return error.message;
-  },
-
-  // Log error for debugging.
-  logError: (error, context = '') => {
-    console.error(`Error ${context}:`, {
-      name: error.name,
-      message: error.message,
-      stack: error.stack,
-      ...(error.status && { status: error.status }),
-      ...(error.fields && { fields: error.fields })
-    });
   }
 };
 
-/**
- * Custom hook for error handling in components.
- */
-import { useState, useCallback } from 'react';
-
+// Custom hook for handling errors in components.
 export const useErrorHandler = () => {
-  const [error, setError] = useState(null);
+  const [error, setError] = React.useState(null);
 
-  const handleError = useCallback((error) => {
-    ErrorHandler.logError(error);
+  const handleError = (error) => {
     setError(error);
-  }, []);
+  };
 
-  const clearError = useCallback(() => {
+  const clearError = () => {
     setError(null);
-  }, []);
+  };
 
   return { error, handleError, clearError };
 };
+
+export { ApiError, AuthenticationError, ValidationError };
