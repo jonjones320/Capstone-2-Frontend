@@ -1,23 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Container, Spinner, Button, Card } from 'react-bootstrap';
 import RannerApi from '../../api';
 import FlightCard from './FlightCard';
-import { useErrorHandler } from '../utils/errorHandler';
-import ErrorDisplay from '../components/ErrorDisplay';
+import ErrorDisplay from '../common/ErrorDisplay';
+import { useErrorHandler } from '../../utils/errorHandler';
+import { Container, Spinner, Button, Card } from 'react-bootstrap';
 
 function FlightList() {
   const { state } = useLocation();
   const { trip } = state || {};
   const [flights, setFlights] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const { error, handleError, clearError } = useErrorHandler();
+  const { error, handleError } = useErrorHandler();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchFlights = async () => {
-      setIsLoading(true);
+    async function fetchFlights() {
+      if (!trip) {
+        handleError(new Error("Trip information is missing"));
+        setIsLoading(false);
+        return;
+      }
       try {
+        setIsLoading(true);
+        
         const res = await RannerApi.searchFlightOffers({
           originLocationCode: trip.origin,
           destinationLocationCode: trip.destination,
@@ -25,17 +31,22 @@ function FlightList() {
           returnDate: trip.endDate,
           adults: trip.passengers
         });
-        setFlights(res.data);
+
+        // Check if res.data exists and is an array.
+        if (res && res.data && Array.isArray(res.data)) {
+          setFlights(res.data);
+        } else {
+          handleError(new Error("Invalid response format from flight search"));
+        }
       } catch (err) {
+        console.error("Error fetching flights:", err);
         handleError(err);
       } finally {
         setIsLoading(false);
       }
-    };
-    
-    if (trip) {
-      fetchFlights();
     }
+
+    fetchFlights();
   }, [trip, handleError]);
 
   const handleAddFlight = async (flight) => {
@@ -48,6 +59,7 @@ function FlightList() {
       });
       navigate(`/trip/${tripId}`);
     } catch (err) {
+      console.error("Error adding flight to trip:", err);
       handleError(err);
     }
   };
@@ -56,12 +68,43 @@ function FlightList() {
     navigate(-1);
   };
 
-  if (isLoading) {
+  if (isLoading) { 
     return (
-      <Container className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
+      <Container 
+        className="d-flex justify-content-center align-items-center" 
+        style={{ height: '100vh' }}
+      >
         <Spinner animation="border" role="status">
           <span className="visually-hidden">Loading flights...</span>
         </Spinner>
+      </Container>
+    );
+  }
+
+  if (error) { 
+    return (
+      <Container className="mt-5">
+        <Button variant="secondary" onClick={handleBack} className="mb-3">
+          &larr; Back
+        </Button>
+        <ErrorDisplay error={error} />
+      </Container>
+    );
+  }
+
+  // Only check flights length after we're done loading and have no errors.
+  if (!flights || flights.length === 0) {
+    return (
+      <Container className="mt-5">
+        <Button variant="secondary" onClick={handleBack} className="mb-3">
+          &larr; Back
+        </Button>
+        <ErrorDisplay 
+          error={{ 
+            message: "No flights found for your search criteria. Please try different dates or locations."
+          }} 
+          variant="info"
+        />
       </Container>
     );
   }
@@ -71,7 +114,6 @@ function FlightList() {
       <Button variant="secondary" onClick={handleBack} className="mb-3">
         &larr; Back
       </Button>
-      <ErrorDisplay error={error} onClose={clearError} />
       <h2 className="mb-4">Flight Offers</h2>
       {flights.map((flight) => (
         <Card key={flight.id} className="mb-4">
