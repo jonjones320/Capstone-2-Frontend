@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import RannerApi from '../../api';
 import FlightCard from './FlightCard';
-import ErrorDisplay from '../common/ErrorDisplay';
-import { useErrorHandler } from '../../utils/errorHandler';
+import ErrorDisplay from '../components/ErrorDisplay';
+import { useErrorHandler } from '../utils/errorHandler';
 import { Container, Spinner, Button, Card } from 'react-bootstrap';
 
 function FlightList() {
