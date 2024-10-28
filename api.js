@@ -1,5 +1,5 @@
 import axios from "axios";
-import ErrorHandler from "../Ranner-Frontend/src/utils/errorHandler"
+import ErrorHandler from "./src/utils/errorHandler"
 
 // const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:3001";
 const BASE_URL = import.meta.env.REACT_APP_BASE_URL || "https://capstone-2-backend-iahv.onrender.com";
