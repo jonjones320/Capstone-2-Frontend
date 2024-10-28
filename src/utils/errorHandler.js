@@ -1,3 +1,5 @@
+import React from 'react';
+
 // Custom error classes
 class ApiError extends Error {
   constructor(message, status) {
