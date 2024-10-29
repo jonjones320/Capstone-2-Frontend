@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { Container, Spinner, Button, Card } from 'react-bootstrap';
+import { format } from 'date-fns';
 import RannerApi from '../../api';
 import FlightCard from './FlightCard';
 import ErrorDisplay from '../components/ErrorDisplay';
 import { useErrorHandler } from '../utils/errorHandler';
-import { Container, Spinner, Button, Card } from 'react-bootstrap';
 
 function FlightList() {
   const { state } = useLocation();
@@ -23,20 +24,24 @@ function FlightList() {
       }
       try {
         setIsLoading(true);
+
+        // Format dates to YYYY-MM-DD for Amadeus API.
+        const formattedStartDate = format(new Date(trip.startDate), 'yyyy-MM-dd');
+        const formattedEndDate = format(new Date(trip.endDate), 'yyyy-MM-dd');
         
         const res = await RannerApi.searchFlightOffers({
           originLocationCode: trip.origin,
           destinationLocationCode: trip.destination,
-          departureDate: trip.startDate,
-          returnDate: trip.endDate,
-          adults: trip.passengers
+          departureDate: formattedStartDate,
+          returnDate: formattedEndDate,
+          adults: Number(trip.passengers) || 1
         });
 
         // Check if res.data exists and is an array.
         if (res && res.data && Array.isArray(res.data)) {
           setFlights(res.data);
         } else {
-          handleError(new Error("Invalid response format from flight search"));
+          handleError(new Error("No flights found for these dates and locations."));
         }
       } catch (err) {
         console.error("Error fetching flights:", err);
