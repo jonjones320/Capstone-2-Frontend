@@ -31,7 +31,7 @@ function TripList() {
     if (currentUser) {
       fetchTrips();
     }
-  }, [filters, currentUser, handleError]);
+  }, [filters, currentUser]);
 
   if (isLoading) {
     return (

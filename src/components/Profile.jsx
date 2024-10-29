@@ -32,7 +32,7 @@ function Profile() {
     if (currentUser) {
       fetchUser();
     }
-  }, [currentUser, handleError]);
+  }, [currentUser]);
 
   if (isLoading) {
     return (
