@@ -34,7 +34,7 @@ function TripDetail() {
       }
     };
     fetchTripAndFlights();
-  }, [id, handleError]);
+  }, [id]);
 
   // Handle Trip section //
   const handleUpdate = async (updatedTripData) => {

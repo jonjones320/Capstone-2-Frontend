@@ -47,7 +47,7 @@ function FlightList() {
     }
 
     fetchFlights();
-  }, [trip, handleError]);
+  }, [trip]);
 
   const handleAddFlight = async (flight) => {
     try {

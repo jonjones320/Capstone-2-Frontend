@@ -35,7 +35,7 @@ function TripForm({ initialData, onSubmit, isEdit = false }) {
         handleError(new Error('Error formatting dates'));
       }
     }
-  }, [initialData, handleError]);
+  }, [initialData]);
 
   const handleChange = async ({ target: { name, value } }) => {
     setFormData(data => ({ ...data, [name]: value }));

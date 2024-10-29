@@ -26,7 +26,7 @@ function FlightDetail() {
     };
 
     fetchFlightDetails();
-  }, [id, handleError]);
+  }, [id]);
 
   const handleBack = () => {
     navigate(-1);

@@ -23,7 +23,7 @@ function Logout() {
     };
 
     performLogout();
-  }, [logout, handleError]);
+  }, [logout]);
 
   if (isLoading) {
     return (
