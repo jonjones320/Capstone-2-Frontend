@@ -27,7 +27,7 @@ const ErrorDisplay = ({ error, onClose }) => {
       <Alert.Heading>
         {error.name === 'ValidationError' ? 'Please check your input' : 'Error'}
       </Alert.Heading>
-      <p className="mb-0">{ErrorHandler.formatErrorMessage(error)}</p>
+      <p className="mb-0">{ErrorHandler.handleApiError(error)}</p>
     </Alert>
   );
 };
