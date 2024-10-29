@@ -30,9 +30,23 @@ class ValidationError extends Error {
 export const ErrorHandler = {
   handleApiError: (error) => {
     if (error.response) {
-      // Server responded with error.
       const status = error.response.status;
-      const message = error.response.data?.error || 'An error occurred';
+      let message = error.response.data?.error?.message || 'An error occurred';
+      
+      // Handle specific API error responses.
+      if (error.response.data?.error?.code) {
+        const errorCode = error.response.data.error.code;
+        switch (errorCode) {
+          case 141:
+            message = "The flight search service is temporarily unavailable. Please try again in a few minutes.";
+            break;
+          case 4926:
+            message = "We couldn't find any flights matching your criteria. Please try different dates or locations.";
+            break;
+          default:
+            message = error.response.data.error.message || message;
+        }
+      }
       
       switch (status) {
         case 401:
