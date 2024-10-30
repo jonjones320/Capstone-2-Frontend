@@ -17,9 +17,7 @@ function App() {
             <NavBar />
             <main className="main-content">
               <Container>
-                <ErrorBoundary>
-                  <Routes />
-                </ErrorBoundary>
+                <Routes />
               </Container>
             </main>
             <footer className="app-footer">
