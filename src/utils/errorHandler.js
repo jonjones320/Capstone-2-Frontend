@@ -24,36 +24,42 @@ class ValidationError extends Error {
   }
 }
 
+class RetryableError extends Error {
+  constructor(message, retryAfter = 1000) {
+    super(message);
+    this.name = 'RetryableError';
+    this.retryAfter = retryAfter;
+  }
+}
+
 /**
  * Central error handling utility.
  */
 export const ErrorHandler = {
   handleApiError: (error) => {
     if (error.response) {
+      const errorData = error.response.data?.error;
       const status = error.response.status;
-      let message = error.response.data?.error?.message || 'An error occurred';
-      
-      // Handle specific API error responses.
-      if (error.response.data?.error?.code) {
-        const errorCode = error.response.data.error.code;
-        switch (errorCode) {
-          case 141:
-            message = "The flight search service is temporarily unavailable. Please try again in a few minutes.";
-            break;
-          case 4926:
-            message = "We couldn't find any flights matching your criteria. Please try different dates or locations.";
-            break;
-          default:
-            message = error.response.data.error.message || message;
-        }
+      const code = errorData?.code;
+      let message = errorData?.message || 'An error occurred';
+
+      // Check for specific error conditions
+      if (code === '141') {
+        throw new RetryableError(
+          'The flight search service is temporarily unavailable. Retrying...',
+          2000
+        );
       }
-      
+
       switch (status) {
         case 401:
           throw new AuthenticationError('Please log in to continue');
         case 403:
           throw new AuthenticationError('You are not authorized to perform this action');
         case 404:
+          if (code === 'NO_FLIGHTS_FOUND') {
+            throw new ApiError('No flights found for these search criteria. Please try different dates or locations.');
+          }
           throw new ApiError('Resource not found', status);
         case 422:
           throw new ValidationError('Invalid data provided', error.response.data?.fields);
@@ -61,10 +67,8 @@ export const ErrorHandler = {
           throw new ApiError(message, status);
       }
     } else if (error.request) {
-      // Request made but no response.
-      throw new ApiError('Network error - please try again', 0);
+      throw new ApiError('Network error - please check your connection and try again', 0);
     } else {
-      // Error in request setup.
       throw new ApiError('An error occurred while processing your request', 0);
     }
   }
@@ -85,4 +89,4 @@ export const useErrorHandler = () => {
   return { error, handleError, clearError };
 };
 
-export { ApiError, AuthenticationError, ValidationError };
+export { ApiError, AuthenticationError, ValidationError, RetryableError };
