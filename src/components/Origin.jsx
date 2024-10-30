@@ -2,25 +2,25 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import RannerApi from '../../api';
 import { Container, Form, Button, ListGroup, Spinner } from 'react-bootstrap';
-import { useErrorHandler } from '../utils/errorHandler';
-import ErrorDisplay from './ErrorAlert';
+import ErrorAlert from './ErrorAlert';
 
 function Origin() {
   const [origin, setOrigin] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const { error, handleError, clearError } = useErrorHandler();
 
   const handleChange = async (e) => {
     setOrigin(e.target.value);
     if (e.target.value.length >= 3) {
       setIsLoading(true);
+      setError(null);
       try {
         const res = await RannerApi.getAirportSuggestions(e.target.value);
         setSuggestions(res);
       } catch (err) {
-        handleError(err);
+        setError(err?.response?.data?.error?.message || 'Failed to load suggestions');
         setSuggestions([]);
       } finally {
         setIsLoading(false);
@@ -35,13 +35,9 @@ function Origin() {
     setSuggestions([]);
   };
 
-  const handleBack = () => {
-    navigate(-1);
-  };
-
   const handleNext = () => {
     if (!origin) {
-      handleError(new Error("Please select a starting location"));
+      setError("Please select a starting location");
       return;
     }
     navigate("/destination", { state: { origin } });
@@ -50,7 +46,10 @@ function Origin() {
   return (
     <Container className="mt-5">
       <h2 className="mb-4">Choose Your Starting Location</h2>
-      <ErrorDisplay error={error} onClose={clearError} />
+      <ErrorAlert 
+        error={error}
+        onDismiss={() => setError(null)}
+      />
       <Form onSubmit={(e) => { e.preventDefault(); handleNext(); }}>
         <Form.Group className="mb-3">
           <Form.Control
@@ -64,7 +63,7 @@ function Origin() {
         <ListGroup className="mb-3">
           {isLoading ? (
             <div className="text-center py-3">
-              <Spinner animation="border" role="status" size="sm" />
+              <Spinner animation="border" size="sm" />
             </div>
           ) : (
             suggestions.map((suggestion) => (
@@ -79,7 +78,7 @@ function Origin() {
           )}
         </ListGroup>
         <div className="d-flex justify-content-between">
-          <Button variant="secondary" onClick={handleBack}>Back</Button>
+          <Button variant="secondary" onClick={() => navigate(-1)}>Back</Button>
           <Button variant="primary" onClick={handleNext}>Next</Button>
         </div>
       </Form>

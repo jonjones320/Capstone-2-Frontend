@@ -4,19 +4,19 @@ import { Container, Button } from 'react-bootstrap';
 import AuthContext from '../context/AuthContext';
 import RannerApi from '../../api';
 import TripForm from './TripForm';
-import { useErrorHandler } from '../utils/errorHandler';
-import ErrorDisplay from './ErrorAlert';
+import ErrorAlert from './ErrorAlert';
 
 function TripDates() {
   const { currentUser } = useContext(AuthContext);
   const { state } = useLocation();
   const { origin, destination } = state || {};
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const { error, handleError, clearError } = useErrorHandler();
 
   const handleSaveTrip = async (tripData) => {
     setIsLoading(true);
+    setError(null);
     try {
       const fullTripData = {
         ...tripData,
@@ -28,26 +28,37 @@ function TripDates() {
       const savedTrip = await RannerApi.postTrip(fullTripData);
       navigate("/flights", { state: { trip: savedTrip.trip } });
     } catch (err) {
-      handleError(err);
+      setError(err?.response?.data?.error?.message || 'Failed to create trip');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleBack = () => {
-    navigate("/destination", { state: { origin, destination } });
-  };
+  if (!origin || !destination) {
+    setError("Missing required location information");
+    navigate("/origin");
+    return null;
+  }
 
   return (
     <Container className="mt-5">
       <h2 className="mb-4">Create Your Trip</h2>
-      <ErrorDisplay error={error} onClose={clearError} />
+      <ErrorAlert 
+        error={error}
+        onDismiss={() => setError(null)}
+      />
       <TripForm 
         initialData={{ origin, destination }}
         onSubmit={handleSaveTrip}
         isLoading={isLoading}
       />
-      <Button variant="secondary" onClick={handleBack} className="mt-3">Back</Button>
+      <Button 
+        variant="secondary" 
+        onClick={() => navigate("/destination", { state: { origin, destination } })} 
+        className="mt-3"
+      >
+        Back
+      </Button>
     </Container>
   );
 }

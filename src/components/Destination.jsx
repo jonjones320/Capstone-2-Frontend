@@ -2,27 +2,27 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Container, Form, Button, ListGroup, Spinner } from 'react-bootstrap';
 import RannerApi from '../../api';
-import { useErrorHandler } from '../utils/errorHandler';
-import ErrorDisplay from './ErrorAlert';
+import ErrorAlert from './ErrorAlert';
 
 function Destination() {
   const [destination, setDestination] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
   const { origin } = location.state || {};
-  const { error, handleError, clearError } = useErrorHandler();
 
   const handleChange = async (e) => {
     setDestination(e.target.value);
     if (e.target.value.length >= 3) {
       setIsLoading(true);
+      setError(null);
       try {
         const res = await RannerApi.getAirportSuggestions(e.target.value);
         setSuggestions(res);
       } catch (err) {
-        handleError(err);
+        setError(err?.response?.data?.error?.message || 'Failed to load suggestions');
         setSuggestions([]);
       } finally {
         setIsLoading(false);
@@ -37,22 +37,27 @@ function Destination() {
     setSuggestions([]);
   };
 
-  const handleBack = () => {
-    navigate("/origin", { state: { origin } });
-  };
-
   const handleNext = () => {
     if (!destination) {
-      handleError(new Error("Please select a destination"));
+      setError("Please select a destination");
       return;
     }
     navigate("/dates", { state: { origin, destination } });
   };
 
+  if (!origin) {
+    setError("Origin location is missing");
+    navigate("/origin");
+    return null;
+  }
+
   return (
     <Container className="mt-5">
       <h2 className="mb-4">Choose Your Destination</h2>
-      <ErrorDisplay error={error} onClose={clearError} />
+      <ErrorAlert 
+        error={error}
+        onDismiss={() => setError(null)}
+      />
       <Form>
         <Form.Group className="mb-3">
           <Form.Control
@@ -66,7 +71,7 @@ function Destination() {
         <ListGroup className="mb-3">
           {isLoading ? (
             <div className="text-center py-3">
-              <Spinner animation="border" role="status" size="sm" />
+              <Spinner animation="border" size="sm" />
             </div>
           ) : (
             suggestions.map((suggestion) => (
@@ -81,7 +86,9 @@ function Destination() {
           )}
         </ListGroup>
         <div className="d-flex justify-content-between">
-          <Button variant="secondary" onClick={handleBack}>Back</Button>
+          <Button variant="secondary" onClick={() => navigate("/origin", { state: { origin } })}>
+            Back
+          </Button>
           <Button variant="primary" onClick={handleNext}>Next</Button>
         </div>
       </Form>
