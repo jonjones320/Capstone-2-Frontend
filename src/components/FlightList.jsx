@@ -63,7 +63,9 @@ function FlightList() {
       
       {error && (
         <Alert variant="danger" dismissible onClose={() => setError(null)}>
-          {error}
+          <Card className="mb-4">
+            {error}
+          </Card>
           <Button 
             variant="outline-danger" 
             size="sm" 
