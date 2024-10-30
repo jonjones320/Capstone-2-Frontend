@@ -2,15 +2,14 @@ import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Form, Button, Container, Row, Col, Spinner } from 'react-bootstrap';
 import AuthContext from '../context/AuthContext';
-import { useErrorHandler } from '../utils/errorHandler';
-import ErrorDisplay from './ErrorAlert';
+import ErrorAlert from './ErrorAlert';
 
 function Login() {
   const [formData, setFormData] = useState({ username: '', password: '' });
   const [isLoading, setIsLoading] = useState(false);
   const { login, currentUser } = useContext(AuthContext);
   const navigate = useNavigate();
-  const { error, handleError, clearError } = useErrorHandler();
+  const { error, setError } = useState();
 
   useEffect(() => {
     if (currentUser) {
@@ -25,11 +24,13 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(null);
     setIsLoading(true);
     try {
       await login(formData);
+      navigate('/');
     } catch (err) {
-      handleError(err);
+      setError(err?.response?.data?.error?.message || 'Login failed');
     } finally {
       setIsLoading(false);
     }
@@ -40,7 +41,7 @@ function Login() {
       <Row className="justify-content-md-center">
         <Col md={6}>
           <h1 className="text-center mb-4">Login</h1>
-          <ErrorDisplay error={error} onClose={clearError} />
+          <ErrorAlert error={error} onDismiss={() => setError(null)} />
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3">
               <Form.Control

@@ -3,10 +3,12 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Container, Spinner, Button, Card, Alert } from 'react-bootstrap';
 import RannerApi from '../../api';
 import FlightCard from './FlightCard';
+import ErrorAlert from './ErrorAlert';
 
 function FlightList() {
   const { state } = useLocation();
   const { trip } = state || {};
+  const [data, setData] = useState([]);
   const [flights, setFlights] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -62,19 +64,11 @@ function FlightList() {
       <h2 className="mb-4">Flight Offers</h2>
       
       {error && (
-        <Alert variant="danger" dismissible onClose={() => setError(null)}>
-          <Card className="mb-4">
-            {error}
-          </Card>
-          <Button 
-            variant="outline-danger" 
-            size="sm" 
-            className="mt-2" 
-            onClick={() => navigate(-1)}
-          >
-            Retry Search
-          </Button>
-        </Alert>
+        <ErrorAlert
+        error={error}
+        onDismiss={() => setError(null)}
+        onRetry={fetchData}
+        />
       )}
 
       {flights.map((flight) => (
