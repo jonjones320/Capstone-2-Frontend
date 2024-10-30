@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Form, Button, Spinner } from 'react-bootstrap';
 import RannerApi from '../../api';
 import { useErrorHandler } from '../utils/errorHandler';
-import ErrorDisplay from '../components/ErrorDisplay';
+import ErrorDisplay from './ErrorAlert';
 
 function ProfileEdit({ user, onUpdate }) {
   const [formData, setFormData] = useState({

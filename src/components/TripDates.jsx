@@ -5,7 +5,7 @@ import AuthContext from '../context/AuthContext';
 import RannerApi from '../../api';
 import TripForm from './TripForm';
 import { useErrorHandler } from '../utils/errorHandler';
-import ErrorDisplay from '../components/ErrorDisplay';
+import ErrorDisplay from './ErrorAlert';
 
 function TripDates() {
   const { currentUser } = useContext(AuthContext);

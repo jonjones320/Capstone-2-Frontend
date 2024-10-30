@@ -3,7 +3,7 @@ import { format } from 'date-fns';
 import { Form, Button, ListGroup, Spinner } from 'react-bootstrap';
 import RannerApi from '../../api';
 import { useErrorHandler } from '../utils/errorHandler';
-import ErrorDisplay from '../components/ErrorDisplay';
+import ErrorDisplay from './ErrorAlert';
 
 function TripForm({ initialData, onSubmit, isEdit = false }) {
   const [formData, setFormData] = useState({

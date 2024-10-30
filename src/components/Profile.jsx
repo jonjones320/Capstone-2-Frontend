@@ -5,7 +5,7 @@ import RannerApi from '../../api';
 import ProfileView from './ProfileView';
 import ProfileEdit from './ProfileEdit';
 import { useErrorHandler } from '../utils/errorHandler';
-import ErrorDisplay from '../components/ErrorDisplay';
+import ErrorDisplay from './ErrorAlert';
 
 function Profile() {
   const { currentUser } = useContext(AuthContext);

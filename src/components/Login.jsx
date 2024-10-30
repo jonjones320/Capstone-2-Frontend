@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Form, Button, Container, Row, Col, Spinner } from 'react-bootstrap';
 import AuthContext from '../context/AuthContext';
 import { useErrorHandler } from '../utils/errorHandler';
-import ErrorDisplay from '../components/ErrorDisplay';
+import ErrorDisplay from './ErrorAlert';
 
 function Login() {
   const [formData, setFormData] = useState({ username: '', password: '' });

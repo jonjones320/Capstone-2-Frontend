@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Container, Row, Col, Button, Spinner } from 'react-bootstrap';
 import AuthContext from '../context/AuthContext';
 import { useErrorHandler } from '../utils/errorHandler';
-import ErrorDisplay from '../components/ErrorDisplay';
+import ErrorDisplay from './ErrorAlert';
 
 function Logout() {
   const { logout } = useContext(AuthContext);

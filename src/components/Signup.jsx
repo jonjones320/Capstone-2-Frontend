@@ -4,7 +4,7 @@ import { Form, Button, Container, Row, Col, Spinner } from 'react-bootstrap';
 import AuthContext from '../context/AuthContext';
 import RannerApi from '../../api';
 import { useErrorHandler } from '../utils/errorHandler';
-import ErrorDisplay from '../components/ErrorDisplay';
+import ErrorDisplay from './ErrorAlert';
 
 function SignUp() {
   const [formData, setFormData] = useState({

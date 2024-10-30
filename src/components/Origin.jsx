@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import RannerApi from '../../api';
 import { Container, Form, Button, ListGroup, Spinner } from 'react-bootstrap';
 import { useErrorHandler } from '../utils/errorHandler';
-import ErrorDisplay from '../components/ErrorDisplay';
+import ErrorDisplay from './ErrorAlert';
 
 function Origin() {
   const [origin, setOrigin] = useState('');

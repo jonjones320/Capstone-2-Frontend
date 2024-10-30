@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Container, Card, Spinner, Button, Row, Col, Badge } from 'react-bootstrap';
 import RannerApi from '../../api';
 import { useErrorHandler } from '../utils/errorHandler';
-import ErrorDisplay from '../components/ErrorDisplay';
+import ErrorDisplay from './ErrorAlert';
 
 function FlightDetail() {
   const { id } = useParams();

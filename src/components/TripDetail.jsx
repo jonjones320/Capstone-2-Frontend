@@ -6,7 +6,7 @@ import RannerApi from '../../api';
 import FlightCard from './FlightCard';
 import TripForm from './TripForm';
 import { useErrorHandler } from '../utils/errorHandler';
-import ErrorDisplay from '../components/ErrorDisplay';
+import ErrorDisplay from './ErrorAlert';
 
 function TripDetail() {
   const { id } = useParams();

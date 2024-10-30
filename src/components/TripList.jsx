@@ -5,7 +5,7 @@ import RannerApi from '../../api';
 import TripCard from './TripCard';
 import TripFilterForm from './TripFilterForm';
 import { useErrorHandler } from '../utils/errorHandler';
-import ErrorDisplay from '../components/ErrorDisplay';
+import ErrorDisplay from './ErrorAlert';
 
 function TripList() {
   const { currentUser } = useContext(AuthContext);

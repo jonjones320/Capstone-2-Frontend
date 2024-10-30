@@ -3,7 +3,7 @@ import RannerApi from '../../api';
 import { Link } from 'react-router-dom';
 import { Card, Row, Col, Badge, Button, Alert } from 'react-bootstrap';
 import { useErrorHandler } from '../utils/errorHandler';
-import ErrorDisplay from '../components/ErrorDisplay';
+import ErrorDisplay from './ErrorAlert';
 
 const FlightCard = ({ flight, onRemove, username }) => {
   const { error, handleError, clearError } = useErrorHandler();
