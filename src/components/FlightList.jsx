@@ -68,7 +68,7 @@ function FlightList() {
             variant="outline-danger" 
             size="sm" 
             className="mt-2" 
-            onClick={() => window.location.reload()}
+            onClick={() => navigate(-1)}
           >
             Retry Search
           </Button>
