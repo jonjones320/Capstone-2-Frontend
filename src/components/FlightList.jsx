@@ -4,7 +4,7 @@ import { Container, Spinner, Button, Card } from 'react-bootstrap';
 import { format } from 'date-fns';
 import RannerApi from '../../api';
 import FlightCard from './FlightCard';
-import ErrorDisplay from '../components/ErrorDisplay';
+import ErrorDisplay from './ErrorDisplay';
 import { useErrorHandler } from '../utils/errorHandler';
 
 function FlightList() {
