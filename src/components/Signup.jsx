@@ -3,10 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { Form, Button, Container, Row, Col, Spinner } from 'react-bootstrap';
 import AuthContext from '../context/AuthContext';
 import RannerApi from '../../api';
-import { useErrorHandler } from '../utils/errorHandler';
-import ErrorDisplay from './ErrorAlert';
+
 
 function SignUp() {
+
+  // Initial form values.
   const [formData, setFormData] = useState({
     username: '',
     password: '',
@@ -16,8 +17,8 @@ function SignUp() {
   });
   const { login } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const { error, handleError, clearError } = useErrorHandler();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -27,12 +28,13 @@ function SignUp() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+    setError(null);
     try {
       await RannerApi.signUp(formData);
       await login(formData);
       navigate("/origin");
     } catch (err) {
-      handleError(err);
+      setError(err?.response?.data?.error?.message || 'Sign up failed');
     } finally {
       setIsLoading(false);
     }
@@ -44,7 +46,13 @@ function SignUp() {
       <Row className="justify-content-md-center">
         <Col md={6}>
           <h1 className="text-center mb-4">Sign Up</h1>
-          <ErrorDisplay error={error} onClose={clearError} />
+          
+          {error && (
+            <Alert variant="danger" dismissible onClose={() => setError(null)}>
+              {error}
+            </Alert>
+          )}
+          
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3">
               <Form.Label htmlFor="username">Username</Form.Label>

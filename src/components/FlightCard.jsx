@@ -2,13 +2,12 @@ import React from 'react';
 import RannerApi from '../../api';
 import { Link } from 'react-router-dom';
 import { Card, Row, Col, Badge, Button, Alert } from 'react-bootstrap';
-import { useErrorHandler } from '../utils/errorHandler';
-import ErrorDisplay from './ErrorAlert';
+
 
 const FlightCard = ({ flight, onRemove, username }) => {
-  const { error, handleError, clearError } = useErrorHandler();
+  const [error, setError] = useState(null);
 
-  // Normalize flightData from either TripDetails || FlightList.
+  // Normalize flightData from either TripDetails or FlightList.
   const flightData = flight.flightDetails || flight;
 
   // Validate flight data.
@@ -33,7 +32,7 @@ const FlightCard = ({ flight, onRemove, username }) => {
         timeStyle: 'short' 
       });
     } catch (err) {
-      handleError(new Error('Invalid date format'));
+      setError('Invalid date format');
       return 'Date unavailable';
     }
   };
@@ -60,7 +59,6 @@ const FlightCard = ({ flight, onRemove, username }) => {
         </Col>
       );
     } catch (err) {
-      handleError(new Error('Error rendering flight leg'));
       return (
         <Col md={6}>
           <Alert variant="danger">Error displaying flight segment</Alert>
@@ -75,14 +73,20 @@ const FlightCard = ({ flight, onRemove, username }) => {
       await RannerApi.deleteFlight(flight.id, username);
       onRemove(flight.id);
     } catch (err) {
-      handleError(err);
+      setError(err?.response?.data?.error?.message || 'Failed to remove flight');
     }
   };
 
   return (
     <Card className="mb-4 shadow-sm">
       <Card.Body>
-        <ErrorDisplay error={error} onClose={clearError} />
+
+        {error && (
+          <Alert variant="danger" dismissible onClose={() => setError(null)}>
+            {error}
+          </Alert>
+        )}
+
         <Card.Title className="d-flex justify-content-between align-items-center mb-3">
           <h3 className="mb-0">
             {flightData.itineraries[0].segments[0].departure.iataCode} ↔{' '}
@@ -92,11 +96,13 @@ const FlightCard = ({ flight, onRemove, username }) => {
             {flightData.validatingAirlineCodes?.[0] || 'N/A'}
           </Badge>
         </Card.Title>
+
         <Row className="mb-3">
           {renderFlightLeg(flightData.itineraries[0], 'Outbound')}
           {flightData.itineraries.length > 1 && 
             renderFlightLeg(flightData.itineraries[1], 'Return')}
         </Row>
+        
         <div className="d-flex justify-content-between align-items-center">
           <Card.Text className="h4 mb-0">
             {flightData.price?.total || 'N/A'} {flightData.price?.currency || ''}

@@ -2,12 +2,11 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Container, Row, Col, Button, Spinner } from 'react-bootstrap';
 import AuthContext from '../context/AuthContext';
-import { useErrorHandler } from '../utils/errorHandler';
-import ErrorDisplay from './ErrorAlert';
+
 
 function Logout() {
   const { logout } = useContext(AuthContext);
-  const { error, handleError, clearError } = useErrorHandler();
+  const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -16,7 +15,7 @@ function Logout() {
       try {
         await logout();
       } catch (err) {
-        handleError(err);
+        setError(err?.message || 'Logout failed');
       } finally {
         setIsLoading(false);
       }
@@ -28,9 +27,7 @@ function Logout() {
   if (isLoading) {
     return (
       <Container className="mt-5 text-center">
-        <Spinner animation="border" role="status">
-          <span className="visually-hidden">Logging out...</span>
-        </Spinner>
+        <Spinner animation="border" />
       </Container>
     );
   }
@@ -40,7 +37,12 @@ function Logout() {
       <Row className="justify-content-md-center">
         <Col md={6}>
           <h1 className="mb-4">Thanks for coming!</h1>
-          <ErrorDisplay error={error} onClose={clearError} />
+          
+          {error && (
+            <Alert variant="danger" dismissible onClose={() => setError(null)}>
+              {error}
+            </Alert>
+          )}
           <div className="mt-4">
             <Link to="/login" className="me-2">
               <Button variant="primary">Login</Button>

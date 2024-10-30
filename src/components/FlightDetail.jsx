@@ -1,55 +1,87 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Container, Card, Spinner, Button, Row, Col, Badge } from 'react-bootstrap';
+import { Container, Card, Spinner, Button, Row, Col, Badge, Alert } from 'react-bootstrap';
 import RannerApi from '../../api';
-import { useErrorHandler } from '../utils/errorHandler';
-import ErrorDisplay from './ErrorAlert';
 
 function FlightDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [flight, setFlight] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const { error, handleError, clearError } = useErrorHandler();
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
+  // Requests flight detail from the server.
+  const fetchFlightDetails = async () => {
+    try {
+      setError(null);
+      setIsLoading(true);
+      const result = await RannerApi.getFlight(id);
+      setFlight(result);
+    } catch (err) {
+      setError(err?.response?.data?.error?.message || 'Failed to load flight details');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Retrieves current flight details when flight ID changes.
   useEffect(() => {
-    const fetchFlightDetails = async () => {
-      try {
-        setLoading(true);
-        const result = await RannerApi.getFlight(id);
-        setFlight(result);
-      } catch (err) {
-        handleError(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchFlightDetails();
   }, [id]);
 
-  const handleBack = () => {
-    navigate(-1);
-  };
 
-  if (loading) {
+/** JSX */
+
+
+  // Loading display spinner.
+  if (isLoading) {
     return (
       <Container className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
-        <Spinner animation="border" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </Spinner>
+        <Spinner animation="border" />
       </Container>
     );
   }
 
-  if (!flight) return null;
+  // Error displays.
+  if (error) {
+    return (
+      <Container className="mt-5">
+        <Alert variant="danger" dismissible onClose={() => setError(null)}>
+          {error}
+          <div className="mt-2">
+            <Button variant="outline-danger" size="sm" onClick={fetchFlightDetails}>
+              Try Again
+            </Button>
+          </div>
+        </Alert>
+        <Button variant="secondary" onClick={() => navigate(-1)}>
+          &larr; Back
+        </Button>
+      </Container>
+    );
+  }
 
+  // Checks for requisite data.
+  if (!flight?.flightDetails) {
+    return (
+      <Container className="mt-5">
+        <Alert variant="warning">
+          No flight details available
+        </Alert>
+        <Button variant="secondary" onClick={() => navigate(-1)}>
+          &larr; Back
+        </Button>
+      </Container>
+    );
+  }
+
+  // Destructures the flight object's elements.
   const { flightDetails } = flight;
 
+  // Displays the flight's details.
   return (
     <Container className="mt-5">
-      <ErrorDisplay error={error} onClose={clearError} />
-      <Button variant="secondary" onClick={handleBack} className="mb-3">
+      <Button variant="secondary" onClick={() => navigate(-1)} className="mb-3">
         &larr; Back
       </Button>
       <Card>
