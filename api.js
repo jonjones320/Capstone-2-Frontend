@@ -13,6 +13,8 @@ class RannerApi {
 
   static async request(endpoint, data = {}, method = "get") {
     try {
+      console.log("RannerApi - params: ", params);
+      console.log("RannerApi - data: ", data);
       const response = await axios({
         url: `${BASE_URL}/${endpoint}`,
         method,
