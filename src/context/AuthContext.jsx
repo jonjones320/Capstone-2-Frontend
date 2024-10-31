@@ -2,14 +2,31 @@ import React, { createContext, useState, useEffect } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import RannerApi from '../../api';
 
-
-// Creates a global context for authentication.
+// Authorization context can be accessed throughout the context of this app.
 const AuthContext = createContext();
 
-// The class that provides various authentication services.
 export const AuthProvider = ({ children }) => {
+    // State management to stay up-to-date with user and token.
     const [currentUser, setCurrentUser] = useState(null);
     const [token, setToken] = useState(localStorage.getItem('token'));
+
+    /**
+     * Token management utilities 
+     */
+
+    // JWT storage maintains log in status.
+    const storeToken = (newToken) => {
+        localStorage.setItem('token', newToken);
+        RannerApi.token = newToken;
+        setToken(newToken);
+    };
+
+    // Requires log in (and new token) after cleared.
+    const clearToken = () => {
+        localStorage.removeItem('token');
+        RannerApi.token = null;
+        setToken(null);
+    };
 
     // Extract a user from a JWT.
     function getUserFromToken(token) {
@@ -21,59 +38,66 @@ export const AuthProvider = ({ children }) => {
             };
         } catch (error) {
             console.error('Token failed to decode', error);
+            clearToken();
             return null;
         }
     }
 
-    // Use token from local storage to set the current user upon app load. 
+    // Set up initial authorization state from localStorage.
     useEffect(() => {
         if (token) {
-            RannerApi.token = token; // Set token for API requests
-            const user = getUserFromToken(token);
-            setCurrentUser(user); // Set current user in context
+            try {
+                const user = getUserFromToken(token); // User data is decoded from JWT.
+                if (user) {
+                    RannerApi.token = token; // Token is set for use with API requests.
+                    setCurrentUser(user); // Logged in.
+                } else {
+                    clearToken();
+                }
+            } catch (err) {
+                console.error("Error restoring token:", err);
+                clearToken();
+            }
         }
     }, [token]);
 
-    // Operates logging in between the front and backend.
     const login = async ({ username, password }) => {
         try {
-          console.log("Attempting login...");
-          const response = await RannerApi.login({ username, password });
-          console.log("Login response:", response);
-          
-          if (!response.token) {
-            throw new Error("No token received from server");
-          }
-          
-        // Sets the token from the server in token state, API communications, and local storage.
-          setToken(response.token);
-          RannerApi.token = response.token;
-          localStorage.setItem('token', response.token);
-          
-        // Extract user from JWT and set as current user.
-          const user = getUserFromToken(response.token);
-          setCurrentUser(user);
-          
-          return response;
-        } catch (err) {
-          console.error("Login error details:", err);
-          throw err;
-        }
-      };
+            console.log("Attempting login...");
+            const response = await RannerApi.login({ username, password });
+            console.log("Login response:", response);
+            
+            // Handle both possible response formats.
+            const newToken = typeof response === 'string' ? response : response.token;
+            
+            if (!newToken) {
+                throw new Error("No token received from server");
+            }
 
-    // When current user is null, authentication effects reset to "not logged in" state.
-    const logout = () => {
-        setCurrentUser(null);
-        setToken(null);
+            // Uses the new token where needed for authorization.
+            storeToken(newToken);
+            const user = getUserFromToken(newToken);
+            setCurrentUser(user);
+            
+        } catch (err) {
+            console.error("Login error details:", err);
+            clearToken();
+            throw err;
+        }
     };
 
-    // Authentication wrapper.
+    // Resets user state and deletes local storage token.
+    const logout = () => {
+        setCurrentUser(null);
+        clearToken();
+    };
+
+    // Authentication wrapper for the whole app.
     return (
-        <AuthContext.Provider value={{ currentUser, setCurrentUser, login, logout}}>
+        <AuthContext.Provider value={{ currentUser, setCurrentUser, login, logout }}>
             {children}
         </AuthContext.Provider>
     );
 };
-
 
 export default AuthContext;
