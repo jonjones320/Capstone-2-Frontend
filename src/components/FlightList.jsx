@@ -18,7 +18,7 @@ function FlightList() {
       setError("Trip information is missing");
       setIsLoading(false);
       return;
-    };
+    }
     try {
       setIsLoading(true);
       setError(null);
@@ -29,62 +29,104 @@ function FlightList() {
         returnDate: trip.endDate,
         adults: Number(trip.passengers) || 1
       });
-      if (res?.data) {
+      
+      // Check if res.data exists and is an array.
+      if (res?.data && Array.isArray(res.data)) {
         setFlights(res.data);
+      } else {
+        setError("No flights found for your search criteria");
       }
     } catch (err) {
-      setError(err?.response?.data?.error?.message || 'Failed to load data');
+      setError(err?.response?.data?.error?.message || 'Failed to load flights');
     } finally {
       setIsLoading(false);
     }
   };
 
+  // fetchFlights is ran if there's a change to `trip`.
   useEffect(() => {
     fetchFlights();
-  }, []);
+  }, [trip]);
 
-  /** 
+  // Makes POST request to server when a flight is selected to be added.
+  const handleAddFlight = async (flight) => {
+    try {
+      const tripId = trip.tripId;
+      await RannerApi.postFlight({ 
+        tripId, 
+        amadeusOrderId: flight.id,
+        flightDetails: flight
+      });
+      navigate(`/trip/${tripId}`);
+    } catch (err) {
+      setError(err?.response?.data?.error?.message || "Error adding flight to trip");
+    }
+  };
+
+  
+  /**
    * JSX
    */
 
+  
+  // Loading animation with spinner.
   if (isLoading) {
     return (
       <Container className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
-        <Spinner animation="border" />
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Loading flights...</span>
+        </Spinner>
+      </Container>
+    );
+  };
+
+  // Reusable header fragment.
+  const HeaderSection = () => (
+    <>
+      <Button variant="secondary" onClick={() => navigate(-1)} className="mb-3">
+        &larr; Back
+      </Button>
+      <h2 className="mb-4">Flight Offers</h2>
+    </>
+  );
+
+  // Handle no flights found separately from errors.
+  if (!flights || flights.length === 0) {
+    return (
+      <Container className="mt-5">
+        <HeaderSection />
+        <Alert variant="info">
+          No flights found for your search criteria. Please try different dates or locations.
+        </Alert>
       </Container>
     );
   }
 
   return (
     <Container className="mt-5">
-      <Button variant="secondary" onClick={() => navigate(-1)} className="mb-3">
-        &larr; Back
-      </Button>
-      
-      <h2 className="mb-4">Flight Offers</h2>
-      
-      {error && (
-        <ErrorAlert
+    <HeaderSection />
+    {error && (
+      <ErrorAlert
         error={error}
         onDismiss={() => setError(null)}
-        onRetry={setFlights}
-        />
-      )}
-
-      {flights.map((flight) => (
-        <Card key={flight.id} className="mb-4">
-          <Card.Body>
-            <FlightCard flight={flight} />
-            <Button 
-              onClick={() => navigate(`/trip/${trip.id}`)} 
-              className="mt-3 w-100"
-              variant="primary"
-            >
-              Add Flight
-            </Button>
-          </Card.Body>
-        </Card>
-      ))}
+        onRetry={fetchFlights}
+      />
+    )}
+      
+    {flights.map((flight) => (
+      <Card key={flight.id} className="mb-4">
+        <Card.Body>
+          <FlightCard flight={flight} />
+          <Button 
+            onClick={() => handleAddFlight(flight)} 
+            className="mt-3 w-100"
+            variant="primary"
+          >
+            Add Flight
+          </Button>
+        </Card.Body>
+      </Card>
+    ))}
     </Container>
   );
 }
