@@ -7,9 +7,9 @@ import ErrorAlert from './ErrorAlert';
 function Login() {
   const [formData, setFormData] = useState({ username: '', password: '' });
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
   const { login, currentUser } = useContext(AuthContext);
   const navigate = useNavigate();
-  const { error, setError } = useState();
 
   useEffect(() => {
     if (currentUser) {
