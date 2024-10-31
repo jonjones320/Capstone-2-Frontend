@@ -14,6 +14,7 @@ function TripForm({ initialData, onSubmit, isEdit = false }) {
     passengers: 1,
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [suggestions, setSuggestions] = useState({ origin: [], destination: [] });
   const [error, setError] = useState(null);
 
@@ -57,6 +58,18 @@ function TripForm({ initialData, onSubmit, isEdit = false }) {
     }
   };
 
+  // Handle suggestion selection.
+  const handleSuggestionClick = (field, value) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+    setSuggestions(prev => ({
+      ...prev,
+      [field]: []
+    }));
+  };
+
   // Checks for simple, quick fixes before submitting the trip.
   const validateForm = () => {
     if (!formData.name) {
@@ -75,7 +88,7 @@ function TripForm({ initialData, onSubmit, isEdit = false }) {
     e.preventDefault();
     if (!validateForm()) return;
 
-    setIsLoading(true);
+    setIsSaving(true);
     setError(null);
     
     try {
@@ -90,131 +103,144 @@ function TripForm({ initialData, onSubmit, isEdit = false }) {
     } catch (err) {
       setError(err?.response?.data?.error?.message || 'Failed to save trip');
     } finally {
-      setIsLoading(false);
+      setIsSaving(false);
     }
+  };
+
+  // Get suggestions based on field name
+  const getSuggestions = (field) => {
+    return suggestions[field] || [];
   };
 
 /**
  * JSX
  */
 
-  return (
-    <Form onSubmit={handleSubmit}>
-      {error && (
-        <Alert variant="danger" dismissible onClose={() => setError(null)}>
-          {error}
-        </Alert>
-      )}
+return (
+  <Form onSubmit={handleSubmit}>
+    {error && (
+      <Alert variant="danger" dismissible onClose={() => setError(null)}>
+        {error}
+      </Alert>
+    )}
 
-      <Form.Group className="mb-3">
-        <Form.Label htmlFor="tripName">Trip Name:</Form.Label>
-        <Form.Control
-          id="tripName"
-          type="text"
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          required
-          disabled={isSaving}
-        />
-      </Form.Group>
-
-      <Form.Group className="mb-3">
-        <Form.Label htmlFor="origin">Origin:</Form.Label>
-        <Form.Control
-          id="origin"
-          type="text"
-          name="origin"
-          value={formData.origin}
-          onChange={handleChange}
-          required
-          disabled={isSaving}
-        />
-        <ListGroup>
-          {originSuggestions.map(suggestion => (
-            <ListGroup.Item key={suggestion.id} action onClick={() => handleSuggestionClick('origin', suggestion.iataCode)}>
-              {suggestion.name} ({suggestion.iataCode})
-            </ListGroup.Item>
-          ))}
-        </ListGroup>
-      </Form.Group>
-
-      <Form.Group className="mb-3">
-        <Form.Label htmlFor="destination">Destination:</Form.Label>
-        <Form.Control
-          id="destination"
-          type="text"
-          name="destination"
-          value={formData.destination}
-          onChange={handleChange}
-          required
-          disabled={isSaving}
-        />
-        <ListGroup>
-          {destinationSuggestions.map(suggestion => (
-            <ListGroup.Item key={suggestion.id} action onClick={() => handleSuggestionClick('destination', suggestion.iataCode)}>
-              {suggestion.name} ({suggestion.iataCode})
-            </ListGroup.Item>
-          ))}
-        </ListGroup>
-      </Form.Group>
-
-      <Form.Group className="mb-3">
-        <Form.Label htmlFor="departureDate">Departure Date:</Form.Label>
-        <Form.Control
-          id="departureDate"
-          type="date"
-          name="startDate"
-          value={formData.startDate}
-          onChange={handleChange}
-          required
-          disabled={isSaving}
-        />
-      </Form.Group>
-
-      <Form.Group className="mb-3">
-        <Form.Label htmlFor="returnDate">Return Date:</Form.Label>
-        <Form.Control
-          id="returnDate"
-          type="date"
-          name="endDate"
-          value={formData.endDate}
-          onChange={handleChange}
-          required
-          disabled={isSaving}
-        />
-      </Form.Group>
-
-      <Form.Group className="mb-3">
-        <Form.Label htmlFor="passengers">Passengers:</Form.Label>
-        <Form.Control
-          id="passengers"
-          type="number"
-          name="passengers"
-          value={formData.passengers}
-          onChange={handleChange}
-          min="1"
-          required
-          disabled={isSaving}
-        />
-      </Form.Group>
-
-      <Button 
-        type="submit" 
-        variant="primary"
+    <Form.Group className="mb-3">
+      <Form.Label htmlFor="tripName">Trip Name:</Form.Label>
+      <Form.Control
+        id="tripName"
+        type="text"
+        name="name"
+        value={formData.name}
+        onChange={handleChange}
+        required
         disabled={isSaving}
-      >
-        {isSaving ? (
-          <>
-            <Spinner size="sm" role="status" className="me-2" />
-            {isEdit ? 'Updating...' : 'Creating...'}
-          </>
-        ) : (
-          isEdit ? 'Update Trip' : 'Create Trip'
-        )}
-      </Button>
-    </Form>
-  );
+      />
+    </Form.Group>
+
+    <Form.Group className="mb-3">
+      <Form.Label htmlFor="origin">Origin:</Form.Label>
+      <Form.Control
+        id="origin"
+        type="text"
+        name="origin"
+        value={formData.origin}
+        onChange={handleChange}
+        required
+        disabled={isSaving}
+      />
+      <ListGroup>
+        {getSuggestions('origin').map(suggestion => (
+          <ListGroup.Item 
+            key={suggestion.id} 
+            action 
+            onClick={() => handleSuggestionClick('origin', suggestion.iataCode)}
+          >
+            {suggestion.name} ({suggestion.iataCode})
+          </ListGroup.Item>
+        ))}
+      </ListGroup>
+    </Form.Group>
+
+    <Form.Group className="mb-3">
+      <Form.Label htmlFor="destination">Destination:</Form.Label>
+      <Form.Control
+        id="destination"
+        type="text"
+        name="destination"
+        value={formData.destination}
+        onChange={handleChange}
+        required
+        disabled={isSaving}
+      />
+      <ListGroup>
+        {getSuggestions('destination').map(suggestion => (
+          <ListGroup.Item 
+            key={suggestion.id} 
+            action 
+            onClick={() => handleSuggestionClick('destination', suggestion.iataCode)}
+          >
+            {suggestion.name} ({suggestion.iataCode})
+          </ListGroup.Item>
+        ))}
+      </ListGroup>
+    </Form.Group>
+
+    <Form.Group className="mb-3">
+      <Form.Label htmlFor="departureDate">Departure Date:</Form.Label>
+      <Form.Control
+        id="departureDate"
+        type="date"
+        name="startDate"
+        value={formData.startDate}
+        onChange={handleChange}
+        required
+        disabled={isSaving}
+      />
+    </Form.Group>
+
+    <Form.Group className="mb-3">
+      <Form.Label htmlFor="returnDate">Return Date:</Form.Label>
+      <Form.Control
+        id="returnDate"
+        type="date"
+        name="endDate"
+        value={formData.endDate}
+        onChange={handleChange}
+        required
+        disabled={isSaving}
+      />
+    </Form.Group>
+
+    <Form.Group className="mb-3">
+      <Form.Label htmlFor="passengers">Passengers:</Form.Label>
+      <Form.Control
+        id="passengers"
+        type="number"
+        name="passengers"
+        value={formData.passengers}
+        onChange={handleChange}
+        min="1"
+        required
+        disabled={isSaving}
+      />
+    </Form.Group>
+
+    <Button 
+      type="submit" 
+      variant="primary"
+      disabled={isSaving}
+    >
+      {isSaving ? (
+        <>
+          <Spinner size="sm" role="status" className="me-2" />
+          {isEdit ? 'Updating...' : 'Creating...'}
+        </>
+      ) : (
+        isEdit ? 'Update Trip' : 'Create Trip'
+      )}
+    </Button>
+  </Form>
+);
 }
 
 export default TripForm;
