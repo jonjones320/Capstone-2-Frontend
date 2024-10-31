@@ -67,9 +67,15 @@ function TripDetail() {
     }
   };
 
+  // Set editing state on or off.
   const handleEdit = () => {
     setIsEditing(true);
   };
+
+    // 'Change Flight' button triggers this redirect.
+    const handleChangeFlights = () => {
+      navigate('/flights', { state: { trip } });
+    };
 
   // Loading animation with spinner.
   if (isLoading) {
