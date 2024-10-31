@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { Form, Button, Row, Col } from 'react-bootstrap';
-import { useErrorHandler } from '../utils/errorHandler';
-import ErrorDisplay from './ErrorAlert';
+import { Form, Button, Row, Col, Alert } from 'react-bootstrap';
 
 function TripFilterForm({ onFilter }) {
+  // Set filters as empty initially.
   const initialFilters = {
     name: '',
     origin: '',
@@ -12,46 +11,58 @@ function TripFilterForm({ onFilter }) {
     endDate: '',
     passengers: ''
   };
+  
+  // Create filter and error states to manage changes.
   const [filters, setFilters] = useState(initialFilters);
-  const { error, handleError, clearError } = useErrorHandler();
+  const [error, setError] = useState(null);
 
+  // Upon change, 'target' filter is updated and errors are cleared.
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFilters(f => ({
-      ...f,
-      [name]: value
-    }));
-    clearError();
+    setFilters(f => ({ ...f, [name]: value }));
+    setError(null);  // Clear any existing error
   };
 
+  // Hopefully any errors are immediately caught/corrected here.
   const validateFilters = () => {
     if (filters.startDate && filters.endDate && 
         new Date(filters.startDate) > new Date(filters.endDate)) {
-      handleError(new Error('Start date cannot be after end date'));
+      setError('Start date cannot be after end date');
       return false;
     }
     if (filters.passengers && filters.passengers < 1) {
-      handleError(new Error('Passengers must be at least 1'));
+      setError('Passengers must be at least 1');
       return false;
     }
     return true;
   };
 
+  // Validates filter & passes filters to parent component for submission.
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!validateFilters()) return;
-    onFilter(filters);
+    if (validateFilters()) {
+      onFilter(filters);
+    }
   };
 
+  // Reset filters and errors.
   const handleReset = () => {
     setFilters(initialFilters);
-    clearError();
+    setError(null);
     onFilter(initialFilters);
   };
 
+/** 
+ * JSX Displays 
+*/
+
   return (
     <Form onSubmit={handleSubmit} className="mb-4">
-      <ErrorDisplay error={error} onClose={clearError} />
+      {error && (
+        <Alert variant="danger" dismissible onClose={() => setError(null)}>
+          {error}
+        </Alert>
+      )}
       <Row>
         <Col md={6} lg={4}>
           <Form.Group className="mb-3">
@@ -134,14 +145,12 @@ function TripFilterForm({ onFilter }) {
           variant="secondary" 
           onClick={handleReset}
           type="button"
-          aria-label="Reset filters"
         >
           Reset
         </Button>
         <Button 
           variant="primary" 
           type="submit"
-          aria-label="Apply filters"
         >
           Apply Filters
         </Button>

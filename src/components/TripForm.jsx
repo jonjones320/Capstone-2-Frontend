@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { format } from 'date-fns';
-import { Form, Button, ListGroup, Spinner } from 'react-bootstrap';
+import { Form, Button, ListGroup, Spinner, Alert } from 'react-bootstrap';
 import RannerApi from '../../api';
-import { useErrorHandler } from '../utils/errorHandler';
-import ErrorDisplay from './ErrorAlert';
 
 function TripForm({ initialData, onSubmit, isEdit = false }) {
+  // Sets initial states and empty form fields.
   const [formData, setFormData] = useState({
     name: '',
     origin: '',
@@ -15,11 +14,10 @@ function TripForm({ initialData, onSubmit, isEdit = false }) {
     passengers: 1,
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-  const [originSuggestions, setOriginSuggestions] = useState([]);
-  const [destinationSuggestions, setDestinationSuggestions] = useState([]);
-  const { error, handleError, clearError } = useErrorHandler();
+  const [suggestions, setSuggestions] = useState({ origin: [], destination: [] });
+  const [error, setError] = useState(null);
 
+  // Fills out forms whenever trip data is passed to this component.
   useEffect(() => {
     if (initialData) {
       try {
@@ -32,54 +30,56 @@ function TripForm({ initialData, onSubmit, isEdit = false }) {
           passengers: initialData.passengers || 1,
         });
       } catch (err) {
-        handleError(new Error('Error formatting dates'));
+        setError('Error loading trip data');
       }
     }
   }, [initialData]);
 
+  // Updates form data as user inputs it.
   const handleChange = async ({ target: { name, value } }) => {
     setFormData(data => ({ ...data, [name]: value }));
-    clearError();
+    setError(null);
 
+    // As user inputs orign or destination, suggestions are requested from the server.
     if ((name === 'origin' || name === 'destination') && value.length >= 3) {
       setIsLoading(true);
       try {
         const res = await RannerApi.getAirportSuggestions(value);
-        if (name === 'origin') {
-          setOriginSuggestions(res);
-        } else {
-          setDestinationSuggestions(res);
-        }
+        setSuggestions(prev => ({
+          ...prev,
+          [name]: res
+        }));
       } catch (err) {
-        handleError(err);
+        setError('Failed to load airport suggestions');
       } finally {
         setIsLoading(false);
       }
     }
   };
 
+  // Checks for simple, quick fixes before submitting the trip.
   const validateForm = () => {
-    if (formData.origin.length > 100 || formData.destination.length > 100) {
-      handleError(new Error('Location codes must be less than 100 characters'));
-      return false;
-    }
-    if (formData.name.length > 50) {
-      handleError(new Error('Trip name must be less than 50 characters'));
+    if (!formData.name) {
+      setError('Trip name is required');
       return false;
     }
     if (new Date(formData.startDate) > new Date(formData.endDate)) {
-      handleError(new Error('Start date cannot be after end date'));
+      setError('Start date cannot be after end date');
       return false;
     }
     return true;
   };
 
+  // Passes trip data to the parent component.
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
 
-    setIsSaving(true);
+    setIsLoading(true);
+    setError(null);
+    
     try {
+      // Collects and formats data then passes it to the parent component.
       const dataToSubmit = {
         ...formData,
         startDate: format(new Date(formData.startDate), 'yyyy-MM-dd'),
@@ -88,15 +88,23 @@ function TripForm({ initialData, onSubmit, isEdit = false }) {
       };
       await onSubmit(dataToSubmit);
     } catch (err) {
-      handleError(err);
+      setError(err?.response?.data?.error?.message || 'Failed to save trip');
     } finally {
-      setIsSaving(false);
+      setIsLoading(false);
     }
   };
 
+/**
+ * JSX
+ */
+
   return (
     <Form onSubmit={handleSubmit}>
-      <ErrorDisplay error={error} onClose={clearError} />
+      {error && (
+        <Alert variant="danger" dismissible onClose={() => setError(null)}>
+          {error}
+        </Alert>
+      )}
 
       <Form.Group className="mb-3">
         <Form.Label htmlFor="tripName">Trip Name:</Form.Label>

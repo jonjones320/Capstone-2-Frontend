@@ -1,14 +1,13 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Container, Button, Spinner } from 'react-bootstrap';
+import { Container, Button, Spinner, Alert } from 'react-bootstrap';
 import AuthContext from '../context/AuthContext';
 import RannerApi from '../../api';
 import FlightCard from './FlightCard';
 import TripForm from './TripForm';
-import { useErrorHandler } from '../utils/errorHandler';
-import ErrorDisplay from './ErrorAlert';
 
 function TripDetail() {
+  // Set intial states to use passed params and update elements.
   const { id } = useParams();
   const navigate = useNavigate();
   const { currentUser } = useContext(AuthContext);
@@ -16,93 +15,103 @@ function TripDetail() {
   const [flights, setFlights] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
-  const { error, handleError, clearError } = useErrorHandler();
+  const [error, setError] = useState(null);
 
-  // Fetches Trip details and Flights associated with that trip.
+  // Requests trip by trip ID and flight, by correlated trip ID, from the server. 
+  const fetchTripAndFlights = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const [fetchedTrip, fetchedFlights] = await Promise.all([
+        RannerApi.getTripById(id),
+        RannerApi.getFlightsByTrip(id)
+      ]);
+      setTrip(fetchedTrip);
+      setFlights(fetchedFlights);
+    } catch (err) {
+      setError(err?.response?.data?.error?.message || 'Failed to load trip details');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // If the ID changes, new data is requested.
   useEffect(() => {
-    const fetchTripAndFlights = async () => {
-      setIsLoading(true);
-      try {
-        const fetchedTrip = await RannerApi.getTripById(id);
-        setTrip(fetchedTrip);
-        const fetchedFlights = await RannerApi.getFlightsByTrip(id);
-        setFlights(fetchedFlights);
-      } catch (err) {
-        handleError(err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
     fetchTripAndFlights();
   }, [id]);
 
-  // Handle Trip section //
+  // Updates the trip on the server side.
   const handleUpdate = async (updatedTripData) => {
     setIsLoading(true);
+    setError(null);
     try {
       await RannerApi.updateTrip(id, updatedTripData);
       const updatedTrip = await RannerApi.getTripById(id);
       setTrip(updatedTrip);
       setIsEditing(false);
     } catch (err) {
-      handleError(err);
+      setError(err?.response?.data?.error?.message || 'Failed to update trip');
     } finally {
       setIsLoading(false);
     }
   };
 
+  // Deletes the trip from the server.
   const handleDelete = async () => {
     try {
+      setError(null);
       await RannerApi.deleteTrip(id, currentUser.username);
       navigate('/trips');
     } catch (err) {
-      handleError(err);
+      setError(err?.response?.data?.error?.message || 'Failed to delete trip');
     }
   };
 
-  const handleEdit = () => {
-    setIsEditing(true);
-  };
+  // Loading animation with spinner.
+  if (isLoading) {
+    return (
+      <Container className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
+        <Spinner animation="border" />
+      </Container>
+    );
+  }
 
-  // Handle Flight section //
-  const handleChangeFlights = () => {
-    navigate('/flights', { state: { trip } });
-  };
+  // Checks that a trip is found.
+  if (!trip && !isLoading) {
+    return (
+      <Container className="mt-5">
+        <Alert variant="warning">
+          Trip not found
+          <div className="mt-2">
+            <Button variant="warning" onClick={() => navigate('/trips')}>
+              Return to Trips
+            </Button>
+          </div>
+        </Alert>
+      </Container>
+    );
+  }
 
-  const handleRemoveFlight = async (flightId) => {
-      setFlights(flights.filter(flight => flight.id !== flightId));
-  };
-  
-  // Go back //
-  const handleBack = () => {
-    navigate(-1);
-  };
+  /**
+   * JSX
+   */
 
-  // Loading JSX display //
-  if (isLoading) return (
-    <Container className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
-      <Spinner animation="border" role="status">
-        <span className="visually-hidden">Loading...</span>
-      </Spinner>
-    </Container>
-  );
-
-  if (!trip) return (
-    <Container className="mt-5">
-      <ErrorDisplay 
-        error={new Error("Trip not found")} 
-        onClose={() => navigate('/trips')} 
-      />
-    </Container>
-  );
-
-  // Main display - includes editing and viewing //
   return (
     <Container className="mt-5">
-      <Button variant="secondary" onClick={handleBack} className="mb-3">
+      <Button variant="secondary" onClick={() => navigate(-1)} className="mb-3">
         &larr; Back
       </Button>
-      <ErrorDisplay error={error} onClose={clearError} />
+
+      {error && (
+        <Alert variant="danger" dismissible onClose={() => setError(null)}>
+          {error}
+          <div className="mt-2">
+            <Button variant="outline-danger" size="sm" onClick={fetchTripAndFlights}>
+              Try Again
+            </Button>
+          </div>
+        </Alert>
+      )}
       {isEditing ? (
         <TripForm
           initialData={trip}
