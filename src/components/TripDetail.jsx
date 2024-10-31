@@ -67,6 +67,10 @@ function TripDetail() {
     }
   };
 
+  const handleEdit = () => {
+    setIsEditing(true);
+  };
+
   // Loading animation with spinner.
   if (isLoading) {
     return (
