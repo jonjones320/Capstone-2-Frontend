@@ -8,24 +8,64 @@ const BASE_URL = import.meta.env.REACT_APP_BASE_URL || "https://capstone-2-backe
 /** API Class - Static class tying together methods used to get/send to the API. */
 
 class RannerApi {
-  // the token for interacting with the API will be stored here.
+  // The user's token for interacting with the API will be stored here.
   static token;
 
   static async request(endpoint, data = {}, method = "get") {
+    console.log("RannerApi - request: ", { endpoint, method, data });
+    
     try {
-      console.log("RannerApi - params: ", params);
-      console.log("RannerApi - data: ", data);
-      const response = await axios({
-        url: `${BASE_URL}/${endpoint}`,
+      const url = `${BASE_URL}/${endpoint}`;
+      const headers = {
+        Authorization: `Bearer ${RannerApi.token}`,
+        'Content-Type': 'application/json'
+      };
+      
+      const config = {
+        url,
         method,
-        data,
-        params: (method === "get") ? data : {},
-        headers: { Authorization: `Bearer ${RannerApi.token}` }
-      });
+        headers,
+        data: method !== "get" ? data : undefined,
+        params: method === "get" ? data : undefined,
+      };
+      
+      console.log("Request Config:", config);
+      
+      const response = await axios(config);
+      console.log("API Response:", response.data);
+      
       return response.data;
     } catch (err) {
-      ErrorHandler.handleApiError(err);
+      console.error("API Error:", {
+        message: err.message,
+        response: err.response?.data,
+        status: err.response?.status
+      });
+
+      // Enhanced error handling
+      if (err.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        throw new Error(err.response.data?.error?.message || 
+                       'An error occurred with the server response');
+      } else if (err.request) {
+        // The request was made but no response was received
+        throw new Error('No response received from server');
+      } else {
+        // Something happened in setting up the request
+        throw new Error('Error setting up the request');
+      }
     }
+  };
+
+  static formatError(error) {
+    if (error.response?.data?.error) {
+      return error.response.data.error;
+    }
+    return {
+      message: error.message || 'An unexpected error occurred',
+      status: error.response?.status || 500
+    };
   };
 
 
