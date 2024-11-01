@@ -65,6 +65,22 @@ function TripDetail() {
     }
   };
 
+  // Set editing state on or off.
+  const handleEdit = () => {
+    setIsEditing(true);
+  };
+
+  // 'Change Flight' button triggers this redirect.
+  const handleChangeFlights = () => {
+    console.log("0 - TripDetail - trip: ", trip);
+    navigate('/flights', { state: { trip } });
+  };
+
+  // FlightCard deletes a flight and this filters the flight from the list.
+  const handleRemoveFlight = (flightId) => {
+    setFlights(currentFlights => currentFlights.filter(f => f.id !== flightId));
+  };
+
   // Deletes the trip from the server.
   const handleDelete = async () => {
     try {
@@ -75,17 +91,6 @@ function TripDetail() {
       setError(err?.response?.data?.error?.message || 'Failed to delete trip');
     }
   };
-
-  // Set editing state on or off.
-  const handleEdit = () => {
-    setIsEditing(true);
-  };
-
-    // 'Change Flight' button triggers this redirect.
-    const handleChangeFlights = () => {
-      console.log("0 - TripDetail - trip: ", trip);
-      navigate('/flights', { state: { trip } });
-    };
 
   // Loading animation with spinner.
   if (isLoading) {
