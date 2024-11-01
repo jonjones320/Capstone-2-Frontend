@@ -1,5 +1,4 @@
 import axios from "axios";
-import { ErrorHandler } from "./src/utils/errorHandler";
 
 // const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:3001";
 const BASE_URL = import.meta.env.REACT_APP_BASE_URL || "https://capstone-2-backend-iahv.onrender.com";
@@ -18,7 +17,10 @@ class RannerApi {
       Authorization: `Bearer ${RannerApi.token}`,
       'Content-Type': 'application/json'
     };
-
+    console.log("RannerApi - url: ", url);
+    console.log("RannerApi - method: ", method);
+    console.log("RannerApi - headers: ", headers);
+    console.log("RannerApi - data: ", data);
     try {
       const response = await axios({
         url,
@@ -34,6 +36,7 @@ class RannerApi {
   }
 
   static formatError(error) {
+    console.log("RannerApi - error: ", error);
     if (error.response?.data?.error) {
       return error.response.data.error;
     }
