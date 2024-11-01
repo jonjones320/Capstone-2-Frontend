@@ -18,6 +18,13 @@ function TripDetail() {
   const [isEditing, setIsEditing] = useState(false);
   const [error, setError] = useState(null);
 
+  // Formats trip's dates from 'YYYY-MM-DD-T00:00:0000' to 'YYYY-MM-DD'.
+  const formatDates = (trip) => {
+    return ({ ...trip, 
+        startDate: format(new Date(trip.startDate), 'yyyy-MM-dd'), 
+        endDate: format(new Date(trip.endDate), 'yyyy-MM-dd'),
+    })};
+
   // Requests trip by trip ID and flight, by correlated trip ID, from the server. 
   const fetchTripAndFlights = async () => {
     setIsLoading(true);
@@ -27,7 +34,8 @@ function TripDetail() {
         RannerApi.getTripById(id),
         RannerApi.getFlightsByTrip(id)
       ]);
-      setTrip(fetchedTrip);
+      const formattedTrip = formatDates(fetchedTrip);
+      setTrip(formattedTrip);
       setFlights(fetchedFlights);
     } catch (err) {
       setError(err?.response?.data?.error?.message || 'Failed to load trip details');
@@ -126,7 +134,7 @@ function TripDetail() {
       )}
       {isEditing ? (
         <TripForm
-          initialData={trip}
+          trip={trip}
           onSubmit={handleUpdate}
           isEdit={true}
         />
