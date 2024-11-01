@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Container, Button, Spinner, Alert } from 'react-bootstrap';
+import { format } from 'date-fns';
 import AuthContext from '../context/AuthContext';
 import RannerApi from '../../api';
 import FlightCard from './FlightCard';
@@ -134,8 +135,8 @@ function TripDetail() {
           <h2>{trip.name}</h2>
           <p>Origin: {trip.origin}</p>
           <p>Destination: {trip.destination}</p>
-          <p>Start Date: {new Date(trip.startDate).toLocaleDateString()}</p>
-          <p>End Date: {new Date(trip.endDate).toLocaleDateString()}</p>
+          <p>Start Date: {format(new Date(trip.startDate), 'yyyy-MM-dd')}</p>
+          <p>End Date: {format(new Date(trip.endDate), 'yyyy-MM-dd')}</p>
           <p>Passengers: {trip.passengers}</p>
           {currentUser && (
             <div className="mb-4">
