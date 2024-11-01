@@ -26,6 +26,7 @@ function TripDates() {
       };
 
       const savedTrip = await RannerApi.postTrip(fullTripData);
+      console.log("0 - TripDates - savedTrip: ", savedTrip);
       navigate("/flights", { state: { trip: savedTrip.trip } });
     } catch (err) {
       setError(err?.response?.data?.error?.message || 'Failed to create trip');

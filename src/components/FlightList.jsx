@@ -22,6 +22,7 @@ function FlightList() {
     try {
       setIsLoading(true);
       setError(null);
+      console.log("1 - FlightList - Trip: ", trip);
       const res = await RannerApi.searchFlightOffers({
         originLocationCode: trip.origin,
         destinationLocationCode: trip.destination,
