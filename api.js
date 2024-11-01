@@ -11,52 +11,27 @@ class RannerApi {
   // The user's token for interacting with the API will be stored here.
   static token;
 
+  // Reusable function builds requests for the backend server.
   static async request(endpoint, data = {}, method = "get") {
-    console.log("RannerApi - request: ", { endpoint, method, data });
-    
+    const url = `${BASE_URL}/${endpoint}`;
+    const headers = {
+      Authorization: `Bearer ${RannerApi.token}`,
+      'Content-Type': 'application/json'
+    };
+
     try {
-      const url = `${BASE_URL}/${endpoint}`;
-      const headers = {
-        Authorization: `Bearer ${RannerApi.token}`,
-        'Content-Type': 'application/json'
-      };
-      
-      const config = {
+      const response = await axios({
         url,
         method,
         headers,
-        data: method !== "get" ? data : undefined,
-        params: method === "get" ? data : undefined,
-      };
-      
-      console.log("Request Config:", config);
-      
-      const response = await axios(config);
-      console.log("API Response:", response.data);
+        [method === "get" ? "params" : "data"]: data
+      });
       
       return response.data;
     } catch (err) {
-      console.error("API Error:", {
-        message: err.message,
-        response: err.response?.data,
-        status: err.response?.status
-      });
-
-      // Enhanced error handling
-      if (err.response) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx
-        throw new Error(err.response.data?.error?.message || 
-                       'An error occurred with the server response');
-      } else if (err.request) {
-        // The request was made but no response was received
-        throw new Error('No response received from server');
-      } else {
-        // Something happened in setting up the request
-        throw new Error('Error setting up the request');
-      }
+      throw err.response?.data?.error || err;
     }
-  };
+  }
 
   static formatError(error) {
     if (error.response?.data?.error) {
