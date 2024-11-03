@@ -1,41 +1,22 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Container, Form, Button, ListGroup, Spinner } from 'react-bootstrap';
-import RannerApi from '../../api';
+import { useAirportSearch } from './helpers/useAirportSearch';
 import ErrorAlert from './ErrorAlert';
 
 function Destination() {
-  const [destination, setDestination] = useState('');
-  const [suggestions, setSuggestions] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
   const { origin } = location.state || {};
-
-  const handleChange = async (e) => {
-    setDestination(e.target.value);
-    if (e.target.value.length >= 3) {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const res = await RannerApi.getAirportSuggestions(e.target.value);
-        setSuggestions(res);
-      } catch (err) {
-        setError(err?.response?.data?.error?.message || 'Failed to load suggestions');
-        setSuggestions([]);
-      } finally {
-        setIsLoading(false);
-      }
-    } else {
-      setSuggestions([]);
-    }
-  };
-
-  const handleSuggestionClick = (iataCode) => {
-    setDestination(iataCode);
-    setSuggestions([]);
-  };
+  const {
+    searchTerm: destination,
+    suggestions,
+    isLoading,
+    error,
+    handleChange,
+    handleSuggestionClick,
+    setError
+  } = useAirportSearch();
 
   const handleNext = () => {
     if (!destination) {
@@ -86,7 +67,10 @@ function Destination() {
           )}
         </ListGroup>
         <div className="d-flex justify-content-between">
-          <Button variant="secondary" onClick={() => navigate("/origin", { state: { origin } })}>
+          <Button 
+            variant="secondary" 
+            onClick={() => navigate("/origin", { state: { origin } })}
+          >
             Back
           </Button>
           <Button variant="primary" onClick={handleNext}>Next</Button>
