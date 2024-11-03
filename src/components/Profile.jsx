@@ -34,6 +34,16 @@ function Profile() {
     }
   }, [currentUser]);
 
+  const handleUpdate = async (formData) => {
+    try {
+      const updatedUser = await RannerApi.patchUser(currentUser.username, formData);
+      setUser(updatedUser);
+      setIsEditing(false);
+    } catch (err) {
+      handleError(err);
+    }
+  };
+
   if (isLoading) {
     return (
       <Container className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
