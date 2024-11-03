@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Form, Button, Container, Row, Col, Spinner } from 'react-bootstrap';
-import AuthContext from '../context/AuthContext';
+import { AuthContext } from '../context/AuthContext';
 import ErrorAlert from './ErrorAlert';
 
 function Login() {

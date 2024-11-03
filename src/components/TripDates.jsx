@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Container, Button } from 'react-bootstrap';
-import AuthContext from '../context/AuthContext';
+import { AuthContext } from '../context/AuthContext';
 import RannerApi from '../../api';
 import TripForm from './TripForm';
 import ErrorAlert from './ErrorAlert';

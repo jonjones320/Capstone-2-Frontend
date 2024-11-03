@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Container, Button, Spinner, Alert } from 'react-bootstrap';
 import { format } from 'date-fns';
-import AuthContext from '../context/AuthContext';
+import { AuthContext } from '../context/AuthContext';
 import RannerApi from '../../api';
 import FlightCard from './FlightCard';
 import TripForm from './TripForm';

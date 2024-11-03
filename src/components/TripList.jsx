@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { Container, Spinner, Button, Collapse, Row, Col, Alert } from 'react-bootstrap';
-import AuthContext from '../context/AuthContext';
+import { AuthContext } from '../context/AuthContext';
 import RannerApi from '../../api';
 import TripCard from './TripCard';
 import TripFilterForm from './TripFilterForm';
