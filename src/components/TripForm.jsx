@@ -92,6 +92,7 @@ function TripForm({ initialData, onSubmit, isEdit = false }) {
     setError(null);
     
     try {
+      console.log("TripForm - formData: ", formData);
       // Collects and formats data then passes it to the parent component.
       const dataToSubmit = {
         ...formData,
@@ -99,6 +100,7 @@ function TripForm({ initialData, onSubmit, isEdit = false }) {
         endDate: format(new Date(formData.endDate), 'yyyy-MM-dd'),
         passengers: parseInt(formData.passengers, 10),
       };
+      console.log("TripForm - dataToSubmit: ", dataToSubmit);
       await onSubmit(dataToSubmit);
     } catch (err) {
       setError(err?.response?.data?.error?.message || 'Failed to save trip');
