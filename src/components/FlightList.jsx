@@ -30,13 +30,6 @@ function FlightList() {
         returnDate: trip.endDate,
         adults: Number(trip.passengers) || 1
       });
-      
-      // Check if res.data exists and is an array.
-      if (res?.data && Array.isArray(res.data)) {
-        setFlights(res.data);
-      } else {
-        setError("No flights found for your search criteria");
-      }
     } catch (err) {
       setError(err?.response?.data?.error?.message || 'Failed to load flights');
     } finally {
