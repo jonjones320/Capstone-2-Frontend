@@ -1,39 +1,20 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import RannerApi from '../../api';
 import { Container, Form, Button, ListGroup, Spinner } from 'react-bootstrap';
+import { useAirportSearch } from '../hooks/useAirportSearch';
 import ErrorAlert from './ErrorAlert';
 
 function Origin() {
-  const [origin, setOrigin] = useState('');
-  const [suggestions, setSuggestions] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
   const navigate = useNavigate();
-
-  const handleChange = async (e) => {
-    setOrigin(e.target.value);
-    if (e.target.value.length >= 3) {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const res = await RannerApi.getAirportSuggestions(e.target.value);
-        setSuggestions(res);
-      } catch (err) {
-        setError(err?.response?.data?.error?.message || 'Failed to load suggestions');
-        setSuggestions([]);
-      } finally {
-        setIsLoading(false);
-      }
-    } else {
-      setSuggestions([]);
-    }
-  };
-
-  const handleSuggestionClick = (iataCode) => {
-    setOrigin(iataCode);
-    setSuggestions([]);
-  };
+  const {
+    searchTerm: origin,
+    suggestions,
+    isLoading,
+    error,
+    handleChange,
+    handleSuggestionClick,
+    setError
+  } = useAirportSearch();
 
   const handleNext = () => {
     if (!origin) {
