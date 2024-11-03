@@ -100,4 +100,6 @@ export const AuthProvider = ({ children }) => {
     );
 };
 
-export default AuthContext;
+
+export { AuthContext };  // Named export for the context.
+export default AuthProvider;  // Default export for the provider.
