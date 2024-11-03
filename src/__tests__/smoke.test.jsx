@@ -1,7 +1,15 @@
+import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from '../context/AuthContext';
+import { useContext } from 'react';
 import App from '../App';
+
+// Mock React's useContext.
+jest.mock('react', () => ({
+  ...jest.requireActual('react'),
+  useContext: jest.fn()
+}));
 
 // Mock the Ranner API calls.
 jest.mock('../../api', () => ({
@@ -26,6 +34,8 @@ describe('Ranner Frontend Smoke Tests', () => {
   beforeEach(() => {
     // Clear all mocks before each test.
     jest.clearAllMocks();
+    // Reset useContext mock.
+    useContext.mockReturnValue({ currentUser: null });
   });
 
   describe('Basic Navigation', () => {
@@ -79,15 +89,13 @@ describe('Ranner Frontend Smoke Tests', () => {
 
   describe('Trip Planning Flow', () => {
     test('Can access trip planning when logged in', async () => {
-      // Mock successful login.
-      const mockUser = { username: 'testuser', isAdmin: false };
-      jest.spyOn(AuthProvider, 'useContext').mockImplementation(() => ({
-        currentUser: mockUser
-      }));
+      // Set up mock logged-in user.
+      useContext.mockReturnValue({
+        currentUser: { username: 'testuser', isAdmin: false }
+      });
 
       renderApp();
       
-      // Should see trip planning option.
       await waitFor(() => {
         expect(screen.getByText(/start your journey/i)).toBeInTheDocument();
       });
