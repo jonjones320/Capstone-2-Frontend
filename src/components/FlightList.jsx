@@ -8,7 +8,7 @@ import ErrorAlert from './ErrorAlert';
 function FlightList() {
   const { state } = useLocation();
   const { trip } = state || {};
-  const [flights, setFlights] = useState([]);
+  const [flights, setFlights] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -32,8 +32,14 @@ function FlightList() {
         adults: Number(trip.passengers) || 1
       });
 
-      setFlights(res.data || []); // Store the flight offers in state.
+      if (res.data) {
+        setFlights(res.data);
+        setError(null);
+      } else {
+        setFlights([]);
+      }
     } catch (err) {
+      setFlights([]);
       setError(err?.response?.data?.error?.message || 'Failed to load flights');
     } finally {
       setIsLoading(false);
@@ -60,23 +66,6 @@ function FlightList() {
     }
   };
 
-  
-  /**
-   * JSX
-   */
-
-  
-  // Loading animation with spinner.
-  if (isLoading) {
-    return (
-      <Container className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
-        <Spinner animation="border" role="status">
-          <span className="visually-hidden">Loading flights...</span>
-        </Spinner>
-      </Container>
-    );
-  };
-
   // Reusable header fragment.
   const HeaderSection = () => (
     <>
@@ -87,43 +76,53 @@ function FlightList() {
     </>
   );
 
-  // Handle no flights found separately from errors.
-  if (!flights || flights.length === 0) {
+  // Loading spinner display.
+  if (isLoading) {
     return (
-      <Container className="mt-5">
-        <HeaderSection />
-        <Alert variant="info">
-          No flights found for your search criteria. Please try different dates or locations.
-        </Alert>
+      <Container className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
+        <Spinner animation="border" role="status">
+          <span className="visually-hidden">Loading flights...</span>
+        </Spinner>
       </Container>
     );
   }
 
+  /**
+   * JSX
+   */
+
   return (
     <Container className="mt-5">
-    <HeaderSection />
-    {error && (
-      <ErrorAlert
-        error={error}
-        onDismiss={() => setError(null)}
-        onRetry={fetchFlights}
-      />
-    )}
+      <HeaderSection />
       
-    {flights.map((flight) => (
-      <Card key={flight.id} className="mb-4">
-        <Card.Body>
-          <FlightCard flight={flight} />
-          <Button 
-            onClick={() => handleAddFlight(flight)} 
-            className="mt-3 w-100"
-            variant="primary"
-          >
-            Add Flight
-          </Button>
-        </Card.Body>
-      </Card>
-    ))}
+      {error && (
+        <ErrorAlert
+          error={error}
+          onDismiss={() => setError(null)}
+          onRetry={fetchFlights}
+        />
+      )}
+
+      {!error && (!flights || flights.length === 0) && (
+        <Alert variant="info">
+          No flights found for your search criteria. Please try different dates or locations.
+        </Alert>
+      )}
+      
+      {flights && flights.length > 0 && flights.map((flight) => (
+        <Card key={flight.id} className="mb-4">
+          <Card.Body>
+            <FlightCard flight={flight} />
+            <Button 
+              onClick={() => handleAddFlight(flight)} 
+              className="mt-3 w-100"
+              variant="primary"
+            >
+              Add Flight
+            </Button>
+          </Card.Body>
+        </Card>
+      ))}
     </Container>
   );
 }
