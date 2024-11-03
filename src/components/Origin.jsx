@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Container, Form, Button, ListGroup, Spinner } from 'react-bootstrap';
-import { useAirportSearch } from '../hooks/useAirportSearch';
+import { useAirportSearch } from './helpers/useAirportSearch';
 import ErrorAlert from './ErrorAlert';
 
 function Origin() {
