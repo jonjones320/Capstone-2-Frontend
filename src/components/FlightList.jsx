@@ -39,8 +39,20 @@ function FlightList() {
         setFlights([]);
       }
     } catch (err) {
+      console.log("Flight search error:", err);
       setFlights([]);
-      setError(err?.response?.data?.error?.message || 'Failed to load flights');
+      const isServerError = err?.error?.status === 500;
+      setError(isServerError
+        ? {
+            message: "Loading flights...",
+            detail: "This application uses Amadeus's test API. The flight offers should appear automatically in a few seconds. If they don't, click 'Try Again'.",
+            isTestApiError: true
+          }
+        : {
+            message: err?.response?.data?.error?.message || 'Failed to load flights',
+            isTestApiError: false
+          }
+      );
     } finally {
       setIsLoading(false);
     }
@@ -96,11 +108,21 @@ function FlightList() {
       <HeaderSection />
       
       {error && (
-        <ErrorAlert
-          error={error}
-          onDismiss={() => setError(null)}
-          onRetry={fetchFlights}
-        />
+        <Alert variant={error.isTestApiError ? "info" : "danger"} className="d-flex flex-column gap-2">
+          <div>
+            <strong>{error.message}</strong>
+            {error.detail && <p className="mt-2 mb-0">{error.detail}</p>}
+          </div>
+          {!error.isTestApiError && (
+            <Button 
+              variant="outline-danger" 
+              size="sm" 
+              onClick={fetchFlights}
+            >
+              Try Again
+            </Button>
+          )}
+        </Alert>
       )}
 
       {!error && (!flights || flights.length === 0) && (
