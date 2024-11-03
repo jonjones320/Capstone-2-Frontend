@@ -19,10 +19,11 @@ function FlightList() {
       setIsLoading(false);
       return;
     }
+    
     try {
       setIsLoading(true);
       setError(null);
-      console.log("1 - FlightList - Trip: ", trip);
+
       const res = await RannerApi.searchFlightOffers({
         originLocationCode: trip.origin,
         destinationLocationCode: trip.destination,
@@ -30,6 +31,8 @@ function FlightList() {
         returnDate: trip.endDate,
         adults: Number(trip.passengers) || 1
       });
+
+      setFlights(res.data || []); // Store the flight offers in state.
     } catch (err) {
       setError(err?.response?.data?.error?.message || 'Failed to load flights');
     } finally {
