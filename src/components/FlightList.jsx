@@ -11,6 +11,7 @@ function FlightList() {
   const [flights, setFlights] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [retryCount, setRetryCount] = useState(0); // Addresses Amadeus API constraint.
   const navigate = useNavigate();
 
   const fetchFlights = async () => {
@@ -35,12 +36,26 @@ function FlightList() {
       if (res.data) {
         setFlights(res.data);
         setError(null);
+        setRetryCount(0); // Reset retry count on success.
       } else {
         setFlights([]);
       }
     } catch (err) {
       setFlights([]);
-      setError(err?.response?.data?.error?.message || 'Failed to load flights');
+      // Addresses recurring Amadeus API constraint when using a test key.
+      const isServerError = err?.response?.status === 500;
+      setError(isServerError
+        ? {
+            message: "The flight search service is temporarily unavailable.",
+            detail: "Note: This application uses Amadeus's test API, which occasionally requires multiple attempts. Please click 'Try Again' - it usually succeeds within 2-3 tries! This limitation would not exist with a production API key.",
+            isTestApiError: true
+          }
+        : {
+            message: err?.response?.data?.error?.message || 'Failed to load flights',
+            isTestApiError: false
+          }
+      );
+      setRetryCount(prev => prev + 1);
     } finally {
       setIsLoading(false);
     }
@@ -62,7 +77,10 @@ function FlightList() {
       });
       navigate(`/trip/${tripId}`);
     } catch (err) {
-      setError(err?.response?.data?.error?.message || "Error adding flight to trip");
+      setError({
+        message: err?.response?.data?.error?.message || "Error adding flight to trip",
+        isTestApiError: false
+      });
     }
   };
 
@@ -76,7 +94,6 @@ function FlightList() {
     </>
   );
 
-  // Loading spinner display.
   if (isLoading) {
     return (
       <Container className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
@@ -96,11 +113,31 @@ function FlightList() {
       <HeaderSection />
       
       {error && (
-        <ErrorAlert
-          error={error}
-          onDismiss={() => setError(null)}
-          onRetry={fetchFlights}
-        />
+        <Alert variant={error.isTestApiError ? "warning" : "danger"} className="d-flex flex-column gap-2">
+          <div>
+            <strong>{error.message}</strong>
+            {error.detail && <p className="mt-2 mb-0">{error.detail}</p>}
+          </div>
+          <div className="d-flex align-items-center gap-2">
+            <Button 
+              variant={error.isTestApiError ? "warning" : "outline-danger"} 
+              size="sm" 
+              onClick={fetchFlights}
+            >
+              Try Again {retryCount > 0 && `(Attempt ${retryCount + 1})`}
+            </Button>
+            {error.isTestApiError && retryCount > 0 && (
+              <small className="text-muted">
+                Keep trying! Success rate increases with each attempt.
+              </small>
+            )}
+            {error.isTestApiError && retryCount > 15 && (
+              <small className="text-muted">
+                Ok... maybe let's try again later.
+              </small>
+            )}
+          </div>
+        </Alert>
       )}
 
       {!error && (!flights || flights.length === 0) && (
