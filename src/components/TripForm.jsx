@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { Form, Button, ListGroup, Spinner, Alert } from 'react-bootstrap';
-import { useAirportSearch } from '../hooks/useAirportSearch';
+import { useAirportSearch } from './helpers/useAirportSearch';
 
 function TripForm({ initialData, onSubmit, isEdit = false }) {
   // Sets initial states and empty form fields.
