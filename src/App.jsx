@@ -1,11 +1,11 @@
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext.jsx';
-import Routes from './Routes.jsx';
-import NavBar from './components/NavBar';
 import { Container } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles/custom.css';
+import Routes from './Routes.jsx';
+import NavBar from './components/NavBar.jsx';
 
 function App() {
   return (
