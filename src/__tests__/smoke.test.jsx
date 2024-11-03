@@ -16,20 +16,35 @@ jest.mock('../../api', () => ({
 describe('Ranner Frontend Smoke Tests', () => {
   // Custom render function that includes providers.
   const renderApp = () => {
+    // Define mock context values.
+    const mockAuthContext = {
+      currentUser: null,
+      login: jest.fn(),
+      logout: jest.fn(),
+      setCurrentUser: jest.fn()
+    };
+  
     render(
-      <BrowserRouter>
-        <AuthProvider>
+      <AuthContext.Provider value={mockAuthContext}>
+        <BrowserRouter>
           <App />
-        </AuthProvider>
-      </BrowserRouter>
+        </BrowserRouter>
+      </AuthContext.Provider>
     );
   };
 
   // Helper function to set up auth context for testing.
   const renderWithAuth = (currentUser = null) => {
-    // Create a test component that uses AuthContext directly.
+    // Define mock context values.
+    const mockAuthContext = {
+      currentUser,
+      login: jest.fn(),
+      logout: jest.fn(),
+      setCurrentUser: jest.fn()
+    };
+  
     const TestComponent = () => (
-      <AuthContext.Provider value={{ currentUser, login: jest.fn(), logout: jest.fn() }}>
+      <AuthContext.Provider value={mockAuthContext}>
         <BrowserRouter>
           <App />
         </BrowserRouter>
