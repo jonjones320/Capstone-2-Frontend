@@ -1,17 +1,10 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import { AuthProvider } from '../context/AuthContext';
-import { useContext } from 'react';
+import AuthProvider, { AuthContext } from '../context/AuthContext';
 import App from '../App';
 
-// Mock React's useContext.
-jest.mock('react', () => ({
-  ...jest.requireActual('react'),
-  useContext: jest.fn()
-}));
-
-// Mock the Ranner API calls.
+// Mock the API calls.
 jest.mock('../../api', () => ({
   login: jest.fn(),
   signUp: jest.fn(),
@@ -21,6 +14,7 @@ jest.mock('../../api', () => ({
 }));
 
 describe('Ranner Frontend Smoke Tests', () => {
+  // Custom render function that includes providers.
   const renderApp = () => {
     render(
       <BrowserRouter>
@@ -31,11 +25,23 @@ describe('Ranner Frontend Smoke Tests', () => {
     );
   };
 
+  // Helper function to set up auth context for testing.
+  const renderWithAuth = (currentUser = null) => {
+    // Create a test component that uses AuthContext directly.
+    const TestComponent = () => (
+      <AuthContext.Provider value={{ currentUser, login: jest.fn(), logout: jest.fn() }}>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </AuthContext.Provider>
+    );
+    
+    return render(<TestComponent />);
+  };
+
   beforeEach(() => {
     // Clear all mocks before each test.
     jest.clearAllMocks();
-    // Reset useContext mock.
-    useContext.mockReturnValue({ currentUser: null });
   });
 
   describe('Basic Navigation', () => {
@@ -89,12 +95,8 @@ describe('Ranner Frontend Smoke Tests', () => {
 
   describe('Trip Planning Flow', () => {
     test('Can access trip planning when logged in', async () => {
-      // Set up mock logged-in user.
-      useContext.mockReturnValue({
-        currentUser: { username: 'testuser', isAdmin: false }
-      });
-
-      renderApp();
+      // Render with a mock logged-in user.
+      renderWithAuth({ username: 'testuser', isAdmin: false });
       
       await waitFor(() => {
         expect(screen.getByText(/start your journey/i)).toBeInTheDocument();
