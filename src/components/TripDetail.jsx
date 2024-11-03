@@ -72,7 +72,6 @@ function TripDetail() {
 
   // 'Change Flight' button triggers this redirect.
   const handleChangeFlights = () => {
-    console.log("0 - TripDetail - trip: ", trip);
     navigate('/flights', { state: { trip } });
   };
 
