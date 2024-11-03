@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
+import { Link } from 'react-router-dom';
 import { Container, Spinner, Button, Collapse, Row, Col, Alert } from 'react-bootstrap';
 import AuthContext from '../context/AuthContext';
 import RannerApi from '../../api';
@@ -83,6 +84,9 @@ function TripList() {
       {trips.length === 0 ? (
         <Alert variant="info">
           No trips found. Start planning your next adventure!
+          <Link to="/origin">
+            <Button variant="primary" size="lg" className="mr-3">Start</Button>
+          </Link>
         </Alert>
       ) : (
         <Row>
