@@ -3,7 +3,6 @@ import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext.jsx';
 import Routes from './Routes.jsx';
 import NavBar from './components/NavBar';
-// import ErrorBoundary from './components/ErrorBoundary';
 import { Container } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles/custom.css';
