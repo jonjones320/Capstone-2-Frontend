@@ -42,7 +42,8 @@ jest.mock('../../api', () => ({
   getFlightsByTrip: jest.fn(),
   getFlight: jest.fn(),
   deleteFlight: jest.fn(),
-  getTripById: jest.fn()
+  getTripById: jest.fn(),
+  patchUser: jest.fn() 
 }));
 
 // Mock date-fns
