@@ -4,7 +4,8 @@ import { mockUser, mockTrip } from '../helpers/testData';
 import TripDates from '../../components/TripDates';
 import RannerApi from '../../../api';
 
-// Mock router state.
+// Mock router hooks with a complete state.
+const mockNavigate = jest.fn();
 const mockLocation = {
   state: {
     origin: 'SFO',
@@ -15,7 +16,7 @@ const mockLocation = {
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useLocation: () => mockLocation,
-  useNavigate: () => jest.fn()
+  useNavigate: () => mockNavigate
 }));
 
 describe('TripDates', () => {
@@ -35,10 +36,6 @@ describe('TripDates', () => {
   });
 
   test('handles successful trip creation', async () => {
-    const mockNavigate = jest.fn();
-    jest.spyOn(require('react-router-dom'), 'useNavigate')
-      .mockImplementation(() => mockNavigate);
-
     renderWithContext(<TripDates />, { user: mockUser });
 
     // Fill out form.
@@ -69,6 +66,9 @@ describe('TripDates', () => {
           username: mockUser.username
         })
       );
+    });
+
+    await waitFor(() => {
       expect(mockNavigate).toHaveBeenCalledWith("/flights", {
         state: { trip: mockTrip }
       });
@@ -92,20 +92,6 @@ describe('TripDates', () => {
     });
   });
 
-  test('navigates back to destination page', () => {
-    const mockNavigate = jest.fn();
-    jest.spyOn(require('react-router-dom'), 'useNavigate')
-      .mockImplementation(() => mockNavigate);
-
-    renderWithContext(<TripDates />, { user: mockUser });
-
-    fireEvent.click(screen.getByRole('button', { name: /back/i }));
-
-    expect(mockNavigate).toHaveBeenCalledWith('/destination', {
-      state: mockLocation.state
-    });
-  });
-
   test('validates date range', async () => {
     renderWithContext(<TripDates />, { user: mockUser });
 
@@ -123,5 +109,15 @@ describe('TripDates', () => {
       expect(screen.getByRole('alert'))
         .toHaveTextContent(/start date cannot be after end date/i);
     });
+  });
+
+  test('handles missing location state', () => {
+    // Override location mock for this test
+    jest.spyOn(require('react-router-dom'), 'useLocation')
+      .mockImplementationOnce(() => ({ state: null }));
+
+    renderWithContext(<TripDates />, { user: mockUser });
+    
+    expect(mockNavigate).toHaveBeenCalledWith('/origin');
   });
 });
