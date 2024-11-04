@@ -1,7 +1,6 @@
-import { screen, fireEvent, act } from '@testing-library/react';
+import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { renderWithContext } from '../utils/testUtils';
 import { mockUser, mockFlight } from '../helpers/testData';
-import { findAlertMessage, waitForLoadingToFinish } from '../utils/testUtils';
 import FlightCard from '../../components/FlightCard';
 import RannerApi from '../../../api';
 
@@ -21,7 +20,7 @@ describe('FlightCard', () => {
       />
     );
 
-    // Check basic flight information using text content instead of roles
+    // Check basic flight information using text content instead of roles.
     expect(screen.getByText('SFO ↔ JFK')).toBeInTheDocument();
     expect(screen.getByText('500.00 USD')).toBeInTheDocument();
     expect(screen.getByText(/duration:/i)).toBeInTheDocument();
@@ -39,17 +38,15 @@ describe('FlightCard', () => {
       />
     );
 
-    await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: /remove flight/i }));
+    fireEvent.click(screen.getByRole('button', { name: /remove flight/i }));
+
+    await waitFor(() => {
+      expect(RannerApi.deleteFlight).toHaveBeenCalledWith(
+        mockFlight.id,
+        mockUser.username
+      );
+      expect(mockOnRemove).toHaveBeenCalledWith(mockFlight.id);
     });
-
-    await waitForLoadingToFinish();
-
-    expect(RannerApi.deleteFlight).toHaveBeenCalledWith(
-      mockFlight.id,
-      mockUser.username
-    );
-    expect(mockOnRemove).toHaveBeenCalledWith(mockFlight.id);
   });
 
   test('handles flight removal error', async () => {
@@ -63,11 +60,11 @@ describe('FlightCard', () => {
       />
     );
 
-    await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: /remove flight/i }));
-    });
+    fireEvent.click(screen.getByRole('button', { name: /remove flight/i }));
 
-    await findAlertMessage(/failed to delete flight/i);
-    expect(mockOnRemove).not.toHaveBeenCalled();
+    await waitFor(() => {
+      expect(screen.getByRole('alert')).toHaveTextContent(/failed to delete flight/i);
+      expect(mockOnRemove).not.toHaveBeenCalled();
+    });
   });
 });
