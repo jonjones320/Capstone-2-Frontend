@@ -26,15 +26,16 @@ export const waitForLoadingToFinish = async () => {
 };
 
 export function renderWithContext(ui, { 
+  route = '/', 
   authContext = defaultAuthContext,
   ...renderOptions 
-} = {}) {
+  } = {}) {
+  window.history.pushState({}, 'Test page', route);
+  
   function Wrapper({ children }) {
     return (
       <AuthContext.Provider value={authContext}>
-        <BrowserRouter>
-          {children}
-        </BrowserRouter>
+        <BrowserRouter>{children}</BrowserRouter>
       </AuthContext.Provider>
     );
   }

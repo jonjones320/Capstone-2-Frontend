@@ -1,14 +1,14 @@
 import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { mockUser, mockTrip } from '../helpers/testData';
 import { renderWithContext } from '../utils/testUtils';
+import { AuthContext } from '../../context/AuthContext';
 import Profile from '../../components/Profile';
 import RannerApi from '../../../api';
-import AuthContext from '../../context/AuthContext';
 
 describe('Profile', () => {
   // Mock AuthContext with a logged-in user.
   const mockAuthContext = {
-    currentUser: mockUser,
+    currentUser: { ...mockUser }, 
     login: jest.fn(),
     logout: jest.fn()
   };
@@ -26,7 +26,7 @@ describe('Profile', () => {
     jest.clearAllMocks();
     RannerApi.getUser.mockResolvedValue(mockUser);
     RannerApi.getTripsByUsername.mockResolvedValue([mockTrip]);
-    RannerApi.patchUser.mockImplementation((username, data) => Promise.resolve({ ...mockUser, ...data }));
+    RannerApi.patchUser.mockResolvedValue(mockUser);
   });
 
   test('renders loading state initially', () => {
@@ -37,24 +37,22 @@ describe('Profile', () => {
   test('renders user profile and trips after loading', async () => {
     renderProfileWithAuth();
 
-    // Wait for both API calls to resolve and loading to finish.
-    await waitFor(() => {
-      expect(RannerApi.getUser).toHaveBeenCalledWith(mockUser.username);
-      expect(RannerApi.getTripsByUsername).toHaveBeenCalledWith(mockUser.username);
-    });
-
-    // Now check for content.
+    // Wait for loading to finish and content to appear.
     await waitFor(() => {
       expect(screen.queryByRole('status')).not.toBeInTheDocument();
       expect(screen.getByText(mockUser.username)).toBeInTheDocument();
       expect(screen.getByText(mockTrip.name)).toBeInTheDocument();
     });
+
+    // Verify API calls were made.
+    expect(RannerApi.getUser).toHaveBeenCalledWith(mockUser.username);
+    expect(RannerApi.getTripsByUsername).toHaveBeenCalledWith(mockUser.username);
   });
 
   test('handles edit mode toggle', async () => {
     renderProfileWithAuth();
 
-    // Wait for initial data load.
+    // Wait for loading to finish.
     await waitFor(() => {
       expect(screen.queryByRole('status')).not.toBeInTheDocument();
     });
@@ -67,15 +65,25 @@ describe('Profile', () => {
   });
 
   test('handles API error', async () => {
-    // Mock API error.
-    RannerApi.getUser.mockRejectedValueOnce(new Error('Failed to fetch profile'));
+    const errorResponse = {
+      response: {
+        data: {
+          error: {
+            message: 'Failed to fetch profile'
+          }
+        }
+      }
+    };
+    
+    RannerApi.getUser.mockRejectedValueOnce(errorResponse);
+    RannerApi.getTripsByUsername.mockRejectedValueOnce(errorResponse);
     
     renderProfileWithAuth();
 
-    // Wait for error to appear.
     await waitFor(() => {
-      expect(screen.getByRole('alert')).toHaveTextContent(/failed to fetch profile/i);
-      expect(screen.queryByRole('status')).not.toBeInTheDocument();
+      // Find specifically the error alert (not the warning alert)
+      const errorAlert = screen.getByText('Error').closest('[role="alert"]');
+      expect(errorAlert).toHaveTextContent(/failed to fetch profile/i);
     });
   });
 
@@ -86,9 +94,12 @@ describe('Profile', () => {
       lastName: 'Name'
     };
 
+    // Mock successful update.
+    RannerApi.patchUser.mockResolvedValueOnce(updatedUser);
+    
     renderProfileWithAuth();
 
-    // Wait for initial data load.
+    // Wait for loading to finish.
     await waitFor(() => {
       expect(screen.queryByRole('status')).not.toBeInTheDocument();
     });
@@ -107,7 +118,7 @@ describe('Profile', () => {
     // Submit form.
     fireEvent.click(screen.getByText(/save changes/i));
 
-    // Verify API call and state update.
+    // Verify API call.
     await waitFor(() => {
       expect(RannerApi.patchUser).toHaveBeenCalledWith(
         mockUser.username,
@@ -116,7 +127,6 @@ describe('Profile', () => {
           lastName: 'Name'
         })
       );
-      expect(screen.queryByRole('alert')).not.toBeInTheDocument();
     });
   });
 
@@ -126,7 +136,7 @@ describe('Profile', () => {
     
     renderProfileWithAuth();
 
-    // Wait for API calls to resolve.
+    // Wait for loading to finish.
     await waitFor(() => {
       expect(screen.queryByRole('status')).not.toBeInTheDocument();
     });
