@@ -5,7 +5,7 @@ import RannerApi from '../../api';
 import ProfileView from './ProfileView';
 import ProfileEdit from './ProfileEdit';
 import { useErrorHandler } from '../utils/errorHandler';
-import ErrorDisplay from './ErrorAlert';
+import ErrorAlert from './ErrorAlert';
 
 function Profile() {
   const { currentUser } = useContext(AuthContext);
@@ -56,7 +56,7 @@ function Profile() {
 
   return (
     <Container className="mt-5">
-      <ErrorDisplay error={error} onClose={clearError} />
+      <ErrorAlert error={error} onClose={clearError} />
       {isEditing ? (
         <ProfileEdit user={user} onUpdate={handleUpdate} />
       ) : (
