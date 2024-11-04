@@ -40,11 +40,23 @@ function ProfileEdit({ user, onUpdate }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
-
+  
     setIsLoading(true);
     try {
-      await RannerApi.patchUser(user.username, formData);
-      onUpdate(formData);
+      const dataToUpdate = {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+      };
+      
+      // Only include password fields if both are filled out.
+      if (formData.currentPassword && formData.password) {
+        dataToUpdate.currentPassword = formData.currentPassword;
+        dataToUpdate.password = formData.password;
+      }
+  
+      await RannerApi.patchUser(user.username, dataToUpdate);
+      onUpdate(dataToUpdate);
     } catch (err) {
       handleError(err);
     } finally {
