@@ -5,6 +5,13 @@ import Profile from '../../components/Profile';
 import RannerApi from '../../../api';
 
 describe('Profile', () => {
+  // Mock AuthContext with a logged-in user.
+  const mockAuthContext = {
+    currentUser: mockUser,
+    login: jest.fn(),
+    logout: jest.fn()
+  };
+  
   beforeEach(() => {
     // Set up default responses.
     const userPromise = Promise.resolve(mockUser);
