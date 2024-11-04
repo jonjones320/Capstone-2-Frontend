@@ -53,8 +53,9 @@ describe('Destination', () => {
       target: { value: 'New' }
     });
     
-    await waitFor(() => {
-      expect(findAlertMessage(/api error/i)).resolves.toBe(true);
+    await waitFor(async () => {
+      const alertText = await findAlertMessage('API Error');
+      expect(alertText).toBe(true);
     });
   });
 
@@ -63,8 +64,9 @@ describe('Destination', () => {
     
     fireEvent.click(screen.getByRole('button', { name: /next/i }));
     
-    await waitFor(() => {
-      expect(findAlertMessage(/please select a destination/i)).resolves.toBe(true);
+    await waitFor(async () => {
+      const alertText = await findAlertMessage('Please select a destination');
+      expect(alertText).toBe(true);
     });
   });
 
@@ -77,8 +79,9 @@ describe('Destination', () => {
       target: { value: destination }
     });
 
+    fireEvent.click(screen.getByRole('button', { name: /next/i }));
+
     await waitFor(() => {
-      fireEvent.click(screen.getByRole('button', { name: /next/i }));
       expect(mockNavigate).toHaveBeenCalledWith('/dates', {
         state: { origin: 'SFO', destination }
       });
