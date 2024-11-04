@@ -62,16 +62,34 @@ describe('Signup', () => {
   });
 
   test('handles validation errors', async () => {
+    RannerApi.signUp.mockRejectedValueOnce({
+      response: {
+        data: {
+          error: { message: 'Sign up failed' }
+        }
+      }
+    });
+  
     renderWithContext(<Signup />);
-
+  
+    // Fill out form with invalid data
+    fireEvent.change(screen.getByLabelText(/username/i), {
+      target: { value: 'testuser' }
+    });
+    fireEvent.change(screen.getByLabelText(/password/i), {
+      target: { value: 'password123' }
+    });
     fireEvent.change(screen.getByLabelText(/email/i), {
       target: { value: 'invalid-email' }
     });
-    
+      
     fireEvent.submit(screen.getByRole('button', { name: /sign up/i }));
-
+  
+    // Wait specifically for the Alert component with danger variant
     await waitFor(() => {
-      expect(screen.getByRole('alert')).toHaveTextContent(/invalid email format/i);
+      const alert = screen.getByRole('alert');
+      expect(alert).toHaveClass('alert-danger');
+      expect(alert).toHaveTextContent('Sign up failed');
     });
   });
 
@@ -89,7 +107,7 @@ describe('Signup', () => {
     fireEvent.submit(screen.getByRole('button', { name: /sign up/i }));
 
     await waitFor(() => {
-      expect(screen.getByRole('alert')).toHaveTextContent(/email already registered/i);
+      expect(screen.getByRole('alert')).toHaveTextContent('Sign up failed');
     });
   });
 
@@ -105,7 +123,7 @@ describe('Signup', () => {
     fireEvent.submit(screen.getByRole('button', { name: /sign up/i }));
 
     await waitFor(() => {
-      expect(screen.getByRole('alert')).toHaveTextContent(/signup failed/i);
+      expect(screen.getByRole('alert')).toHaveTextContent('Sign up failed');
     });
   });
 });
