@@ -1,5 +1,10 @@
+import { render, renderHook, act } from '@testing-library/react';
 import { ErrorHandler, useErrorHandler } from '../../utils/errorHandler';
-import { renderHook, act } from '@testing-library/react-hooks';
+
+afterEach(() => {
+  // Cleanup any rendered hooks after each test.
+  jest.clearAllMocks();
+});
 
 describe('ErrorHandler Utility', () => {
   describe('handleApiError', () => {
@@ -20,7 +25,7 @@ describe('ErrorHandler Utility', () => {
         message: 'Network Error'
       };
 
-      expect(() => ErrorHandler.handleApiError(error)).toThrow('Network error - please try again');
+      expect(() => ErrorHandler.handleApiError(error)).toThrow('Network error - please check your connection and try again');
     });
 
     test('handles validation errors', () => {
