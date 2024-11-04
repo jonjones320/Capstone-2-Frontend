@@ -117,10 +117,10 @@ function ProfileEdit({ user, onUpdate }) {
           <Form.Label> New Password</Form.Label>
           <Form.Control
             type="password"
-            name="newPassword"
+            name="password"
             value={formData.password}
             onChange={handleChange}
-            aria-label="New Password"
+            aria-label="Password"
             disabled={isLoading}
           />
         </Form.Group>
