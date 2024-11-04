@@ -54,7 +54,7 @@ describe('Destination', () => {
     });
     
     await waitFor(async () => {
-      const alertText = await findAlertMessage('API Error');
+      const alertText = await findAlertMessage('Failed to load suggestions');
       expect(alertText).toBe(true);
     });
   });
