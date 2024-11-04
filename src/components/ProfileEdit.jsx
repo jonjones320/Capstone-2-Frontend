@@ -17,7 +17,9 @@ function ProfileEdit({ user, onUpdate }) {
     setFormData({
       firstName: user.firstName || '',
       lastName: user.lastName || '',
-      email: user.email || ''
+      email: user.email || '',
+      currentPassword: '',
+      password: ''
     });
   }, [user]);
 
@@ -85,6 +87,28 @@ function ProfileEdit({ user, onUpdate }) {
             value={formData.email}
             onChange={handleChange}
             aria-label="Email address"
+            disabled={isLoading}
+          />
+        </Form.Group>
+        <Form.Group className="mb-3">
+          <Form.Label>Current Password</Form.Label>
+          <Form.Control
+            type="currentPassword"
+            name="currentPassword"
+            value={formData.currentPassword}
+            onChange={handleChange}
+            aria-label="Current password"
+            disabled={isLoading}
+          />
+        </Form.Group>
+        <Form.Group className="mb-3">
+          <Form.Label>Password</Form.Label>
+          <Form.Control
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            aria-label="Password"
             disabled={isLoading}
           />
         </Form.Group>
