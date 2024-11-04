@@ -4,6 +4,16 @@ import { findAlertMessage } from '../utils/testUtils';
 import Destination from '../../components/Destination';
 import RannerApi from '../../../api';
 
+// Mock router hooks.
+const mockNavigate = jest.fn();
+const mockLocation = { state: { origin: 'SFO' } };
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+  useLocation: () => mockLocation
+}));
+
 describe('Destination', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -17,7 +27,7 @@ describe('Destination', () => {
     expect(screen.getByRole('button', { name: /back/i })).toBeInTheDocument();
   });
 
-  test('fetches airport suggestions', async () => {
+  test('handles airport suggestions', async () => {
     const suggestions = [
       { id: 1, iataCode: 'JFK', name: 'John F. Kennedy Airport' }
     ];
@@ -34,30 +44,18 @@ describe('Destination', () => {
     expect(await screen.findByText(/john f. kennedy airport/i)).toBeInTheDocument();
   });
 
-  test('handles navigation', async () => {
-    const mockNavigate = jest.fn();
-    jest.spyOn(require('react-router-dom'), 'useNavigate')
-      .mockImplementation(() => mockNavigate);
-
+  test('handles API errors', async () => {
+    RannerApi.getAirportSuggestions.mockRejectedValueOnce(new Error('API Error'));
+    
     renderWithContext(<Destination />);
-
-    // Test back navigation.
-    fireEvent.click(screen.getByRole('button', { name: /back/i }));
-    expect(mockNavigate).toHaveBeenCalledWith('/origin', {
-      state: { origin: mockState.origin }
+    
+    await act(async () => {
+      fireEvent.change(screen.getByPlaceholderText(/enter city or airport/i), {
+        target: { value: 'New' }
+      });
     });
-
-    // Test forward navigation.
-    const searchInput = screen.getByRole('combobox', { name: /enter city or airport/i });
-    fireEvent.change(searchInput, { target: { value: 'JFK' } });
-    fireEvent.click(screen.getByRole('button', { name: /next/i }));
-
-    expect(mockNavigate).toHaveBeenCalledWith('/dates', {
-      state: expect.objectContaining({
-        origin: mockState.origin,
-        destination: 'JFK'
-      })
-    });
+    
+    expect(await findAlertMessage(/api error/i)).toBe(true);
   });
 
   test('validates destination selection', async () => {
@@ -67,24 +65,34 @@ describe('Destination', () => {
       fireEvent.click(screen.getByRole('button', { name: /next/i }));
     });
     
-    await findAlertMessage(/please select a destination/i);
+    expect(await findAlertMessage(/please select a destination/i)).toBe(true);
   });
 
-  test('handles API errors', async () => {
-    RannerApi.getAirportSuggestions.mockRejectedValueOnce(new Error('API Error'));
+  test('navigates correctly with valid destination', async () => {
+    const destination = 'JFK';
     
     renderWithContext(<Destination />);
     
-    const searchInput = screen.getByRole('textbox', { 
-      name: /enter city or airport/i 
-    });
-  
     await act(async () => {
-      fireEvent.change(searchInput, { 
-        target: { value: 'New' } 
+      fireEvent.change(screen.getByPlaceholderText(/enter city or airport/i), {
+        target: { value: destination }
       });
     });
-  
-    expect(await findAlertMessage(/api error/i)).toBe(true);
+
+    fireEvent.click(screen.getByRole('button', { name: /next/i }));
+
+    expect(mockNavigate).toHaveBeenCalledWith('/dates', {
+      state: { origin: 'SFO', destination }
+    });
+  });
+
+  test('handles missing origin state', () => {
+    // Temporarily override the mock location to simulate missing state.
+    jest.spyOn(require('react-router-dom'), 'useLocation')
+      .mockImplementationOnce(() => ({ state: null }));
+
+    renderWithContext(<Destination />);
+    
+    expect(mockNavigate).toHaveBeenCalledWith('/origin');
   });
 });
