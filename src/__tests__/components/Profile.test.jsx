@@ -6,9 +6,12 @@ import RannerApi from '../../../api';
 
 describe('Profile', () => {
   beforeEach(() => {
-    // Set up the specific mocked API response for Profile component.
-    RannerApi.getUser.mockResolvedValue(mockUser);
-    RannerApi.getTripsByUsername.mockResolvedValue([mockTrip]);
+    // Set up default responses.
+    const userPromise = Promise.resolve(mockUser);
+    const tripsPromise = Promise.resolve([mockTrip]);
+
+    RannerApi.getUser.mockImplementation(() => userPromise);
+    RannerApi.getTripsByUsername.mockImplementation(() => tripsPromise);
   });
 
   test('renders loading state initially', () => {
@@ -19,48 +22,50 @@ describe('Profile', () => {
   test('renders user profile and trips after loading', async () => {
     renderWithContext(<Profile />, { user: mockUser });
 
-    // Wait for loading spinner to disappear first.
+    // Wait for both API calls to resolve and loading to finish.
     await waitFor(() => {
-      expect(screen.queryByRole('status')).not.toBeInTheDocument();
+      expect(RannerApi.getUser).toHaveBeenCalledWith(mockUser.username);
+      expect(RannerApi.getTripsByUsername).toHaveBeenCalledWith(mockUser.username);
     });
 
-    // Then check for content.
-    await waitFor(() => {
-      expect(screen.getByText(mockUser.username)).toBeInTheDocument();
-      expect(screen.getByText(mockTrip.name)).toBeInTheDocument();
-    });
+    // Now check for content.
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
+    expect(screen.getByText(mockUser.username)).toBeInTheDocument();
+    expect(screen.getByText(mockTrip.name)).toBeInTheDocument();
   });
 
   test('handles edit mode toggle', async () => {
     renderWithContext(<Profile />, { user: mockUser });
 
-    // Wait for loading to finish.
+    // Wait for API calls to resolve.
     await waitFor(() => {
-      expect(screen.queryByRole('status')).not.toBeInTheDocument();
+      expect(RannerApi.getUser).toHaveBeenCalled();
+      expect(RannerApi.getTripsByUsername).toHaveBeenCalled();
     });
+
+    // Verify loading is done.
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
 
     // Click edit button and verify form appears.
     fireEvent.click(screen.getByText(/edit profile/i));
-
-    await waitFor(() => {
-      expect(screen.getByLabelText(/first name/i)).toBeInTheDocument();
-      expect(screen.getByLabelText(/last name/i)).toBeInTheDocument();
-      expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
-    });
+    expect(screen.getByLabelText(/first name/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/last name/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
   });
 
   test('handles API error', async () => {
     // Mock API error.
     RannerApi.getUser.mockRejectedValueOnce(new Error('Failed to fetch profile'));
-    RannerApi.getTripsByUsername.mockRejectedValueOnce(new Error('Failed to fetch profile'));
-
+    
     renderWithContext(<Profile />, { user: mockUser });
 
-    // Wait for loading to finish and error to appear.
+    // Wait for error to appear.
     await waitFor(() => {
-      expect(screen.queryByRole('status')).not.toBeInTheDocument();
       expect(screen.getByRole('alert')).toHaveTextContent(/failed to fetch profile/i);
     });
+
+    // Verify loading is done.
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
   });
 
   test('updates profile successfully', async () => {
@@ -70,14 +75,19 @@ describe('Profile', () => {
       lastName: 'Name'
     };
 
+    // Mock successful user update.
     RannerApi.patchUser.mockResolvedValueOnce(updatedUser);
     
     renderWithContext(<Profile />, { user: mockUser });
 
-    // Wait for loading to finish.
+    // Wait for initial data load.
     await waitFor(() => {
-      expect(screen.queryByRole('status')).not.toBeInTheDocument();
+      expect(RannerApi.getUser).toHaveBeenCalled();
+      expect(RannerApi.getTripsByUsername).toHaveBeenCalled();
     });
+
+    // Verify loading is done.
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
 
     // Enter edit mode.
     fireEvent.click(screen.getByText(/edit profile/i));
@@ -111,14 +121,16 @@ describe('Profile', () => {
     
     renderWithContext(<Profile />, { user: mockUser });
 
-    // Wait for loading to finish.
+    // Wait for API calls to resolve.
     await waitFor(() => {
-      expect(screen.queryByRole('status')).not.toBeInTheDocument();
+      expect(RannerApi.getUser).toHaveBeenCalled();
+      expect(RannerApi.getTripsByUsername).toHaveBeenCalled();
     });
 
+    // Verify loading is done.
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
+
     // Check for no trips message.
-    await waitFor(() => {
-      expect(screen.getByText(/no trips found/i)).toBeInTheDocument();
-    });
+    expect(screen.getByText(/no trips found/i)).toBeInTheDocument();
   });
 });
