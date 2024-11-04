@@ -92,7 +92,7 @@ function TripForm({ initialData, onSubmit, isEdit = false }) {
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
+    <Form onSubmit={handleSubmit} role="form">
       {(error || originSearch.error || destinationSearch.error) && (
         <Alert variant="danger" dismissible onClose={() => setError(null)}>
           {error || originSearch.error || destinationSearch.error}
