@@ -1,9 +1,16 @@
-import { screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { renderWithContext } from '../utils/testUtils';
 import { mockUser } from '../helpers/testData';
-import { findAlertMessage, waitForLoadingToFinish } from '../utils/testUtils';
 import Login from '../../components/Login';
 import RannerApi from '../../../api';
+
+// Mock router hooks.
+const mockNavigate = jest.fn();
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate
+}));
 
 describe('Login', () => {
   beforeEach(() => {
@@ -14,7 +21,7 @@ describe('Login', () => {
     renderWithContext(<Login />);
     
     expect(screen.getByRole('textbox', { name: /username/i })).toBeInTheDocument();
-    expect(screen.getByLabelText(/password/i)).toBeInTheDocument(); // password inputs have no implicit role
+    expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /login/i })).toBeInTheDocument();
   });
 
@@ -30,11 +37,13 @@ describe('Login', () => {
     });
 
     fireEvent.click(screen.getByRole('button', { name: /login/i }));
-    await waitForLoadingToFinish();
 
-    expect(RannerApi.login).toHaveBeenCalledWith({
-      username: mockUser.username,
-      password: 'password123'
+    await waitFor(() => {
+      expect(RannerApi.login).toHaveBeenCalledWith({
+        username: mockUser.username,
+        password: 'password123'
+      });
+      expect(mockNavigate).toHaveBeenCalledWith('/');
     });
   });
 
@@ -52,6 +61,10 @@ describe('Login', () => {
     });
     
     fireEvent.click(screen.getByRole('button', { name: /login/i }));
-    expect(await findAlertMessage(errorMessage)).toBe(true);
+
+    await waitFor(async () => {
+      const alertMessage = screen.getByRole('alert');
+      expect(alertMessage).toHaveTextContent(errorMessage);
+    });
   });
 });
