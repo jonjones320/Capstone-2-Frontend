@@ -1,4 +1,4 @@
-import { screen, fireEvent, act } from '@testing-library/react';
+import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { renderWithContext } from '../utils/testUtils';
 import { findAlertMessage } from '../utils/testUtils';
 import Destination from '../../components/Destination';
@@ -35,13 +35,13 @@ describe('Destination', () => {
 
     renderWithContext(<Destination />);
 
-    await act(async () => {
-      fireEvent.change(screen.getByPlaceholderText(/enter city or airport/i), {
-        target: { value: 'New' }
-      });
+    fireEvent.change(screen.getByPlaceholderText(/enter city or airport/i), {
+      target: { value: 'New' }
     });
 
-    expect(await screen.findByText(/john f. kennedy airport/i)).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText(/john f. kennedy airport/i)).toBeInTheDocument();
+    });
   });
 
   test('handles API errors', async () => {
@@ -49,23 +49,23 @@ describe('Destination', () => {
     
     renderWithContext(<Destination />);
     
-    await act(async () => {
-      fireEvent.change(screen.getByPlaceholderText(/enter city or airport/i), {
-        target: { value: 'New' }
-      });
+    fireEvent.change(screen.getByPlaceholderText(/enter city or airport/i), {
+      target: { value: 'New' }
     });
     
-    expect(await findAlertMessage(/api error/i)).toBe(true);
+    await waitFor(() => {
+      expect(findAlertMessage(/api error/i)).resolves.toBe(true);
+    });
   });
 
   test('validates destination selection', async () => {
     renderWithContext(<Destination />);
     
-    await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: /next/i }));
-    });
+    fireEvent.click(screen.getByRole('button', { name: /next/i }));
     
-    expect(await findAlertMessage(/please select a destination/i)).toBe(true);
+    await waitFor(() => {
+      expect(findAlertMessage(/please select a destination/i)).resolves.toBe(true);
+    });
   });
 
   test('navigates correctly with valid destination', async () => {
@@ -73,16 +73,15 @@ describe('Destination', () => {
     
     renderWithContext(<Destination />);
     
-    await act(async () => {
-      fireEvent.change(screen.getByPlaceholderText(/enter city or airport/i), {
-        target: { value: destination }
-      });
+    fireEvent.change(screen.getByPlaceholderText(/enter city or airport/i), {
+      target: { value: destination }
     });
 
-    fireEvent.click(screen.getByRole('button', { name: /next/i }));
-
-    expect(mockNavigate).toHaveBeenCalledWith('/dates', {
-      state: { origin: 'SFO', destination }
+    await waitFor(() => {
+      fireEvent.click(screen.getByRole('button', { name: /next/i }));
+      expect(mockNavigate).toHaveBeenCalledWith('/dates', {
+        state: { origin: 'SFO', destination }
+      });
     });
   });
 
