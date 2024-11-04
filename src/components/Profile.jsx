@@ -24,7 +24,9 @@ function Profile() {
         setUser(userData);
         setTrips(userTrips || []);
       } catch (err) {
-        handleError(err);
+        // Extract just the message string from the error.
+        const errorMessage = err?.response?.data?.error?.message || err.message || 'An error occurred';
+        handleError(errorMessage); // Pass just the string.
       } finally {
         setIsLoading(false);
       }
