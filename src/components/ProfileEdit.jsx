@@ -93,7 +93,7 @@ function ProfileEdit({ user, onUpdate }) {
         <Form.Group className="mb-3">
           <Form.Label>Current Password</Form.Label>
           <Form.Control
-            type="currentPassword"
+            type="password"
             name="currentPassword"
             value={formData.currentPassword}
             onChange={handleChange}
@@ -102,13 +102,13 @@ function ProfileEdit({ user, onUpdate }) {
           />
         </Form.Group>
         <Form.Group className="mb-3">
-          <Form.Label>Password</Form.Label>
+          <Form.Label> New Password</Form.Label>
           <Form.Control
             type="password"
-            name="password"
+            name="newPassword"
             value={formData.password}
             onChange={handleChange}
-            aria-label="Password"
+            aria-label="New Password"
             disabled={isLoading}
           />
         </Form.Group>
