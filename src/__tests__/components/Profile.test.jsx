@@ -11,23 +11,30 @@ describe('Profile', () => {
     login: jest.fn(),
     logout: jest.fn()
   };
-  
-  beforeEach(() => {
-    // Set up default responses.
-    const userPromise = Promise.resolve(mockUser);
-    const tripsPromise = Promise.resolve([mockTrip]);
 
-    RannerApi.getUser.mockImplementation(() => userPromise);
-    RannerApi.getTripsByUsername.mockImplementation(() => tripsPromise);
+  const renderProfileWithAuth = () => {
+    return renderWithContext(
+      <AuthContext.Provider value={mockAuthContext}>
+        <Profile />
+      </AuthContext.Provider>
+    );
+  };
+
+  beforeEach(() => {
+    // Clear mocks and set up default successful responses.
+    jest.clearAllMocks();
+    RannerApi.getUser.mockResolvedValue(mockUser);
+    RannerApi.getTripsByUsername.mockResolvedValue([mockTrip]);
+    RannerApi.patchUser.mockImplementation((username, data) => Promise.resolve({ ...mockUser, ...data }));
   });
 
   test('renders loading state initially', () => {
-    renderWithContext(<Profile />, { user: mockUser });
+    renderProfileWithAuth();
     expect(screen.getByRole('status')).toBeInTheDocument();
   });
 
   test('renders user profile and trips after loading', async () => {
-    renderWithContext(<Profile />, { user: mockUser });
+    renderProfileWithAuth();
 
     // Wait for both API calls to resolve and loading to finish.
     await waitFor(() => {
