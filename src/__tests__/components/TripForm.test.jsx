@@ -47,20 +47,30 @@ describe('TripForm', () => {
 
   test('validates form before submission', async () => {
     renderWithContext(<TripForm onSubmit={mockSubmit} />, { user: mockUser });
-
-    // Submit empty form
-    fireEvent.click(screen.getByRole('button', { name: /Create Trip/i }));
-    
-    await waitFor(() => {
-      expect(screen.getByRole('alert')).toBeInTheDocument();
-      expect(mockSubmit).not.toHaveBeenCalled();
+  
+    // Fill out form partially to test name validation.
+    fireEvent.change(screen.getByLabelText(/Trip Name:/i), {
+      target: { name: 'name', value: '' }
     });
+  
+    // Use form submission instead of button click.
+    fireEvent.submit(screen.getByRole('form'));
+  
+    // Wait specifically for the Alert with the validation message.
+    await waitFor(() => {
+      const alert = screen.getByRole('alert');
+      expect(alert).toHaveClass('alert-danger');
+      expect(alert).toHaveTextContent('Trip name is required');
+    });
+  
+    // Verify the submit handler wasn't called.
+    expect(mockSubmit).not.toHaveBeenCalled();
   });
 
   test('handles successful form submission', async () => {
     renderWithContext(<TripForm onSubmit={mockSubmit} />);
     
-    // Fill required fields
+    // Fill required fields.
     fireEvent.change(screen.getByLabelText(/Trip Name:/i), {
       target: { name: 'name', value: mockTrip.name }
     });
@@ -98,7 +108,7 @@ describe('TripForm', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByRole('alert')).toHaveTextContent(/API Error/i);
+      expect(screen.getByRole('alert')).toHaveTextContent('Failed to load suggestions');
     });
   });
 });
