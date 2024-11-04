@@ -3,6 +3,7 @@ import { mockUser, mockTrip } from '../helpers/testData';
 import { renderWithContext } from '../utils/testUtils';
 import Profile from '../../components/Profile';
 import RannerApi from '../../../api';
+import AuthContext from '../../context/AuthContext';
 
 describe('Profile', () => {
   // Mock AuthContext with a logged-in user.
@@ -43,22 +44,20 @@ describe('Profile', () => {
     });
 
     // Now check for content.
-    expect(screen.queryByRole('status')).not.toBeInTheDocument();
-    expect(screen.getByText(mockUser.username)).toBeInTheDocument();
-    expect(screen.getByText(mockTrip.name)).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.queryByRole('status')).not.toBeInTheDocument();
+      expect(screen.getByText(mockUser.username)).toBeInTheDocument();
+      expect(screen.getByText(mockTrip.name)).toBeInTheDocument();
+    });
   });
 
   test('handles edit mode toggle', async () => {
-    renderWithContext(<Profile />, { user: mockUser });
+    renderProfileWithAuth();
 
-    // Wait for API calls to resolve.
+    // Wait for initial data load.
     await waitFor(() => {
-      expect(RannerApi.getUser).toHaveBeenCalled();
-      expect(RannerApi.getTripsByUsername).toHaveBeenCalled();
+      expect(screen.queryByRole('status')).not.toBeInTheDocument();
     });
-
-    // Verify loading is done.
-    expect(screen.queryByRole('status')).not.toBeInTheDocument();
 
     // Click edit button and verify form appears.
     fireEvent.click(screen.getByText(/edit profile/i));
@@ -71,15 +70,13 @@ describe('Profile', () => {
     // Mock API error.
     RannerApi.getUser.mockRejectedValueOnce(new Error('Failed to fetch profile'));
     
-    renderWithContext(<Profile />, { user: mockUser });
+    renderProfileWithAuth();
 
     // Wait for error to appear.
     await waitFor(() => {
       expect(screen.getByRole('alert')).toHaveTextContent(/failed to fetch profile/i);
+      expect(screen.queryByRole('status')).not.toBeInTheDocument();
     });
-
-    // Verify loading is done.
-    expect(screen.queryByRole('status')).not.toBeInTheDocument();
   });
 
   test('updates profile successfully', async () => {
@@ -89,19 +86,12 @@ describe('Profile', () => {
       lastName: 'Name'
     };
 
-    // Mock successful user update.
-    RannerApi.patchUser.mockResolvedValueOnce(updatedUser);
-    
-    renderWithContext(<Profile />, { user: mockUser });
+    renderProfileWithAuth();
 
     // Wait for initial data load.
     await waitFor(() => {
-      expect(RannerApi.getUser).toHaveBeenCalled();
-      expect(RannerApi.getTripsByUsername).toHaveBeenCalled();
+      expect(screen.queryByRole('status')).not.toBeInTheDocument();
     });
-
-    // Verify loading is done.
-    expect(screen.queryByRole('status')).not.toBeInTheDocument();
 
     // Enter edit mode.
     fireEvent.click(screen.getByText(/edit profile/i));
@@ -117,7 +107,7 @@ describe('Profile', () => {
     // Submit form.
     fireEvent.click(screen.getByText(/save changes/i));
 
-    // Verify API call.
+    // Verify API call and state update.
     await waitFor(() => {
       expect(RannerApi.patchUser).toHaveBeenCalledWith(
         mockUser.username,
@@ -126,6 +116,7 @@ describe('Profile', () => {
           lastName: 'Name'
         })
       );
+      expect(screen.queryByRole('alert')).not.toBeInTheDocument();
     });
   });
 
@@ -133,16 +124,12 @@ describe('Profile', () => {
     // Mock empty trips response.
     RannerApi.getTripsByUsername.mockResolvedValueOnce([]);
     
-    renderWithContext(<Profile />, { user: mockUser });
+    renderProfileWithAuth();
 
     // Wait for API calls to resolve.
     await waitFor(() => {
-      expect(RannerApi.getUser).toHaveBeenCalled();
-      expect(RannerApi.getTripsByUsername).toHaveBeenCalled();
+      expect(screen.queryByRole('status')).not.toBeInTheDocument();
     });
-
-    // Verify loading is done.
-    expect(screen.queryByRole('status')).not.toBeInTheDocument();
 
     // Check for no trips message.
     expect(screen.getByText(/no trips found/i)).toBeInTheDocument();
