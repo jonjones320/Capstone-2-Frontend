@@ -26,7 +26,7 @@ function ProfileEdit({ user, onUpdate }) {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(data => ({ ...data, [name]: value }));
-    clearError(); // Clear any previous errors when user starts typing
+    clearError(); // Clear any previous errors when user starts typing.
   };
 
   const validateForm = () => {
