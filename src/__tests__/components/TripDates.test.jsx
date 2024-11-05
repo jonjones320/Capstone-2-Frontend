@@ -13,12 +13,28 @@ const mockLocation = {
   }
 };
 
+// Initialize mocked states.
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useLocation: () => mockLocation,
   useNavigate: () => mockNavigate
 }));
 
+// Mocks autofill suggestions hook.
+jest.mock('../../components/helpers/useAirportSearch', () => ({
+  useAirportSearch: () => ({
+    searchTerm: '',
+    suggestions: [],
+    isLoading: false,
+    error: null,
+    handleChange: jest.fn(),
+    handleSuggestionClick: jest.fn(),
+    clearSearch: jest.fn(),
+    setError: jest.fn()
+  })
+}));
+
+// Main tests. 
 describe('TripDates', () => {
   beforeEach(() => {
     jest.clearAllMocks();
