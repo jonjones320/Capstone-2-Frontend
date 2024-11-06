@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 
@@ -18,18 +18,17 @@ export const findAlertMessage = async (message) => {
 
 // Helper to wait for loading state to clear.
 export const waitForLoadingToFinish = async () => {
-  try {
-    await screen.queryByRole('status');
-  } catch (error) {
-    // Loading element was never present or has already disappeared.
-  }
+  return waitFor(() => {
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
+  });
 };
 
 export function renderWithContext(ui, { 
   route = '/', 
-  authContext = defaultAuthContext,
+  user = null,
+  authContext = { ...defaultAuthContext, currentUser: user },
   ...renderOptions 
-  } = {}) {
+} = {}) {
   window.history.pushState({}, 'Test page', route);
   
   function Wrapper({ children }) {
