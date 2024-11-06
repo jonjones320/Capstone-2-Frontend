@@ -44,6 +44,7 @@ function Login() {
           <ErrorAlert error={error} onDismiss={() => setError(null)} />
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3">
+              <Form.Label htmlFor="username">Username</Form.Label>
               <Form.Control
                 type="text"
                 name="username"
@@ -55,13 +56,15 @@ function Login() {
               />
             </Form.Group>
             <Form.Group className="mb-3">
+              <Form.Label htmlFor="password">Password</Form.Label>
               <Form.Control
+                id="password"
                 type="password"
                 name="password"
                 role="textbox"
                 value={formData.password}
                 onChange={handleChange}
-                placeholder="Password"
+                placeholder="Password" 
                 required
               />
             </Form.Group>
