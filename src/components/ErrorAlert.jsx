@@ -5,7 +5,7 @@ function ErrorAlert({ error, onDismiss, onRetry }) {
   if (!error) return null;
 
   return (
-    <Alert variant="danger" dismissible onClose={onDismiss} className="mb-3">
+    <Alert variant="danger" dismissible onClose={onDismiss} role="alert" className="mb-3">
       <Alert.Heading>Error</Alert.Heading>
       <p>{error}</p>
       {onRetry && (
