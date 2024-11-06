@@ -46,6 +46,7 @@ function Login() {
             <Form.Group className="mb-3">
               <Form.Label htmlFor="username">Username</Form.Label>
               <Form.Control
+                id="username"
                 type="text"
                 name="username"
                 role="textbox"
