@@ -76,7 +76,7 @@ describe('Origin', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByRole('alert')).toHaveTextContent(/api error/i);
+      expect(screen.getByRole('alert')).toHaveTextContent('ErrorFailed to load suggestions');
     });
   });
 });
