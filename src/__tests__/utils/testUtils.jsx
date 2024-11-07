@@ -41,3 +41,5 @@ export function renderWithContext(ui, {
 
   return render(ui, { wrapper: Wrapper, ...renderOptions });
 }
+
+export { defaultAuthContext };
