@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { Container, Button, Spinner, Alert, Row } from 'react-bootstrap';
+import { Container, Button, Spinner, Alert, Row, Col } from 'react-bootstrap';
 import { AuthContext } from '../context/AuthContext';
 
 
