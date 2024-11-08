@@ -50,7 +50,7 @@ describe('FlightCard', () => {
   });
 
   test('handles flight removal error', async () => {
-    RannerApi.deleteFlight.mockRejectedValueOnce(new Error('Failed to delete flight'));
+    RannerApi.deleteFlight.mockRejectedValueOnce(new Error('Failed to remove flight'));
     
     renderWithContext(
       <FlightCard 
@@ -63,7 +63,7 @@ describe('FlightCard', () => {
     fireEvent.click(screen.getByRole('button', { name: /remove flight/i }));
 
     await waitFor(() => {
-      expect(screen.getByRole('alert')).toHaveTextContent(/failed to delete flight/i);
+      expect(screen.getByRole('alert')).toHaveTextContent(/Failed to remove flight/i);
       expect(mockOnRemove).not.toHaveBeenCalled();
     });
   });
