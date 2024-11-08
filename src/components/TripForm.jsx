@@ -73,7 +73,6 @@ function TripForm({ initialData, onSubmit, isEdit = false }) {
     setError(null);
     
     try {
-      console.log("TripForm - formData: ", formData);
       // Collects and formats data then passes it to the parent component.
       const dataToSubmit = {
         ...formData,
