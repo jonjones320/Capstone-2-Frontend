@@ -1,18 +1,18 @@
 import { screen, waitFor } from '@testing-library/react';
-import { renderWithContext } from '../utils/testUtils';
+import { renderWithContext, waitForLoadingToFinish } from '../utils/testUtils';
 import { mockTrip, mockFlight } from '../helpers/testData';
 import FlightList from '../../components/FlightList';
 import RannerApi from '../../../api';
 
-// Mock router hooks
+// Mock router hooks.
 const mockNavigate = jest.fn();
 
-// Setup mock location state
+// Setup mock location state.
 const mockLocation = {
   state: { trip: mockTrip }
 };
 
-// Mock react-router-dom
+// Mock react-router-dom.
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockNavigate,
@@ -59,14 +59,24 @@ describe('FlightList', () => {
   });
 
   test('handles missing location state', async () => {
-    // Override useLocation for this test only
+    // Mock API to do nothing.
+    RannerApi.searchFlightOffers.mockImplementationOnce(() => 
+      new Promise((resolve) => setTimeout(resolve, 0))
+    );
+    
+    // Override useLocation for this test only.
     jest.spyOn(require('react-router-dom'), 'useLocation')
-      .mockImplementationOnce(() => ({ state: null }));
+      .mockReturnValue({ state: null });
     
-    renderWithContext(<FlightList />);
-    
-    await waitFor(() => {
-      expect(screen.getByRole('alert')).toHaveTextContent(/trip information is missing/i);
+    waitFor(async () => {
+      renderWithContext(<FlightList />);
     });
+  
+    waitFor(async () => {
+      await waitForLoadingToFinish();
+    });
+  
+    const alert = await screen.findByRole('alert');
+    expect(alert).toHaveTextContent('Trip information is missing');
   });
 });
