@@ -3,7 +3,7 @@ import TripCard from './TripCard';
 import UserCard from './UserCard';
 import { Row, Col, Spinner, Alert } from 'react-bootstrap';
 import { useErrorHandler } from '../utils/errorHandler';
-import ErrorDisplay from './ErrorAlert';
+import ErrorAlert from './ErrorAlert';
 
 function ProfileView({ user, trips, isLoading }) {
   const { error, handleError } = useErrorHandler();
@@ -34,7 +34,7 @@ function ProfileView({ user, trips, isLoading }) {
   return (
     <div>
       <h1 className="mb-4">{user.username}'s Profile</h1>
-      <ErrorDisplay error={error} />
+      <ErrorAlert error={error} />
       <Row>
         <Col md={4}>
           <UserCard 

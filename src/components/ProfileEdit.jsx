@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Form, Button, Spinner } from 'react-bootstrap';
 import RannerApi from '../../api';
 import { useErrorHandler } from '../utils/errorHandler';
-import ErrorDisplay from './ErrorAlert';
+import ErrorAlert from './ErrorAlert';
 
 function ProfileEdit({ user, onUpdate }) {
   const [formData, setFormData] = useState({
@@ -67,7 +67,7 @@ function ProfileEdit({ user, onUpdate }) {
   return (
     <div>
       <h3 className="mb-4">Edit Profile</h3>
-      <ErrorDisplay error={error} onClose={clearError} />
+      <ErrorAlert error={error} onClose={clearError} />
       <Form onSubmit={handleSubmit}>
         <Form.Group className="mb-3">
           <Form.Label>First Name:</Form.Label>
