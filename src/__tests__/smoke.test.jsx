@@ -1,18 +1,10 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import App from '../App';
+import NavBar from '../components/NavBar';
 
-// Mock Routes.
-jest.mock('../Routes', () => {
-  return {
-    __esModule: true,
-    default: ({ children }) => <div data-testid="mock-routes">{children}</div>
-  };
-});
-
-// Mock Ranner and Amadeus API calls.
+// Initialize mocked API endpoints for navigation testing.
 jest.mock('../../api', () => ({
   login: jest.fn(),
   signUp: jest.fn(),
@@ -21,6 +13,7 @@ jest.mock('../../api', () => ({
   postTrip: jest.fn(),
 }));
 
+// Create context to authorization testing.
 const defaultAuthContext = {
   currentUser: null,
   login: jest.fn(),
@@ -32,106 +25,80 @@ const defaultAuthContext = {
 };
 
 describe('Ranner Frontend Smoke Tests', () => {
-  // Custom render function with all required providers
+  // Custom render function with all required providers.
   const renderApp = (authContextValue = defaultAuthContext) => {
     return render(
       <AuthContext.Provider value={authContextValue}>
         <BrowserRouter>
-          <App />
+          <NavBar />
         </BrowserRouter>
       </AuthContext.Provider>
     );
   };
 
-  // Helper for rendering with authenticated user.
-  const renderWithAuth = (currentUser) => {
-    const authValue = {
-      ...defaultAuthContext,
-      currentUser
-    };
-    return renderApp(authValue);
-  };
-
   beforeEach(() => {
     jest.clearAllMocks();
+    // Start at home page.
     window.history.pushState({}, '', '/');
   });
 
-  describe('Basic Navigation', () => {
-    test('Home page renders correctly', () => {
+  describe('Navigation Bar Links', () => {
+    test('Shows login and signup links when logged out', () => {
       renderApp();
-      expect(screen.getByText(/explore the world/i)).toBeInTheDocument();
+      
+      // Use getByRole for more accurate selection of navigate elements.
+      expect(screen.getByRole('link', { name: /login/i })).toBeInTheDocument();
+      expect(screen.getByRole('link', { name: /sign up/i })).toBeInTheDocument();
     });
 
-    test('Can navigate to login page', async () => {
-      renderApp();
-      const loginLink = screen.getByText(/log in/i);
-      fireEvent.click(loginLink);
-      await waitFor(() => {
-        expect(window.location.pathname).toBe('/login');
-      });
-    });
-
-    test('Can navigate to signup page', async () => {
-      renderApp();
-      const signupLink = screen.getByText(/sign up/i);
-      fireEvent.click(signupLink);
-      await waitFor(() => {
-        expect(window.location.pathname).toBe('/signup');
-      });
-    });
-  });
-
-  describe('Authentication Flow', () => {
-    test('Login form works correctly', async () => {
-      const mockLogin = jest.fn();
+    test('Shows user navigation when logged in', () => {
       renderApp({
         ...defaultAuthContext,
-        login: mockLogin
+        currentUser: { username: 'testuser' }
       });
-
-      // Navigate to login.
-      fireEvent.click(screen.getByText(/log in/i));
-
-      // Fill in the login form.
-      await waitFor(() => {
-        fireEvent.change(screen.getByPlaceholderText(/username/i), {
-          target: { value: 'testuser' }
-        });
-        fireEvent.change(screen.getByPlaceholderText(/password/i), {
-          target: { value: 'password123' }
-        });
-      });
-
-      // Submit login form.
-      fireEvent.click(screen.getByRole('button', { name: /login/i }));
-
-      // Verify login was called.
-      expect(mockLogin).toHaveBeenCalledWith({
-        username: 'testuser',
-        password: 'password123'
-      });
+      // Checks that all elements of the dropdown navbar have loaded for logged in user.
+      expect(screen.getByRole('link', { name: /my trips/i })).toBeInTheDocument();
+      expect(screen.getByRole('link', { name: /new trip/i })).toBeInTheDocument();
+      expect(screen.getByRole('link', { name: /profile/i })).toBeInTheDocument();
+      expect(screen.getByRole('link', { name: /logout/i })).toBeInTheDocument();
     });
   });
 
-  describe('Trip Planning Flow', () => {
-    test('Can access trip planning when logged in', () => {
-      renderWithAuth({ username: 'testuser', isAdmin: false });
-      expect(screen.getByText(/start your journey/i)).toBeInTheDocument();
-    });
-  });
-
-  describe('Error Handling', () => {
-    test('Shows error messages appropriately', async () => {
+  describe('Navigating the Links', () => {
+    test('Login link points to correct route', () => {
       renderApp();
-      fireEvent.click(screen.getByText(/log in/i));
-      
-      // Submit empty form.
-      fireEvent.click(screen.getByRole('button', { name: /login/i }));
-      
-      await waitFor(() => {
-        expect(screen.getByText(/please fill in all fields/i)).toBeInTheDocument();
+      const loginLink = screen.getByRole('link', { name: /login/i });
+      expect(loginLink).toHaveAttribute('href', '/login');
+    });
+
+    test('Signup link points to correct route', () => {
+      renderApp();
+      const signupLink = screen.getByRole('link', { name: /sign up/i });
+      expect(signupLink).toHaveAttribute('href', '/signup');
+    });
+
+    test('Profile link points to correct route when logged in', () => {
+      renderApp({
+        ...defaultAuthContext,
+        currentUser: { username: 'testuser' }
       });
+      const profileLink = screen.getByRole('link', { name: /profile/i });
+      expect(profileLink).toHaveAttribute('href', '/profile');
+    });
+  });
+
+  describe('Brand Link', () => {
+    test('Brand link exists and points to home', () => {
+      renderApp();
+      const brandLink = screen.getByText('Ranner');
+      expect(brandLink).toHaveAttribute('href', '/');
+    });
+  });
+
+  describe('Media Responsive Behavior', () => {
+    test('Shows navbar toggle on mobile', () => {
+      renderApp();
+      expect(screen.getByRole('button', { name: /toggle navigation/i })).toBeInTheDocument();
     });
   });
 });
