@@ -3,7 +3,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Container, Spinner, Button, Card, Alert } from 'react-bootstrap';
 import RannerApi from '../../api';
 import FlightCard from './FlightCard';
-import ErrorAlert from './ErrorAlert';
 
 function FlightList() {
   const { state } = useLocation();
@@ -15,7 +14,10 @@ function FlightList() {
 
   const fetchFlights = async () => {
     if (!trip) {
-      setError("Trip information is missing");
+      setError({
+        message: "Trip information is missing",
+        isTestApiError: false
+      });
       setIsLoading(false);
       return;
     }
@@ -108,9 +110,13 @@ function FlightList() {
       <HeaderSection />
       
       {error && (
-        <Alert variant={error.isTestApiError ? "info" : "danger"} className="d-flex flex-column gap-2">
+        <Alert 
+          role="alert"
+          variant={error.isTestApiError ? "info" : "danger"} 
+          className="d-flex flex-column gap-2"
+        >
           <div>
-            <strong>{error.message}</strong>
+            <strong>{typeof error === 'string' ? error : error.message}</strong>
             {error.detail && <p className="mt-2 mb-0">{error.detail}</p>}
           </div>
           {!error.isTestApiError && (
