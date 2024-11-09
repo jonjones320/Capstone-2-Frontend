@@ -40,7 +40,7 @@ function ProfileEdit({ user, onUpdate }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
-  
+
     setIsLoading(true);
     try {
       const dataToUpdate = {
@@ -51,14 +51,20 @@ function ProfileEdit({ user, onUpdate }) {
       
       // Only include password fields if both are filled out.
       if (formData.currentPassword && formData.password) {
-        dataToUpdate.currentPassword = formData.currentPassword;
         dataToUpdate.password = formData.password;
+        // First verify the current password.
+        try {
+          await RannerApi.authenticate(user.username, formData.currentPassword);
+        } catch (err) {
+          throw new Error('Current password is incorrect');
+        }
       }
-  
-      await RannerApi.patchUser(user.username, dataToUpdate);
-      onUpdate(dataToUpdate);
+
+      const updatedUser = await RannerApi.patchUser(user.username, dataToUpdate);
+      onUpdate(updatedUser);
     } catch (err) {
-      handleError(err);
+      const errorMessage = err?.response?.data?.error?.message || err.message || 'Failed to update profile';
+      handleError(errorMessage); // Only passes the error string.
     } finally {
       setIsLoading(false);
     }
@@ -67,7 +73,11 @@ function ProfileEdit({ user, onUpdate }) {
   return (
     <div>
       <h3 className="mb-4">Edit Profile</h3>
-      <ErrorAlert error={error} onClose={clearError} />
+      <ErrorAlert 
+        error={error} 
+        onDismiss={clearError}
+        message={typeof error === 'object' ? error.message : error}
+      />
       <Form onSubmit={handleSubmit}>
         <Form.Group className="mb-3">
           <Form.Label>First Name:</Form.Label>
