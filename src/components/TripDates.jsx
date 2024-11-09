@@ -18,14 +18,12 @@ function TripDates() {
     setIsLoading(true);
     setError(null);
     try {
-      console.log("TripDates - tripData: ", tripData);
       const fullTripData = {
         ...tripData,
         username: currentUser.username,
         origin: origin,
         destination: destination,
       };
-      console.log("TripDates - fullTripData: ", fullTripData);
       const savedTrip = await RannerApi.postTrip(fullTripData);
 
       navigate("/flights", { state: { trip: savedTrip.trip } });

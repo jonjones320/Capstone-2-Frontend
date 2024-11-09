@@ -63,9 +63,7 @@ export const AuthProvider = ({ children }) => {
 
     const login = async ({ username, password }) => {
         try {
-            console.log("Attempting login...");
             const response = await RannerApi.login({ username, password });
-            console.log("Login response:", response);
             
             // Handle both possible response formats.
             const newToken = typeof response === 'string' ? response : response.token;

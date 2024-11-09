@@ -41,7 +41,7 @@ function FlightList() {
         setFlights([]);
       }
     } catch (err) {
-      console.log("Flight search error:", err);
+      console.error("Flight search error:", err);
       setFlights([]);
       const isServerError = err?.error?.status === 500;
       setError(isServerError

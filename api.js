@@ -17,10 +17,7 @@ class RannerApi {
       Authorization: `Bearer ${RannerApi.token}`,
       'Content-Type': 'application/json'
     };
-    console.log("RannerApi - url: ", url);
-    console.log("RannerApi - method: ", method);
-    console.log("RannerApi - headers: ", headers);
-    console.log("RannerApi - data: ", data);
+
     try {
       const response = await axios({
         url,
@@ -36,7 +33,6 @@ class RannerApi {
   }
 
   static formatError(error) {
-    console.log("RannerApi - error: ", error);
     if (error.response?.data?.error) {
       return error.response.data.error;
     }
