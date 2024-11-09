@@ -34,7 +34,10 @@ function ProfileView({ user, trips, isLoading }) {
   return (
     <div>
       <h1 className="mb-4">{user.username}'s Profile</h1>
-      <ErrorAlert error={error} />
+      <ErrorAlert 
+        error={typeof error === 'string' ? error : error?.message} 
+        onDismiss={clearError}
+      />
       <Row>
         <Col md={4}>
           <UserCard 

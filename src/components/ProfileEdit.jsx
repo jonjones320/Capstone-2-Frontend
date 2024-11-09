@@ -74,9 +74,8 @@ function ProfileEdit({ user, onUpdate }) {
     <div>
       <h3 className="mb-4">Edit Profile</h3>
       <ErrorAlert 
-        error={error} 
+        error={typeof error === 'string' ? error : error?.message} 
         onDismiss={clearError}
-        message={typeof error === 'object' ? error.message : error}
       />
       <Form onSubmit={handleSubmit}>
         <Form.Group className="mb-3">

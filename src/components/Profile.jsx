@@ -58,7 +58,10 @@ function Profile() {
 
   return (
     <Container className="mt-5">
-      <ErrorAlert error={error} onClose={clearError} />
+      <ErrorAlert 
+        error={typeof error === 'string' ? error : error?.message} 
+        onDismiss={clearError} 
+      />
       {isEditing ? (
         <ProfileEdit user={user} onUpdate={handleUpdate} />
       ) : (
