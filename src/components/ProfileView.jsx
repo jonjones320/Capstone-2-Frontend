@@ -6,7 +6,7 @@ import { useErrorHandler } from '../utils/errorHandler';
 import ErrorAlert from './ErrorAlert';
 
 function ProfileView({ user, trips, isLoading }) {
-  const { error, handleError } = useErrorHandler();
+  const { error, handleError, clearError } = useErrorHandler();
 
   if (isLoading) {
     return (
