@@ -62,6 +62,7 @@ class NetworkError extends ApiError {
 
 export const ErrorHandler = {
   handleApiError: (error) => {
+    console.log("errorHandler - error: ", error);
     if (error.response) {
       const errorData = error.response.data?.error;
       const status = error.response.status;
