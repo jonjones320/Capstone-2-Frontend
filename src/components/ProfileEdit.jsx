@@ -66,7 +66,6 @@ function ProfileEdit({ user, onUpdate }) {
       const updatedUser = await RannerApi.patchUser(user.username, dataToUpdate);
       onUpdate(updatedUser);
     } catch (err) {
-      console.log("ProfileEdit err: ", err);
       handleError(new AuthenticationError('Current password incorrect'));
     } finally {
       setIsLoading(false);
