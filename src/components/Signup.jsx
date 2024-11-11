@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Form, Button, Container, Row, Col, Spinner, Alert } from 'react-bootstrap';
 import { AuthContext } from '../context/AuthContext';
+import { ValidationError } from '../utils/errorHandler';
 import RannerApi from '../../api';
 
 
@@ -35,11 +36,7 @@ function SignUp() {
       await login(formData);
       navigate("/origin");
     } catch (err) {
-      if (err.response?.data?.error?.message.includes("duplicate key")) {
-        setError(new ValidationError("Email address is already registered"));
-      } else {
-        setError(err?.response?.data?.error?.message || 'Sign up failed');
-      }
+        setError(new ValidationError(err.message));
     } finally {
       setIsLoading(false);
     }
