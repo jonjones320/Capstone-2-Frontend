@@ -34,7 +34,11 @@ function SignUp() {
       await login(formData);
       navigate("/origin");
     } catch (err) {
-      setError(err?.response?.data?.error?.message || 'Sign up failed');
+      if (err.response?.data?.error?.message.includes("duplicate key")) {
+        setError(new ValidationError("Email address is already registered"));
+      } else {
+        setError(err?.response?.data?.error?.message || 'Sign up failed');
+      }
     } finally {
       setIsLoading(false);
     }
