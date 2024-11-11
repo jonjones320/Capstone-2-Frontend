@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Button, Spinner } from 'react-bootstrap';
 import RannerApi from '../../api';
-import { AuthenticationError, useErrorHandler, ValidationError } from '../utils/errorHandler';
+import { ErrorHandler, useErrorHandler, ValidationError } from '../utils/errorHandler';
 import ErrorAlert from './ErrorAlert';
 
 function ProfileEdit({ user, onUpdate }) {
@@ -48,7 +48,7 @@ function ProfileEdit({ user, onUpdate }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
-
+  
     setIsLoading(true);
     try {
       const dataToUpdate = {
@@ -62,11 +62,15 @@ function ProfileEdit({ user, onUpdate }) {
         dataToUpdate.password = formData.password;
         dataToUpdate.currentPassword = formData.currentPassword;
       }
-
+  
       const updatedUser = await RannerApi.patchUser(user.username, dataToUpdate);
       onUpdate(updatedUser);
     } catch (err) {
-      handleError(new AuthenticationError('Current password incorrect'));
+      try {
+        throw ErrorHandler.handleApiError(err);
+      } catch (handledError) {
+        handleError(handledError);
+      }
     } finally {
       setIsLoading(false);
     }

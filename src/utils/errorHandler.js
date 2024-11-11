@@ -1,6 +1,6 @@
 import React from 'react';
 
-// Custom error classes
+// Custom error classes. 
 class ApiError extends Error {
   constructor(message, status) {
     super(message);
@@ -32,26 +32,58 @@ class RetryableError extends Error {
   }
 }
 
+class EmailInUseError extends ValidationError {
+  constructor() {
+    super('This email is already in use by another account');
+  }
+}
+
+class UsernameTakenError extends ValidationError {
+  constructor() {
+    super('This username is taken');
+  }
+}
+
+class PasswordError extends ValidationError {
+  constructor(message) {
+    super(message);
+  }
+}
+
+class NetworkError extends ApiError {
+  constructor() {
+    super('No internet connection. Please check your network', 0);
+  }
+}
+
 /**
  * Central error handling utility.
  */
+
 export const ErrorHandler = {
   handleApiError: (error) => {
     if (error.response) {
       const errorData = error.response.data?.error;
       const status = error.response.status;
-      const code = errorData?.code;
-      let message = errorData?.message || 'An error occurred';
+      const message = error.message || errorData?.message;
 
-      // Check for specific error conditions
-      if (code === '141') {
-        throw new RetryableError(
-          'The flight search service is temporarily unavailable. Retrying...',
-          2000
-        );
+      // Handle specific error patterns
+      if (message?.includes('duplicate key')) {
+        if (message.includes('users_email_key')) {
+          throw new EmailInUseError();
+        }
+        if (message.includes('users_username_key')) {
+          throw new UsernameTakenError();
+        }
       }
 
+      // Handle status codes.
       switch (status) {
+        case 401:
+          if (message?.includes('password')) {
+            throw new PasswordError('Current password incorrect');
+          }
+          throw new AuthenticationError('Please log in to continue');
         case 401:
           throw new AuthenticationError('Please log in to continue');
         case 403:
@@ -66,8 +98,8 @@ export const ErrorHandler = {
         default:
           throw new ApiError(message, status);
       }
-    } else if (error.request) {
-      throw new ApiError('Network error - please check your connection and try again', 0);
+    } else if (!navigator.onLine) {
+      throw new NetworkError();
     } else {
       throw new ApiError('An error occurred while processing your request', 0);
     }
@@ -89,4 +121,13 @@ export const useErrorHandler = () => {
   return { error, handleError, clearError };
 };
 
-export { ApiError, AuthenticationError, ValidationError, RetryableError };
+export {
+  ApiError,
+  AuthenticationError,
+  ValidationError,
+  RetryableError,
+  EmailInUseError,
+  UsernameTakenError,
+  PasswordError,
+  NetworkError
+};

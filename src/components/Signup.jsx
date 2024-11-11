@@ -2,7 +2,8 @@ import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Form, Button, Container, Row, Col, Spinner, Alert } from 'react-bootstrap';
 import { AuthContext } from '../context/AuthContext';
-import { ValidationError } from '../utils/errorHandler';
+import { ErrorHandler } from '../utils/errorHandler';
+import ErrorAlert from './ErrorAlert';
 import RannerApi from '../../api';
 
 
@@ -18,14 +19,52 @@ function SignUp() {
   });
   const { login } = useContext(AuthContext);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const { error, handleError, clearError } = useErrorHandler();
   const navigate = useNavigate();
 
+  // Form Validation provides immediate user notification of errors.
+  const validateForm = () => {
+    
+    // Email validation.
+    if (formData.email && !formData.email.includes('@')) {
+      handleError(new ValidationError('Please enter a valid email address'));
+      return false;
+    }
+    
+    // Password validation.
+    if (formData.password && !formData.currentPassword) {
+      handleError(new ValidationError('Please enter your current password to change your password'));
+      return false;
+    }
+    if (formData.password && formData.password.length < 6) {
+      handleError(new ValidationError('New password must be at least 6 characters long'));
+      return false;
+    }
+    if (formData.password && formData.password === formData.currentPassword) {
+      handleError(new ValidationError('New password must be different from current password'));
+      return false;
+    }
+
+    // Name validation (if provided).
+    if (formData.firstName && formData.firstName.length < 1) {
+      handleError(new ValidationError('First name cannot be empty'));
+      return false;
+    }
+    if (formData.lastName && formData.lastName.length < 1) {
+      handleError(new ValidationError('Last name cannot be empty'));
+      return false;
+    }
+    
+    return true;
+  };
+
+  // Responds to form input so inputs are maintained in the state. 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(data => ({ ...data, [name]: value }));
   };
 
+  // Passes signup form data to the backend and handles errors.
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -36,13 +75,11 @@ function SignUp() {
       await login(formData);
       navigate("/origin");
     } catch (err) {
-      if (err.message === 'duplicate key value violates unique constraint "users_email_key"') {
-        setError(new ValidationError("This email already has an account. Please log in."))
-      } else if (err.message === 'duplicate key value violates unique constraint "users_username_key"') {
-        setError(new ValidationError("This username is taken"))
-      } else {
-        setError('Signup failed. Please try again.');
-      };
+      try {
+        throw ErrorHandler.handleApiError(err);
+      } catch (handledError) {
+        handleError(handledError);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -56,9 +93,10 @@ function SignUp() {
           <h1 className="text-center mb-4">Sign Up</h1>
           
           {error && (
-            <Alert variant="danger" dismissible onClose={() => setError(null)}>
-              {error}
-            </Alert>
+          <ErrorAlert 
+          error={error} 
+          onDismiss={clearError}
+          />
           )}
           
           <Form onSubmit={handleSubmit}>
