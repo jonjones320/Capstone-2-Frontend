@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Form, Button, Container, Row, Col, Spinner, Alert } from 'react-bootstrap';
 import { AuthContext } from '../context/AuthContext';
-import { ErrorHandler } from '../utils/errorHandler';
+import { ErrorHandler, useErrorHandler  } from '../utils/errorHandler';
 import ErrorAlert from './ErrorAlert';
 import RannerApi from '../../api';
 
