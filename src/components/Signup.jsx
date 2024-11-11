@@ -36,8 +36,13 @@ function SignUp() {
       await login(formData);
       navigate("/origin");
     } catch (err) {
-      console.log("Signup error: ", err);
-        setError(new ValidationError("In use"));
+      if (err.message === 'duplicate key value violates unique constraint "users_email_key"') {
+        setError(new ValidationError("This email already has an account. Please log in."))
+      } else if (err.message === 'duplicate key value violates unique constraint "users_username_key"') {
+        setError(new ValidationError("This username is taken"))
+      } else {
+        setError('Signup failed. Please try again.');
+      };
     } finally {
       setIsLoading(false);
     }
