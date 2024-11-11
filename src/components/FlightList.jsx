@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Container, Spinner, Button, Card, Alert } from 'react-bootstrap';
+import { ErrorHandler } from '../utils/errorHandler';
 import RannerApi from '../../api';
 import FlightCard from './FlightCard';
 
