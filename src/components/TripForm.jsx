@@ -44,21 +44,34 @@ function TripForm({ initialData, onSubmit, isEdit = false }) {
     setError(null);
   };
 
+  // Immediately checks for issues with the form.
   const validateForm = () => {
-    if (!formData.name) {
-      setError('Trip name is required');
+    if (!formData.name?.trim()) {
+      setError("Please enter a trip name");
       return false;
     }
     if (!originSearch.searchTerm) {
-      setError('Origin is required');
+      setError("Please select a departure airport");
       return false;
     }
     if (!destinationSearch.searchTerm) {
-      setError('Destination is required');
+      setError("Please select an arrival airport");
+      return false;
+    }
+    if (originSearch.searchTerm === destinationSearch.searchTerm) {
+      setError("Departure and arrival airports cannot be the same");
+      return false;
+    }
+    if (!formData.startDate || !formData.endDate) {
+      setError("Please select both departure and return dates");
       return false;
     }
     if (new Date(formData.startDate) > new Date(formData.endDate)) {
-      setError('Start date cannot be after end date');
+      setError("Return date must be after departure date");
+      return false;
+    }
+    if (formData.passengers < 1) {
+      setError("Number of passengers must be at least 1");
       return false;
     }
     return true;
