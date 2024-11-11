@@ -26,11 +26,16 @@ function Login() {
     e.preventDefault();
     setError(null);
     setIsLoading(true);
+    
     try {
       await login(formData);
       navigate('/');
     } catch (err) {
-      setError(err?.response?.data?.error?.message || 'Login failed');
+      if (err.response?.status === 401) {
+        setError(new AuthenticationError("Username or password is incorrect"));
+      } else {
+        setError(err?.response?.data?.error?.message || 'Login failed');
+      }
     } finally {
       setIsLoading(false);
     }
