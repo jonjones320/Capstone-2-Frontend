@@ -21,11 +21,10 @@ function FlightList() {
       setIsLoading(false);
       return;
     }
-    
+
     try {
       setIsLoading(true);
       setError(null);
-
       const res = await RannerApi.searchFlightOffers({
         originLocationCode: trip.origin,
         destinationLocationCode: trip.destination,
@@ -37,24 +36,20 @@ function FlightList() {
       if (res.data) {
         setFlights(res.data);
         setError(null);
-      } else {
+      }
+      else {
         setFlights([]);
       }
     } catch (err) {
-      console.error("Flight search error:", err);
-      setFlights([]);
-      const isServerError = err?.error?.status === 500;
-      setError(isServerError
-        ? {
-            message: "Loading flights...",
-            detail: "This application uses Amadeus's test API. The flight offers should appear automatically in a few seconds. If they don't, click 'Try Again'.",
-            isTestApiError: true
-          }
-        : {
-            message: err?.response?.data?.error?.message || 'Failed to load flights',
-            isTestApiError: false
-          }
-      );
+      const isTimeout = err.code === "ECONNABORTED" || err.response?.status === 504;
+      if (isTimeout) {
+        setError(new RetryableError(
+          "The flight search is taking longer than expected. Please try again.",
+          2000
+        ));
+      } else {
+        setError(ErrorHandler.handleApiError(err));
+      };
     } finally {
       setIsLoading(false);
     }
