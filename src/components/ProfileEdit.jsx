@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Button, Spinner } from 'react-bootstrap';
 import RannerApi from '../../api';
-import { useErrorHandler } from '../utils/errorHandler';
+import { ErrorHandler, useErrorHandler, ValidationError } from '../utils/errorHandler';
 import ErrorAlert from './ErrorAlert';
 
 function ProfileEdit({ user, onUpdate }) {
@@ -26,14 +26,22 @@ function ProfileEdit({ user, onUpdate }) {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(data => ({ ...data, [name]: value }));
-    clearError(); // Clear any previous errors when user starts typing.
+    clearError();
   };
 
   const validateForm = () => {
+    // Email validation.
     if (!formData.email.includes('@')) {
-      handleError(new Error('Please enter a valid email address'));
+      handleError(new ValidationError('Please enter a valid email address'));
       return false;
     }
+    
+    // Password validation.
+    if (formData.password && !formData.currentPassword) {
+      handleError(new ValidationError('Please enter your current password'));
+      return false;
+    }
+    
     return true;
   };
 
@@ -52,19 +60,13 @@ function ProfileEdit({ user, onUpdate }) {
       // Only include password fields if both are filled out.
       if (formData.currentPassword && formData.password) {
         dataToUpdate.password = formData.password;
-        // First verify the current password.
-        try {
-          await RannerApi.authenticate(user.username, formData.currentPassword);
-        } catch (err) {
-          throw new Error('Current password is incorrect');
-        }
+        dataToUpdate.currentPassword = formData.currentPassword;
       }
 
       const updatedUser = await RannerApi.patchUser(user.username, dataToUpdate);
       onUpdate(updatedUser);
     } catch (err) {
-      const errorMessage = err?.response?.data?.error?.message || err.message || 'Failed to update profile';
-      handleError(errorMessage); // Only passes the error string.
+      handleError(ErrorHandler.handleApiError(err));
     } finally {
       setIsLoading(false);
     }
@@ -74,7 +76,7 @@ function ProfileEdit({ user, onUpdate }) {
     <div>
       <h3 className="mb-4">Edit Profile</h3>
       <ErrorAlert 
-        error={typeof error === 'string' ? error : error?.message} 
+        error={error} 
         onDismiss={clearError}
       />
       <Form onSubmit={handleSubmit}>
