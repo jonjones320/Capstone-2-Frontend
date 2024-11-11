@@ -66,7 +66,7 @@ function ProfileEdit({ user, onUpdate }) {
       const updatedUser = await RannerApi.patchUser(user.username, dataToUpdate);
       onUpdate(updatedUser);
     } catch (err) {
-      handleError(ErrorHandler.handleApiError(err));
+      handleError(err?.response?.data?.error?.message || 'Failed to update profile');
     } finally {
       setIsLoading(false);
     }
