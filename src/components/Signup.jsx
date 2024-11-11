@@ -65,7 +65,6 @@ function SignUp() {
     if (!validateForm()) return;
     
     setIsLoading(true);
-    setError(null);
     
     try {
       await RannerApi.signUp(formData);
