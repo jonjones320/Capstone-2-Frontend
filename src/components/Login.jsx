@@ -31,11 +31,7 @@ function Login() {
       await login(formData);
       navigate('/');
     } catch (err) {
-      if (err.response?.status === 401) {
-        setError(new AuthenticationError("Username or password is incorrect"));
-      } else {
-        setError(err?.response?.data?.error?.message || 'Login failed');
-      }
+      setError(err?.response?.data?.error?.message || err.message || 'Login failed');
     } finally {
       setIsLoading(false);
     }
