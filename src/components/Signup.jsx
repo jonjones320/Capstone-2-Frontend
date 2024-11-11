@@ -22,36 +22,6 @@ function SignUp() {
   const { error, handleError, clearError } = useErrorHandler();
   const navigate = useNavigate();
 
-  // Form Validation provides immediate user notification of errors.
-  const validateForm = () => {
-    // Username validation.
-    if (formData.username.length < 3) {
-      handleError(new ValidationError('Username must be at least 3 characters long'));
-      return false;
-    }
-    // Password validation.
-    if (formData.password.length < 6) {
-      handleError(new ValidationError('Password must be at least 6 characters long'));
-      return false;
-    }
-    // Email validation.
-    if (!formData.email.includes('@')) {
-      handleError(new ValidationError('Please enter a valid email address'));
-      return false;
-    }
-    // First name validation.
-    if (formData.firstName.trim().length === 0) {
-      handleError(new ValidationError('First name is required'));
-      return false;
-    }
-    // Last name validation.
-    if (formData.lastName.trim().length === 0) {
-      handleError(new ValidationError('Last name is required'));
-      return false;
-    }
-    return true;
-};
-
   // Responds to form input so inputs are maintained in the state. 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -60,10 +30,7 @@ function SignUp() {
 
   // Passes signup form data to the backend and handles errors.
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    if (!validateForm()) return;
-    
+    e.preventDefault();    
     setIsLoading(true);
     
     try {
