@@ -36,7 +36,8 @@ function SignUp() {
       await login(formData);
       navigate("/origin");
     } catch (err) {
-        setError(new ValidationError(err.message));
+      console.log("Signup error: ", err);
+        setError(new ValidationError("In use"));
     } finally {
       setIsLoading(false);
     }
