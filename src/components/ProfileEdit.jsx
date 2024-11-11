@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Button, Spinner } from 'react-bootstrap';
 import RannerApi from '../../api';
-import { ErrorHandler, useErrorHandler, ValidationError } from '../utils/errorHandler';
+import { AuthenticationError, useErrorHandler, ValidationError } from '../utils/errorHandler';
 import ErrorAlert from './ErrorAlert';
 
 function ProfileEdit({ user, onUpdate }) {
@@ -67,7 +67,7 @@ function ProfileEdit({ user, onUpdate }) {
       onUpdate(updatedUser);
     } catch (err) {
       console.log("ProfileEdit err: ", err);
-      handleError(err?.response?.data?.error?.message || 'Failed to update profile');
+      handleError(new AuthenticationError('Current password incorrect'));
     } finally {
       setIsLoading(false);
     }
