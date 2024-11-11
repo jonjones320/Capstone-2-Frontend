@@ -29,6 +29,7 @@ function SignUp() {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
+    
     try {
       await RannerApi.signUp(formData);
       await login(formData);
