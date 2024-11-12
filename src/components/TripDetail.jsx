@@ -138,7 +138,7 @@ function TripDetail() {
       )}
       {isEditing ? (
         <TripForm
-          trip={trip}
+          initialData={trip}
           onSubmit={handleUpdate}
           isEdit={true}
         />
