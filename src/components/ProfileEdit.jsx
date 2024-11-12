@@ -66,11 +66,7 @@ function ProfileEdit({ user, onUpdate }) {
       const updatedUser = await RannerApi.patchUser(user.username, dataToUpdate);
       onUpdate(updatedUser);
     } catch (err) {
-      try {
-        throw ErrorHandler.handleApiError(err);
-      } catch (handledError) {
-        handleError(handledError);
-      }
+      handleError(ErrorHandler.handleApiError(err));
     } finally {
       setIsLoading(false);
     }

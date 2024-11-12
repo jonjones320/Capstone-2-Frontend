@@ -38,11 +38,7 @@ function SignUp() {
       await login(formData);
       navigate("/origin");
     } catch (err) {
-      try {
-        throw ErrorHandler.handleApiError(err);
-      } catch (handledError) {
-        handleError(handledError);
-      }
+      handleError(ErrorHandler.handleApiError(err));
     } finally {
       setIsLoading(false);
     }

@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Form, Button, Container, Row, Col, Spinner } from 'react-bootstrap';
+import { ErrorHandler } from '../utils/errorHandler';
 import { AuthContext } from '../context/AuthContext';
 import ErrorAlert from './ErrorAlert';
 
@@ -31,7 +32,7 @@ function Login() {
       await login(formData);
       navigate('/');
     } catch (err) {
-      setError(err?.response?.data?.error?.message || err.message || 'Login failed');
+      handleError(ErrorHandler.handleApiError(err));
     } finally {
       setIsLoading(false);
     }
