@@ -62,48 +62,33 @@ class NetworkError extends ApiError {
 
 export const ErrorHandler = {
   handleApiError: (error) => {
-    console.log("errorHandler - error: ", error);
-    if (error.response) {
-      const errorData = error.response.data?.error;
-      const status = error.response.status;
-      const message = error.message || errorData?.message;
-
-      // Handle specific error patterns
-      if (message?.includes('duplicate key')) {
-        if (message.includes('users_email_key')) {
-          throw new EmailInUseError();
-        }
-        if (message.includes('users_username_key')) {
-          throw new UsernameTakenError();
-        }
-      }
-
-      // Handle status codes.
+    // For error objects like {error: {message: "...", status: 400}}.
+    if (error?.error?.message) {
+      const status = error.error.status;
       switch (status) {
         case 401:
-          if (message?.includes('password')) {
-            throw new PasswordError('Current password incorrect');
-          }
-          throw new AuthenticationError('Please log in to continue');
-        case 401:
-          throw new AuthenticationError('Please log in to continue');
+          return new AuthenticationError(error.error.message);
         case 403:
-          throw new AuthenticationError('You are not authorized to perform this action');
+          return new AuthenticationError(error.error.message);
         case 404:
-          if (code === 'NO_FLIGHTS_FOUND') {
-            throw new ApiError('No flights found for these search criteria. Please try different dates or locations.');
-          }
-          throw new ApiError('Resource not found', status);
-        case 422:
-          throw new ValidationError('Invalid data provided', error.response.data?.fields);
+          return new ApiError(error.error.message, status);
         default:
-          throw new ApiError(message, status);
+          return new ApiError(error.error.message, status);
       }
-    } else if (!navigator.onLine) {
-      throw new NetworkError();
-    } else {
-      throw new ApiError('An error occurred while processing your request', 0);
     }
+
+    // For direct message errors.
+    if (error?.message) {
+      return new ApiError(error.message);
+    }
+
+    // No internet connection.
+    if (!navigator.onLine) {
+      return new ApiError('No internet connection. Please check your network');
+    }
+
+    // Fallback for unexpected error formats.
+    return new ApiError('An error occurred while processing your request');
   }
 };
 
