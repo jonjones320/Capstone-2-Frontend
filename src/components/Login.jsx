@@ -1,7 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Form, Button, Container, Row, Col, Spinner } from 'react-bootstrap';
-import { ErrorHandler } from '../utils/errorHandler';
 import { ErrorHandler, useErrorHandler } from '../utils/errorHandler';
 import { AuthContext } from '../context/AuthContext';
 import ErrorAlert from './ErrorAlert';
