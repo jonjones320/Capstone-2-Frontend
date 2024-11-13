@@ -121,7 +121,7 @@ function FlightList() {
             <Button 
               variant="outline-danger" 
               size="sm" 
-              onClick={fetchFlights(tryAgain=True)}
+              onClick={() => fetchFlights(true)}
             >
               Try Again
             </Button>
