@@ -172,9 +172,15 @@ class RannerApi {
   }
 
   /** Search for flight offers */
-  static async searchFlightOffers(query = {}) {
-    let res = await this.request(`flights/offers`, query);
-    return res;
+  static async searchFlightOffers(tryAgain, query = {}) {
+    // If request is from try again, Amadeus will reset after a POST request.
+    if (tryAgain) {
+      let res = await this.request(`flights/offers`, query, "post");
+      return res;
+    } else {
+      let res = await this.request(`flights/offers`, query);
+      return res;
+    };
   }
 
   /** Post a flight search offer */

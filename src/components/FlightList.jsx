@@ -13,7 +13,7 @@ function FlightList() {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  const fetchFlights = async () => {
+  const fetchFlights = async (tryAgain=false) => {
     if (!trip) {
       setError({
         message: "Trip information is missing",
@@ -26,7 +26,9 @@ function FlightList() {
     try {
       setIsLoading(true);
       setError(null);
-      const res = await RannerApi.searchFlightOffers({
+      const res = await RannerApi.searchFlightOffers(
+        tryAgain,
+        {
         originLocationCode: trip.origin,
         destinationLocationCode: trip.destination,
         departureDate: trip.startDate,
@@ -119,7 +121,7 @@ function FlightList() {
             <Button 
               variant="outline-danger" 
               size="sm" 
-              onClick={fetchFlights}
+              onClick={fetchFlights(tryAgain=True)}
             >
               Try Again
             </Button>
