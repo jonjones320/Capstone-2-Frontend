@@ -173,7 +173,8 @@ class RannerApi {
 
   /** Search for flight offers */
   static async searchFlightOffers(tryAgain, query = {}) {
-    // If request is from try again, Amadeus will reset after a POST request.
+  // When retrying a failed request, we first send a POST request to "reset" the Amadeus API.
+  // This is a documented workaround for cases where GET requests return 500 errors.
     if (tryAgain) {
       let res = await this.request(`flights/offers`, query, "post");
       return res;
