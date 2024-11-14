@@ -18,6 +18,12 @@ function TripDates() {
     setIsLoading(true);
     setError(null);
     try {
+      // Check if end date is in the past.
+      if (new Date(tripData.endDate) < new Date()) {
+        setError("Trip dates cannot be in the past. Please select future dates.");
+        return;
+      }
+  
       const fullTripData = {
         ...tripData,
         username: currentUser.username,
@@ -25,7 +31,7 @@ function TripDates() {
         destination: destination,
       };
       const savedTrip = await RannerApi.postTrip(fullTripData);
-
+  
       navigate("/flights", { state: { trip: savedTrip.trip } });
     } catch (err) {
       setError(err?.response?.data?.error?.message || 'Failed to create trip');
