@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert, Button } from '@/components/ui/alert';
+import { Alert, Button } from 'react-bootstrap';
 import { format } from 'date-fns';
 
 const PastTripAlert = ({ startDate, endDate, onEdit }) => {
