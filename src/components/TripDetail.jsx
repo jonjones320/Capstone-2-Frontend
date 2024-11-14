@@ -6,6 +6,7 @@ import { AuthContext } from '../context/AuthContext';
 import RannerApi from '../../api';
 import FlightCard from './FlightCard';
 import TripForm from './TripForm';
+import PastTripAlert from './helpers/PastTripAlert';
 
 function TripDetail() {
   // Set intial states to use passed params and update elements.
@@ -24,6 +25,9 @@ function TripDetail() {
         startDate: format(new Date(trip.startDate), 'yyyy-MM-dd'), 
         endDate: format(new Date(trip.endDate), 'yyyy-MM-dd'),
     })};
+
+  // Checks for trip dates that are in the past.
+  const isPastTrip = new Date(trip.endDate) < new Date();
 
   // Requests trip by trip ID and flight, by correlated trip ID, from the server. 
   const fetchTripAndFlights = async () => {
@@ -136,6 +140,13 @@ function TripDetail() {
           </div>
         </Alert>
       )}
+
+      <PastTripAlert 
+        startDate={trip.startDate}
+        endDate={trip.endDate}
+        onEdit={handleEdit}
+      />
+
       {isEditing ? (
         <TripForm
           initialData={trip}
@@ -175,7 +186,13 @@ function TripDetail() {
             <p>No flights booked for this trip yet.</p>
           )}
           
-          <Button variant="primary" onClick={handleChangeFlights} className="mt-3">
+          <Button 
+            variant="primary" 
+            onClick={handleChangeFlights} 
+            className="mt-3"
+            disabled={isPastTrip}
+            title={isPastTrip ? "Cannot search flights with past trip dates." : ""}
+          >
             {flights.length > 0 ? 'Change Flights' : 'Add Flight'}
           </Button>
         </>
