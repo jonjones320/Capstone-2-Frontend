@@ -26,9 +26,6 @@ function TripDetail() {
         endDate: format(new Date(trip.endDate), 'yyyy-MM-dd'),
     })};
 
-  // Checks for trip dates that are in the past.
-  const isPastTrip = new Date(trip.endDate) < new Date();
-
   // Requests trip by trip ID and flight, by correlated trip ID, from the server. 
   const fetchTripAndFlights = async () => {
     setIsLoading(true);
@@ -190,8 +187,8 @@ function TripDetail() {
             variant="primary" 
             onClick={handleChangeFlights} 
             className="mt-3"
-            disabled={isPastTrip}
-            title={isPastTrip ? "Cannot search flights with past trip dates." : ""}
+            disabled={new Date(trip.endDate) < new Date()}
+            title={new Date(trip.endDate) < new Date() ? "Cannot search flights with past trip dates." : ""}
           >
             {flights.length > 0 ? 'Change Flights' : 'Add Flight'}
           </Button>
